@@ -1,6 +1,6 @@
 // src/components/landing/AritmiaCommandCenter.tsx
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -429,6 +429,8 @@ const AritmiaCommandCenter = () => {
       type: "info",
     };
   };
+  const todayStr = new Date().toISOString().split("T")[0];
+  const todayLog = data.dailyLogs[todayStr]; // ganti nama jadi todayLog
 
   const { insights, streaks, achievements } = useMemo(() => {
     const newInsights: Insight[] = [];
@@ -477,7 +479,7 @@ const AritmiaCommandCenter = () => {
         text: `Pola terdeteksi: Gejala seringkali muncul pada hari-hari dengan tingkat stres/mood yang buruk.`,
         type: "warning",
       });
-    const dailyInsight = generateDailyInsight(dailyLog, data.medications);
+    const dailyInsight = generateDailyInsight(todayLog, data.medications);
     if (dailyInsight) {
       newInsights.push(dailyInsight);
     }
@@ -506,7 +508,13 @@ const AritmiaCommandCenter = () => {
       streaks: { logging: consecutiveDays },
       achievements: { activityGoal: activityGoalMet },
     };
-  }, [analysisData, data.dailyLogs, data.goals.activityGoalMinutes]);
+  }, [
+    analysisData,
+    data.dailyLogs,
+    data.goals.activityGoalMinutes,
+    todayLog,
+    data.medications,
+  ]);
 
   const exportData = () => {
     let summary = `<html><head><title>Laporan Kesehatan Jantung - ${new Date().toLocaleDateString()}</title><style>body{font-family:sans-serif;line-height:1.6;padding:20px}table{width:100%;border-collapse:collapse;margin-top:1em}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background-color:#f2f2f2}.header{text-align:center;border-bottom:2px solid #333;margin-bottom:20px}</style></head><body>`;
