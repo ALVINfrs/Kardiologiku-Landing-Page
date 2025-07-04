@@ -154,6 +154,88 @@ const ObatTerapiSection = () => {
       severity: "danger",
       description: "Blok jantung total",
     },
+    {
+      id: "ist",
+      name: "Inappropriate Sinus Tachycardia",
+      displayName: "IST",
+      heartRate: 115,
+      color: "#f43f5e", // Rose
+      severity: "warning",
+      description: "Takikardia sinus tanpa pemicu yang jelas.",
+    },
+    {
+      id: "atrial_flutter",
+      name: "Atrial Flutter",
+      displayName: "A-Flutter",
+      heartRate: 150,
+      color: "#f97316", // Oranye
+      severity: "warning",
+      description: "Ritme atrium cepat dengan pola 'gigi gergaji' (sawtooth).",
+    },
+    {
+      id: "torsades",
+      name: "Torsades de Pointes",
+      displayName: "Torsades",
+      heartRate: 250,
+      color: "#c026d3", // Fuchsia
+      severity: "danger",
+      description: "V-Tach polimorfik dengan pola 'memutar' yang khas.",
+    },
+    {
+      id: "first_degree_av",
+      name: "1st Degree AV Block",
+      displayName: "1° AV Block",
+      heartRate: 65,
+      color: "#2563eb", // Biru Tua
+      severity: "warning",
+      description: "Interval PR memanjang secara konsisten.",
+    },
+    {
+      id: "mobitz_i",
+      name: "2nd Degree AV Block, Mobitz I",
+      displayName: "Mobitz I",
+      heartRate: 50,
+      color: "#4f46e5", // Indigo
+      severity: "warning",
+      description: "Interval PR semakin panjang hingga satu denyut hilang.",
+    },
+    {
+      id: "mobitz_ii",
+      name: "2nd Degree AV Block, Mobitz II",
+      displayName: "Mobitz II",
+      heartRate: 40,
+      color: "#7c3aed", // Violet
+      severity: "danger",
+      description: "Denyut hilang secara periodik tanpa pemanjangan PR.",
+    },
+    {
+      id: "junctional",
+      name: "Junctional Rhythm",
+      displayName: "Junctional",
+      heartRate: 50,
+      color: "#1d4ed8", // Biru Gelap
+      severity: "warning",
+      description: "Ritme dari AV node, gelombang P absen atau terbalik.",
+    },
+    {
+      id: "wpw",
+      name: "Wolff-Parkinson-White Syndrome",
+      displayName: "WPW",
+      heartRate: 80,
+      color: "#059669", // Emerald
+      severity: "danger",
+      description:
+        "Jalur listrik ekstra menyebabkan gelombang Delta dan PR pendek.",
+    },
+    {
+      id: "asystole",
+      name: "Asystole",
+      displayName: "Asystole",
+      heartRate: 0,
+      color: "#4b5563", // Abu-abu
+      severity: "danger",
+      description: "Tidak ada aktivitas listrik sama sekali (flatline).",
+    },
   ];
 
   const currentArrhythmia =
@@ -261,6 +343,95 @@ const ObatTerapiSection = () => {
             if (qrsCycle === 22) y = 80; // R wave
             if (qrsCycle === 24) y = 30; // S wave
             if (qrsCycle === 35) y = 60; // T wave
+            break;
+          }
+          case "ist": {
+            const fastCycle = i % 25; // Faster than normal, but sinus shape
+            if (fastCycle === 6) y = 45; // P wave
+            if (fastCycle === 12) y = 20; // Q wave
+            if (fastCycle === 13) y = 80; // R wave
+            if (fastCycle === 14) y = 30; // S wave
+            if (fastCycle === 18) y = 60; // T wave
+            break;
+          }
+          case "atrial_flutter": {
+            const flutterCycle = i % 10;
+            y = 50 - Math.abs(flutterCycle - 5) * 4; // Sawtooth baseline
+            const qrsCycle = i % 40; // 4:1 block
+            if (qrsCycle > 15 && qrsCycle < 20) {
+              if (qrsCycle === 16) y = 80;
+              if (qrsCycle === 17) y = 30;
+            }
+            break;
+          }
+          case "torsades": {
+            const amplitude = 30 + Math.sin(i * 0.05) * 20;
+            y = 50 + Math.sin(i * 0.7) * amplitude;
+            break;
+          }
+          case "asystole":
+            y = 50 + (Math.random() - 0.5) * 1.5; // Flatline with minor noise
+            break;
+          case "first_degree_av": {
+            const cycle = i % 40;
+            if (cycle === 5) y = 45; // P wave
+            if (cycle === 20) y = 20; // QRS (PR interval is long)
+            if (cycle === 21) y = 80;
+            if (cycle === 22) y = 30;
+            if (cycle === 28) y = 60; // T wave
+            break;
+          }
+          case "mobitz_i": {
+            const bigCycle = i % 160; // 4 beats cycle
+            if (bigCycle < 40) {
+              // Beat 1: PR = 5
+              if (bigCycle === 8) y = 45;
+              if (bigCycle === 13) y = 20;
+              if (bigCycle === 14) y = 80;
+            } else if (bigCycle < 80) {
+              // Beat 2: PR = 8
+              if (bigCycle === 48) y = 45;
+              if (bigCycle === 56) y = 20;
+              if (bigCycle === 57) y = 80;
+            } else if (bigCycle < 120) {
+              // Beat 3: PR = 11
+              if (bigCycle === 88) y = 45;
+              if (bigCycle === 99) y = 20;
+              if (bigCycle === 100) y = 80;
+            } else {
+              // Beat 4: Dropped beat
+              if (bigCycle === 128) y = 45; // Only P wave
+            }
+            break;
+          }
+          case "mobitz_ii": {
+            const bigCycle = i % 120; // 3 beats cycle, 3:2 block
+            if (bigCycle < 80) {
+              // Beat 1 and 2 are normal
+              const cycle = bigCycle % 40;
+              if (cycle === 8) y = 45;
+              if (cycle === 15) y = 20;
+              if (cycle === 16) y = 80;
+            } else {
+              // Beat 3 is dropped
+              if (bigCycle === 88) y = 45; // Only P wave
+            }
+            break;
+          }
+          case "junctional": {
+            const slowCycle = i % 60;
+            if (slowCycle === 30) y = 20;
+            if (slowCycle === 32) y = 80;
+            if (slowCycle === 34) y = 30;
+            if (slowCycle === 36) y = 60; // Inverted P-wave after QRS
+            break;
+          }
+          case "wpw": {
+            const cycle = i % 40;
+            if (cycle === 8) y = 45; // P wave
+            if (cycle >= 12 && cycle < 15) y = 50 - (cycle - 11) * 10; // Delta wave
+            if (cycle === 15) y = 80; // R wave
+            if (cycle === 16) y = 30; // S wave
             break;
           }
         }
@@ -393,7 +564,23 @@ const ObatTerapiSection = () => {
     },
   ];
 
-  const RealisticHeartAnimation = () => (
+  const RealisticHeartAnimation = ({
+    currentArrhythmia,
+    heartAnimation,
+    currentRhythm,
+  }: {
+    currentArrhythmia: {
+      id: string;
+      name: string;
+      displayName: string;
+      heartRate: number;
+      color: string;
+      severity: "normal" | "warning" | "danger";
+      description: string;
+    };
+    heartAnimation: boolean;
+    currentRhythm: string;
+  }) => (
     <div className="relative w-64 h-64 mx-auto">
       <svg viewBox="0 0 240 240" className="w-full h-full">
         {/* Heart outline - more realistic shape */}
@@ -410,24 +597,46 @@ const ObatTerapiSection = () => {
         {/* Right Atrium */}
         <motion.path
           d="M145,60 C160,55 175,65 175,80 C175,95 160,105 145,100 C140,85 140,70 145,60 Z"
-          fill="rgba(59, 130, 246, 0.4)"
+          fill={
+            ["atrial_fib", "atrial_flutter", "ist", "torsades"].includes(
+              currentArrhythmia.id
+            )
+              ? "rgba(239, 68, 68, 0.6)"
+              : "rgba(59, 130, 246, 0.4)"
+          }
           stroke="#3b82f6"
           strokeWidth="2"
           animate={{
-            fill:
-              currentArrhythmia.severity === "danger"
-                ? "rgba(239, 68, 68, 0.6)"
-                : "rgba(59, 130, 246, 0.4)",
-            scale: heartAnimation ? [1, 1.1, 1] : 1,
+            scale: heartAnimation
+              ? [
+                  1,
+                  currentArrhythmia.id === "tachycardia" ||
+                  currentArrhythmia.id === "ist" ||
+                  currentArrhythmia.id === "atrial_flutter"
+                    ? 1.15
+                    : currentArrhythmia.id === "bradycardia"
+                    ? 0.9
+                    : 1.1,
+                  1,
+                ]
+              : 1,
+            opacity: currentArrhythmia.id === "asystole" ? 0.2 : 1,
           }}
           transition={{
             duration:
-              currentRhythm === "tachycardia"
+              currentRhythm === "tachycardia" ||
+              currentRhythm === "ist" ||
+              currentRhythm === "atrial_flutter"
                 ? 0.3
                 : currentRhythm === "bradycardia"
                 ? 2
+                : currentRhythm === "torsades"
+                ? 0.4
+                : currentRhythm === "atrial_fib"
+                ? 0.5 + (Math.random() - 0.5) * 0.2 // Irregular for A-Fib
                 : 0.8,
-            repeat: heartAnimation ? Infinity : 0,
+            repeat:
+              heartAnimation && currentRhythm !== "asystole" ? Infinity : 0,
             delay: 0.1,
           }}
         />
@@ -435,24 +644,46 @@ const ObatTerapiSection = () => {
         {/* Left Atrium */}
         <motion.path
           d="M95,60 C80,55 65,65 65,80 C65,95 80,105 95,100 C100,85 100,70 95,60 Z"
-          fill="rgba(59, 130, 246, 0.4)"
+          fill={
+            ["atrial_fib", "atrial_flutter", "ist", "torsades"].includes(
+              currentArrhythmia.id
+            )
+              ? "rgba(239, 68, 68, 0.6)"
+              : "rgba(59, 130, 246, 0.4)"
+          }
           stroke="#3b82f6"
           strokeWidth="2"
           animate={{
-            fill:
-              currentArrhythmia.severity === "danger"
-                ? "rgba(239, 68, 68, 0.6)"
-                : "rgba(59, 130, 246, 0.4)",
-            scale: heartAnimation ? [1, 1.1, 1] : 1,
+            scale: heartAnimation
+              ? [
+                  1,
+                  currentArrhythmia.id === "tachycardia" ||
+                  currentArrhythmia.id === "ist" ||
+                  currentArrhythmia.id === "atrial_flutter"
+                    ? 1.15
+                    : currentArrhythmia.id === "bradycardia"
+                    ? 0.9
+                    : 1.1,
+                  1,
+                ]
+              : 1,
+            opacity: currentArrhythmia.id === "asystole" ? 0.2 : 1,
           }}
           transition={{
             duration:
-              currentRhythm === "tachycardia"
+              currentRhythm === "tachycardia" ||
+              currentRhythm === "ist" ||
+              currentRhythm === "atrial_flutter"
                 ? 0.3
                 : currentRhythm === "bradycardia"
                 ? 2
+                : currentRhythm === "torsades"
+                ? 0.4
+                : currentRhythm === "atrial_fib"
+                ? 0.5 + (Math.random() - 0.5) * 0.2
                 : 0.8,
-            repeat: heartAnimation ? Infinity : 0,
+            repeat:
+              heartAnimation && currentRhythm !== "asystole" ? Infinity : 0,
             delay: 0.1,
           }}
         />
@@ -460,52 +691,132 @@ const ObatTerapiSection = () => {
         {/* Right Ventricle */}
         <motion.path
           d="M145,100 C165,95 185,110 185,140 C185,170 165,185 145,180 C140,150 140,125 145,100 Z"
-          fill="rgba(239, 68, 68, 0.4)"
+          fill={
+            ["vtach", "vfib", "pvc", "torsades"].includes(currentArrhythmia.id)
+              ? "rgba(239, 68, 68, 0.8)"
+              : "rgba(239, 68, 68, 0.4)"
+          }
           stroke="#ef4444"
           strokeWidth="2"
           animate={{
-            fill:
-              currentArrhythmia.id === "vtach" ||
-              currentArrhythmia.id === "vfib"
-                ? "rgba(239, 68, 68, 0.8)"
-                : "rgba(239, 68, 68, 0.4)",
-            scale: heartAnimation ? [1, 1.2, 1] : 1,
+            scale: heartAnimation
+              ? [
+                  1,
+                  currentArrhythmia.id === "tachycardia" ||
+                  currentArrhythmia.id === "vtach" ||
+                  currentArrhythmia.id === "vfib"
+                    ? 1.25 +
+                      (currentRhythm === "vfib"
+                        ? (Math.random() - 0.5) * 0.3
+                        : 0)
+                    : currentArrhythmia.id === "bradycardia"
+                    ? 0.85
+                    : 1.2,
+                  1,
+                ]
+              : 1,
+            opacity:
+              currentRhythm === "vfib"
+                ? [0.8, 1, 0.8]
+                : currentRhythm === "pvc"
+                ? [1, 1.3, 1]
+                : 1,
           }}
           transition={{
             duration:
-              currentRhythm === "tachycardia"
+              currentRhythm === "tachycardia" || currentRhythm === "vtach"
                 ? 0.3
                 : currentRhythm === "bradycardia"
                 ? 2
+                : currentRhythm === "vfib"
+                ? 0.25
+                : currentRhythm === "pvc"
+                ? 0.8
+                : currentRhythm === "torsades"
+                ? 0.4
                 : 0.8,
-            repeat: heartAnimation ? Infinity : 0,
-            delay: 0.2,
+            times: currentRhythm === "pvc" ? [0, 0.2, 0.4] : undefined,
+            repeat:
+              heartAnimation && currentRhythm !== "asystole"
+                ? currentRhythm === "pvc"
+                  ? Infinity
+                  : Infinity
+                : 0,
+            delay: currentRhythm === "pvc" ? Math.random() * 2 : 0.2,
           }}
         />
 
         {/* Left Ventricle */}
         <motion.path
           d="M95,100 C75,95 55,110 55,140 C55,170 75,185 95,180 C100,150 100,125 95,100 Z"
-          fill="rgba(239, 68, 68, 0.4)"
+          fill={
+            ["vtach", "vfib", "pvc", "torsades"].includes(currentArrhythmia.id)
+              ? "rgba(239, 68, 68, 0.8)"
+              : "rgba(239, 68, 68, 0.4)"
+          }
           stroke="#ef4444"
           strokeWidth="2"
           animate={{
-            fill:
-              currentArrhythmia.id === "vtach" ||
-              currentArrhythmia.id === "vfib"
-                ? "rgba(239, 68, 68, 0.8)"
-                : "rgba(239, 68, 68, 0.4)",
-            scale: heartAnimation ? [1, 1.2, 1] : 1,
+            scale: heartAnimation
+              ? [
+                  1,
+                  currentArrhythmia.id === "tachycardia" ||
+                  currentArrhythmia.id === "vtach" ||
+                  currentArrhythmia.id === "vfib"
+                    ? 1.25 +
+                      (currentRhythm === "vfib"
+                        ? (Math.random() - 0.5) * 0.3
+                        : 0)
+                    : currentArrhythmia.id === "bradycardia"
+                    ? 0.85
+                    : 1.2,
+                  1,
+                ]
+              : 1,
+            opacity:
+              currentRhythm === "vfib"
+                ? [0.8, 1, 0.8]
+                : currentRhythm === "pvc"
+                ? [1, 1.3, 1]
+                : 1,
           }}
           transition={{
             duration:
-              currentRhythm === "tachycardia"
+              currentRhythm === "tachycardia" || currentRhythm === "vtach"
                 ? 0.3
                 : currentRhythm === "bradycardia"
                 ? 2
+                : currentRhythm === "vfib"
+                ? 0.25
+                : currentRhythm === "pvc"
+                ? 0.8
+                : currentRhythm === "torsades"
+                ? 0.4
                 : 0.8,
-            repeat: heartAnimation ? Infinity : 0,
-            delay: 0.2,
+            times: currentRhythm === "pvc" ? [0, 0.2, 0.4] : undefined,
+            repeat:
+              heartAnimation && currentRhythm !== "asystole"
+                ? currentRhythm === "pvc"
+                  ? Infinity
+                  : Infinity
+                : 0,
+            delay: currentRhythm === "pvc" ? Math.random() * 2 : 0.2,
+          }}
+        />
+
+        {/* WPW Accessory Pathway */}
+        <motion.path
+          d="M160,70 Q140,90 120,120"
+          fill="none"
+          stroke={currentRhythm === "wpw" ? "#059669" : "transparent"}
+          strokeWidth="2"
+          animate={{
+            stroke: currentRhythm === "wpw" ? "#059669" : "transparent",
+            opacity: currentRhythm === "wpw" ? [0.6, 1, 0.6] : 0,
+          }}
+          transition={{
+            duration: currentRhythm === "wpw" ? 0.6 : 0.8,
+            repeat: heartAnimation && currentRhythm === "wpw" ? Infinity : 0,
           }}
         />
 
@@ -515,11 +826,29 @@ const ObatTerapiSection = () => {
           y1="100"
           x2="120"
           y2="180"
-          stroke="#6b7280"
+          stroke={
+            [
+              "heart_block",
+              "first_degree_av",
+              "mobitz_i",
+              "mobitz_ii",
+            ].includes(currentArrhythmia.id)
+              ? "#dc2626"
+              : "#6b7280"
+          }
           strokeWidth="3"
           animate={{
             stroke:
-              currentArrhythmia.id === "heart_block" ? "#dc2626" : "#6b7280",
+              currentRhythm === "asystole"
+                ? "#4b5563"
+                : [
+                    "heart_block",
+                    "first_degree_av",
+                    "mobitz_i",
+                    "mobitz_ii",
+                  ].includes(currentArrhythmia.id)
+                ? "#dc2626"
+                : "#6b7280",
           }}
         />
 
@@ -528,19 +857,42 @@ const ObatTerapiSection = () => {
           cx="160"
           cy="70"
           r="4"
-          fill="#fbbf24"
+          fill={
+            ["atrial_fib", "atrial_flutter", "ist"].includes(
+              currentArrhythmia.id
+            )
+              ? "#ef4444"
+              : currentRhythm === "asystole"
+              ? "#4b5563"
+              : "#fbbf24"
+          }
           animate={{
-            r: heartAnimation ? [4, 6, 4] : 4,
-            fill: currentArrhythmia.id === "atrial_fib" ? "#ef4444" : "#fbbf24",
+            r: heartAnimation
+              ? [
+                  4,
+                  currentRhythm === "tachycardia" ||
+                  currentRhythm === "ist" ||
+                  currentRhythm === "atrial_flutter"
+                    ? 6
+                    : 5,
+                  4,
+                ]
+              : 4,
+            opacity: currentRhythm === "asystole" ? 0.2 : 1,
           }}
           transition={{
             duration:
-              currentRhythm === "tachycardia"
+              currentRhythm === "tachycardia" || currentRhythm === "ist"
                 ? 0.3
                 : currentRhythm === "bradycardia"
                 ? 2
+                : currentRhythm === "atrial_flutter"
+                ? 0.5
+                : currentRhythm === "asystole"
+                ? 0
                 : 0.8,
-            repeat: heartAnimation ? Infinity : 0,
+            repeat:
+              heartAnimation && currentRhythm !== "asystole" ? Infinity : 0,
           }}
         />
 
@@ -549,11 +901,32 @@ const ObatTerapiSection = () => {
           cx="120"
           cy="100"
           r="3"
-          fill="#f59e0b"
+          fill={
+            [
+              "heart_block",
+              "first_degree_av",
+              "mobitz_i",
+              "mobitz_ii",
+              "junctional",
+            ].includes(currentArrhythmia.id)
+              ? "#dc2626"
+              : currentRhythm === "asystole"
+              ? "#4b5563"
+              : "#f59e0b"
+          }
           animate={{
-            r: heartAnimation ? [3, 5, 3] : 3,
-            fill:
-              currentArrhythmia.id === "heart_block" ? "#dc2626" : "#f59e0b",
+            r: heartAnimation
+              ? [
+                  3,
+                  currentRhythm === "tachycardia" ||
+                  currentRhythm === "junctional" ||
+                  currentRhythm === "first_degree_av"
+                    ? 5
+                    : 4,
+                  3,
+                ]
+              : 3,
+            opacity: currentRhythm === "asystole" ? 0.2 : 1,
           }}
           transition={{
             duration:
@@ -561,8 +934,13 @@ const ObatTerapiSection = () => {
                 ? 0.3
                 : currentRhythm === "bradycardia"
                 ? 2
+                : currentRhythm === "junctional"
+                ? 1.2
+                : currentRhythm === "asystole"
+                ? 0
                 : 0.8,
-            repeat: heartAnimation ? Infinity : 0,
+            repeat:
+              heartAnimation && currentRhythm !== "asystole" ? Infinity : 0,
             delay: 0.1,
           }}
         />
@@ -573,57 +951,119 @@ const ObatTerapiSection = () => {
           y1="105"
           x2="120"
           y2="120"
-          stroke="#f59e0b"
+          stroke={
+            [
+              "heart_block",
+              "first_degree_av",
+              "mobitz_i",
+              "mobitz_ii",
+            ].includes(currentArrhythmia.id)
+              ? "#dc2626"
+              : currentRhythm === "asystole"
+              ? "#4b5563"
+              : "#f59e0b"
+          }
           strokeWidth="3"
-          animate={{
-            stroke:
-              currentArrhythmia.id === "heart_block" ? "#dc2626" : "#f59e0b",
-          }}
         />
 
         {/* Left Bundle Branch */}
         <motion.path
           d="M120,120 L100,140 L80,160"
           fill="none"
-          stroke="#f59e0b"
+          stroke={
+            currentRhythm === "brugada"
+              ? "#f97316"
+              : [
+                  "heart_block",
+                  "first_degree_av",
+                  "mobitz_i",
+                  "mobitz_ii",
+                ].includes(currentArrhythmia.id)
+              ? "#dc2626"
+              : currentRhythm === "asystole"
+              ? "#4b5563"
+              : "#f59e0b"
+          }
           strokeWidth="2"
           animate={{
-            stroke:
-              currentArrhythmia.id === "heart_block" ? "#dc2626" : "#f59e0b",
+            y: currentRhythm === "brugada" ? [140, 130, 140] : 140, // ST elevation for Brugada
           }}
+          transition={{ duration: 1, repeat: Infinity }}
         />
 
         {/* Right Bundle Branch */}
         <motion.path
           d="M120,120 L140,140 L160,160"
           fill="none"
-          stroke="#f59e0b"
+          stroke={
+            currentRhythm === "brugada"
+              ? "#f97316"
+              : [
+                  "heart_block",
+                  "first_degree_av",
+                  "mobitz_i",
+                  "mobitz_ii",
+                ].includes(currentArrhythmia.id)
+              ? "#dc2626"
+              : currentRhythm === "asystole"
+              ? "#4b5563"
+              : "#f59e0b"
+          }
           strokeWidth="2"
           animate={{
-            stroke:
-              currentArrhythmia.id === "heart_block" ? "#dc2626" : "#f59e0b",
+            y: currentRhythm === "brugada" ? [140, 130, 140] : 140,
           }}
+          transition={{ duration: 1, repeat: Infinity }}
         />
 
         {/* Electrical impulse animation */}
         <AnimatePresence>
-          {heartAnimation && (
+          {heartAnimation && currentRhythm !== "asystole" && (
             <motion.circle
               cx="160"
               cy="70"
               r="3"
-              fill="#fbbf24"
+              fill={
+                ["atrial_fib", "atrial_flutter", "ist"].includes(
+                  currentArrhythmia.id
+                )
+                  ? "#ef4444"
+                  : currentRhythm === "torsades"
+                  ? "#c026d3"
+                  : "#fbbf24"
+              }
               initial={{ scale: 0, opacity: 1 }}
               animate={{
                 scale: [0, 2, 0],
                 opacity: [1, 0.5, 0],
+                cx:
+                  currentRhythm === "wpw"
+                    ? [160, 120, 80]
+                    : currentRhythm === "torsades"
+                    ? [120, 130, 120, 110]
+                    : [160, 160, 160],
+                cy:
+                  currentRhythm === "wpw"
+                    ? [70, 100, 160]
+                    : currentRhythm === "torsades"
+                    ? [140, 150, 140, 130]
+                    : [70, 70, 70],
+                rotate: currentRhythm === "torsades" ? 360 : 0,
               }}
               transition={{
                 duration:
-                  currentRhythm === "tachycardia"
+                  currentRhythm === "tachycardia" || currentRhythm === "vtach"
                     ? 0.3
                     : currentRhythm === "bradycardia"
                     ? 2
+                    : currentRhythm === "atrial_flutter"
+                    ? 0.5
+                    : currentRhythm === "torsades"
+                    ? 0.4
+                    : currentRhythm === "wpw"
+                    ? 0.6
+                    : currentRhythm === "atrial_fib"
+                    ? 0.5 + (Math.random() - 0.5) * 0.2
                     : 0.8,
                 repeat: Infinity,
                 ease: "easeOut",
@@ -644,12 +1084,17 @@ const ObatTerapiSection = () => {
           }}
           transition={{
             duration:
-              currentRhythm === "tachycardia"
+              currentRhythm === "tachycardia" || currentRhythm === "vtach"
                 ? 0.3
                 : currentRhythm === "bradycardia"
                 ? 2
+                : currentRhythm === "atrial_flutter"
+                ? 0.5
+                : currentRhythm === "torsades"
+                ? 0.4
                 : 0.8,
-            repeat: heartAnimation ? Infinity : 0,
+            repeat:
+              heartAnimation && currentRhythm !== "asystole" ? Infinity : 0,
           }}
         />
 
@@ -716,16 +1161,25 @@ const ObatTerapiSection = () => {
         style={{ backgroundColor: currentArrhythmia.color }}
         animate={{
           backgroundColor: currentArrhythmia.color,
-          scale: heartAnimation ? [1, 1.05, 1] : 1,
+          scale:
+            heartAnimation && currentRhythm !== "asystole"
+              ? [1, 1.05, 1]
+              : currentRhythm === "asystole"
+              ? 0.5
+              : 1,
         }}
         transition={{
           duration:
-            currentRhythm === "tachycardia"
+            currentRhythm === "tachycardia" || currentRhythm === "vtach"
               ? 0.3
               : currentRhythm === "bradycardia"
               ? 2
+              : currentRhythm === "atrial_flutter"
+              ? 0.5
+              : currentRhythm === "torsades"
+              ? 0.4
               : 0.8,
-          repeat: heartAnimation ? Infinity : 0,
+          repeat: heartAnimation && currentRhythm !== "asystole" ? Infinity : 0,
         }}
       >
         <div className="flex items-center space-x-1">
@@ -869,7 +1323,11 @@ const ObatTerapiSection = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 p-6">
-                <RealisticHeartAnimation />
+                <RealisticHeartAnimation
+                  currentArrhythmia={currentArrhythmia}
+                  heartAnimation={heartAnimation}
+                  currentRhythm={currentRhythm}
+                />
 
                 <div className="grid grid-cols-3 gap-2">
                   {arrhythmiaTypes.map((arrhythmia) => (
