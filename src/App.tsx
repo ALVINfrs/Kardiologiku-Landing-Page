@@ -8,6 +8,7 @@ import TestimoniSection from "./components/landing/TestimoniSection";
 import Faq from "./components/landing/Faq";
 import KontakFooterSection from "./components/landing/KontakFooterSection";
 import AritmiaComandCenter from "./components/landing/AritmiaCommandCenter";
+import WebAppShowcaseSection from "./components/landing/WebAppShowcaseSection";
 const KardiologikuLandingPage = () => {
   return (
     <div className="min-h-screen bg-white">
@@ -19,6 +20,7 @@ const KardiologikuLandingPage = () => {
         <DokterKamiSection />
         <ObatTerapiSection />
         <FiturSection />
+        <WebAppShowcaseSection />
         <TestimoniSection />
         <Faq />
         <KontakFooterSection />
