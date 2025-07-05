@@ -1,12 +1,111 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 
-// Struktur baru untuk link navigasi agar lebih rapi (prinsip DRY)
+// Impor gambar logo Anda dari folder assets
+import logoKardiologiku from "@/assets/logo.png";
+
+// --- Logo Kardiologiku (FIXED & UPGRADED with EKG Animation) ---
+const AnimatedLogo = () => {
+  const text = "Kardiologiku";
+
+  // Tipe Variants untuk mengatasi error TypeScript
+  const textContainerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05, delayChildren: 0.2 },
+    },
+  };
+
+  const letterVariants: Variants = {
+    hidden: { y: 20, opacity: 0, rotateX: -90, filter: "blur(5px)" },
+    visible: {
+      y: 0,
+      opacity: 1,
+      rotateX: 0,
+      filter: "blur(0px)",
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 200,
+      },
+    },
+  };
+
+  const imageVariants: Variants = {
+    hidden: { scale: 0, opacity: 0, rotate: -30 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      rotate: 0,
+      transition: { type: "spring", damping: 15, stiffness: 200 },
+    },
+    hover: { scale: 1.15, rotate: -8 },
+  };
+
+  return (
+    <motion.a
+      href="#beranda"
+      className="flex items-center gap-3 cursor-pointer"
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+    >
+      <motion.img
+        src={logoKardiologiku}
+        alt="Kardiologiku Logo"
+        className="h-10 w-10"
+        variants={imageVariants}
+      />
+      <div style={{ perspective: "500px" }}>
+        <motion.div
+          className="flex items-center overflow-hidden"
+          variants={textContainerVariants}
+        >
+          {text.split("").map((letter, index) => (
+            <motion.span
+              key={index}
+              variants={letterVariants}
+              className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-rose-500 to-pink-400"
+            >
+              {letter}
+            </motion.span>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* === ANIMASI IRAMA EKG DIKEMBALIKAN DI SINI === */}
+      <div className="w-12 h-8 overflow-hidden hidden sm:block">
+        <svg width="100%" height="100%" viewBox="0 0 50 24">
+          <motion.path
+            d="M0 12h5l3-8 4 14 5-10 4 6h19"
+            fill="none"
+            stroke="currentColor"
+            className="text-red-500"
+            strokeWidth="2"
+            strokeLinecap="round"
+            initial={{ pathLength: 1, pathOffset: 1 }}
+            animate={{ pathOffset: 0 }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "linear",
+              delay: 1.5,
+            }}
+          />
+        </svg>
+      </div>
+    </motion.a>
+  );
+};
+
+// 'navLinks' dipindahkan ke luar komponen
 const navLinks = [
   { href: "#beranda", label: "Beranda" },
   { href: "#tentang-aritmia", label: "Tentang Aritmia" },
-  { href: "#care-hub", label: "Care Hub" }, // Link ke Aritmia Command Center
+  { href: "#care-hub", label: "Care Hub" },
   { href: "#dokter-kami", label: "Dokter Kami" },
   { href: "#obat-terapi", label: "Terapi" },
   { href: "#fitur", label: "Fitur" },
@@ -15,12 +114,12 @@ const navLinks = [
   { href: "#kontak", label: "Kontak" },
 ];
 
+// --- Komponen Utama Navbar (dengan perbaikan) ---
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [activeLink, setActiveLink] = useState("#beranda");
 
-  // Efek untuk dark mode
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";
     setTheme(savedTheme);
@@ -31,7 +130,6 @@ const Navbar = () => {
     }
   }, []);
 
-  // Efek untuk 'Active Link Highlighting' saat scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -41,7 +139,7 @@ const Navbar = () => {
           }
         });
       },
-      { rootMargin: "-50% 0px -50% 0px" } // Sorot link saat seksi berada di tengah layar
+      { rootMargin: "-50% 0px -50% 0px" }
     );
 
     navLinks.forEach((link) => {
@@ -51,7 +149,14 @@ const Navbar = () => {
       }
     });
 
-    return () => observer.disconnect();
+    return () => {
+      navLinks.forEach((link) => {
+        const section = document.querySelector(link.href);
+        if (section) {
+          observer.unobserve(section);
+        }
+      });
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -97,12 +202,7 @@ const Navbar = () => {
     <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <a href="#beranda" className="flex items-center space-x-2">
-            <Heart className="h-8 w-8 text-red-600" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
-              Kardiologiku
-            </span>
-          </a>
+          <AnimatedLogo />
 
           <div className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
@@ -151,20 +251,27 @@ const Navbar = () => {
           </div>
         </div>
 
-        {mobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-800 border-t">
-              {navLinks.map((link) => (
-                <MobileNavLink key={link.href} {...link} />
-              ))}
-              <div className="px-3 py-2">
-                <Button className="w-full bg-red-600 hover:bg-red-700">
-                  Konsultasi Sekarang
-                </Button>
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden overflow-hidden"
+            >
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
+                {navLinks.map((link) => (
+                  <MobileNavLink key={link.href} {...link} />
+                ))}
+                <div className="px-3 py-2">
+                  <Button className="w-full bg-red-600 hover:bg-red-700">
+                    Konsultasi Sekarang
+                  </Button>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   );
