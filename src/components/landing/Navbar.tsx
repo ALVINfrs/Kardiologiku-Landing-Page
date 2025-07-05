@@ -3,9 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 
-// Impor gambar logo Anda dari folder assets
-import logoKardiologiku from "@/assets/logo.png";
-
 // --- Logo Kardiologiku (FIXED & UPGRADED with EKG Animation) ---
 const AnimatedLogo = () => {
   const text = "Kardiologiku";
@@ -54,7 +51,7 @@ const AnimatedLogo = () => {
       whileHover="hover"
     >
       <motion.img
-        src={logoKardiologiku}
+        src="/Logo.png"
         alt="Kardiologiku Logo"
         className="h-10 w-10"
         variants={imageVariants}
