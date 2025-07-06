@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react"; // FIX: Mengimpor ReactNode untuk tipe
+import { useState, useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BellRing,
@@ -110,31 +110,74 @@ const MedicineItem = ({
 // Tipe untuk props ReminderCard
 interface ReminderCardProps {
   time: string;
-  icon: ReactNode; // FIX: Menggunakan tipe ReactNode yang sudah diimpor
+  icon: ReactNode;
   bgColor: string;
   schedule: number;
-  currentTime: number;
 }
 
 // Komponen Kartu yang bisa di-flip
-const ReminderCard = ({
-  time,
-  icon,
-  bgColor,
-  schedule,
-  currentTime,
-}: ReminderCardProps) => {
+const ReminderCard = ({ time, icon, bgColor, schedule }: ReminderCardProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const medStorageKey = `kardiologiku_meds_${time}`;
+  const timeStorageKey = `kardiologiku_time_${time}`;
+
+  const [medicines, setMedicines] = useState<Medicine[]>(() => {
+    try {
+      const savedMeds = window.localStorage.getItem(medStorageKey);
+      return savedMeds ? JSON.parse(savedMeds) : [];
+    } catch (error) {
+      console.error(`Gagal memuat obat untuk ${time} dari localStorage`, error);
+      return [];
+    }
+  });
+
+  const [reminderTime, setReminderTime] = useState(() => {
+    try {
+      const savedTime = window.localStorage.getItem(timeStorageKey);
+      return savedTime || `${String(schedule - 1).padStart(2, "0")}:00`;
+    } catch (error) {
+      console.error(
+        `Gagal memuat waktu untuk ${time} dari localStorage`,
+        error
+      );
+      return `${String(schedule - 1).padStart(2, "0")}:00`;
+    }
+  });
+
   const [newMed, setNewMed] = useState({
     name: "",
     dose: "",
     stock: 30,
     type: "Lainnya" as MedicineType,
   });
-  const [reminderTime, setReminderTime] = useState(
-    `${String(schedule - 1).padStart(2, "0")}:00`
-  );
+  const [currentTime, setCurrentTime] = useState(new Date().getHours());
+
+  // Simpan data obat ke LocalStorage
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(medStorageKey, JSON.stringify(medicines));
+    } catch (error) {
+      console.error("Gagal menyimpan obat:", error);
+    }
+  }, [medicines, medStorageKey]);
+
+  // Simpan data jam ke LocalStorage
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(timeStorageKey, reminderTime);
+    } catch (error) {
+      console.error("Gagal menyimpan waktu:", error);
+    }
+  }, [reminderTime, timeStorageKey]);
+
+  // Update waktu saat ini setiap menit
+  useEffect(() => {
+    const interval = setInterval(
+      () => setCurrentTime(new Date().getHours()),
+      60000
+    );
+    return () => clearInterval(interval);
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -161,10 +204,13 @@ const ReminderCard = ({
   const toggleMedicine = (id: number) => {
     setMedicines(
       medicines.map((med) => {
-        if (med.id === id && !med.taken) {
-          return { ...med, taken: true, stock: Math.max(0, med.stock - 1) };
-        } else if (med.id === id && med.taken) {
-          return { ...med, taken: false, stock: med.stock + 1 };
+        if (med.id === id) {
+          const wasTaken = med.taken;
+          return {
+            ...med,
+            taken: !wasTaken,
+            stock: wasTaken ? med.stock + 1 : Math.max(0, med.stock - 1),
+          };
         }
         return med;
       })
@@ -173,9 +219,14 @@ const ReminderCard = ({
 
   const deleteMedicine = (id: number) =>
     setMedicines(medicines.filter((med) => med.id !== id));
-  const remainingMedsCount = medicines.filter((m) => !m.taken).length;
 
-  // FIX: Logika Jadwal Terlewat yang lebih cerdas
+  const progress =
+    medicines.length > 0
+      ? (medicines.filter((m) => m.taken).length / medicines.length) * 100
+      : 0;
+  const remainingMedsCount =
+    medicines.length - medicines.filter((m) => m.taken).length;
+
   const isMissed =
     currentTime > schedule && remainingMedsCount > 0 && medicines.length > 0;
 
@@ -202,32 +253,44 @@ const ReminderCard = ({
         {/* Sisi Depan Kartu */}
         <div
           onClick={() => setIsFlipped(true)}
-          className={`absolute w-full h-full p-6 rounded-2xl flex flex-col justify-center items-center gap-4 cursor-pointer shadow-xl ${bgColor}`}
+          className={`absolute w-full h-full p-6 rounded-2xl flex flex-col justify-between cursor-pointer shadow-xl ${bgColor}`}
           style={{ backfaceVisibility: "hidden" }}
         >
-          {icon}
-          <h3 className="text-4xl font-bold text-gray-800 dark:text-white">
-            {time}
-          </h3>
-          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 font-semibold">
-            <Clock size={18} />
-            <span>Jadwal: {reminderTime}</span>
+          <div className="flex items-start justify-between">
+            <div className="p-2 bg-black/10 dark:bg-white/10 rounded-xl">
+              {icon}
+            </div>
+            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 font-semibold bg-black/10 dark:bg-white/10 px-3 py-2 rounded-full">
+              <Clock size={18} />
+              <span>{reminderTime}</span>
+            </div>
           </div>
-          <p className="font-semibold text-gray-600 dark:text-gray-300">
-            {medicines.length === 0
-              ? "Belum ada jadwal"
-              : remainingMedsCount > 0
-              ? `${remainingMedsCount} obat belum diminum`
-              : "Semua obat sudah diminum!"}
-          </p>
-          <motion.div
-            whileTap={{ scale: 0.9 }}
-            className="mt-2 px-4 py-2 bg-black/10 dark:bg-white/10 rounded-full text-sm text-gray-700 dark:text-gray-200"
-          >
-            Ketuk untuk kelola
-          </motion.div>
+          <div className="text-center">
+            <h3 className="text-4xl font-bold text-gray-800 dark:text-white">
+              {time}
+            </h3>
+            <p className="font-semibold text-gray-600 dark:text-gray-300 mt-2">
+              {medicines.length === 0
+                ? "Belum ada jadwal"
+                : remainingMedsCount > 0
+                ? `${remainingMedsCount} obat belum diminum`
+                : "Semua obat sudah diminum!"}
+            </p>
+          </div>
+          <div>
+            <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-2.5">
+              <motion.div
+                className="bg-green-500 h-2.5 rounded-full"
+                initial={{ width: "0%" }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              />
+            </div>
+            <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">
+              {Math.round(progress)}% Selesai
+            </p>
+          </div>
         </div>
-
         {/* Sisi Belakang Kartu */}
         <div
           className={`absolute w-full h-full p-6 rounded-2xl flex flex-col shadow-xl ${bgColor}`}
@@ -250,7 +313,7 @@ const ReminderCard = ({
               htmlFor={`time-${time}`}
               className="text-sm font-medium text-gray-700 dark:text-gray-200"
             >
-              Jam Minum:
+              Atur Jam Minum:
             </label>
             <input
               type="time"
@@ -266,6 +329,7 @@ const ReminderCard = ({
               <div className="text-center text-gray-600 dark:text-gray-300 h-full flex flex-col justify-center items-center">
                 <Pill size={40} className="mb-4" />
                 <p>Belum ada obat.</p>
+                <p className="text-sm">Silakan tambahkan di bawah.</p>
               </div>
             ) : (
               <AnimatePresence>
@@ -346,15 +410,6 @@ const ReminderCard = ({
 
 // Komponen Utama Section
 const PengingatObatSection = () => {
-  const [currentTime, setCurrentTime] = useState(new Date().getHours());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date().getHours());
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
   const reminderConfig = [
     {
       time: "Pagi",
@@ -396,8 +451,8 @@ const PengingatObatSection = () => {
             Pengingat Cerdas, Hidup Tenang
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Kelola jadwal, dosis, dan stok obat Anda. Sistem akan memberi tahu
-            jika ada jadwal yang terlewat.
+            Kelola jadwal, dosis, dan stok obat Anda. Sistem akan menyimpan data
+            dan mengingatkan jika ada jadwal yang terlewat.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -409,7 +464,7 @@ const PengingatObatSection = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <ReminderCard {...item} currentTime={currentTime} />
+              <ReminderCard {...item} />
             </motion.div>
           ))}
         </div>
