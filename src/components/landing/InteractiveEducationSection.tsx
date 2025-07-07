@@ -1437,7 +1437,7 @@ const InteractiveEducationSection: React.FC = () => {
           </p>
         </motion.div>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-8 sticky top-16 bg-gray-50/80 dark:bg-black/80 backdrop-blur-sm p-4 z-40 rounded-xl shadow-md">
+        <div className="flex flex-col sm:flex-row gap-4 mb-8 sticky top-16 bg-gray-50/80 dark:bg-black/80 backdrop-blur-sm p-4 z-40 rounded-xl shadow-md ">
           <div className="relative flex-grow">
             <Input
               placeholder="Cari artikel, topik, atau tag..."
@@ -1448,12 +1448,12 @@ const InteractiveEducationSection: React.FC = () => {
             <Brain className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
           <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-            <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 h-12">
+            <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-2 h-12 min-w-max">
               {categories.map((cat) => (
                 <TabsTrigger
                   key={cat}
                   value={cat}
-                  className="text-xs sm:text-sm py-2"
+                  className="text-xs sm:text-sm py-2 px-3 whitespace-nowrap overflow-hidden text-ellipsis"
                 >
                   {cat}
                 </TabsTrigger>
@@ -1540,6 +1540,14 @@ const InteractiveEducationSection: React.FC = () => {
                       alt={selectedArticle.title}
                       className="absolute inset-0 w-full h-full object-cover z-0"
                     />
+                    {/* Tombol Close di sudut kanan atas */}
+                    <Button
+                      onClick={() => setSelectedArticle(null)}
+                      className="absolute top-4 right-4 bg-white/80 dark:bg-gray-800/80 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-2 h-10 w-10 z-10"
+                      aria-label="Close"
+                    >
+                      <XCircle className="h-6 w-6 text-gray-800 dark:text-gray-200" />
+                    </Button>
                   </div>
                   <DialogHeader className="p-4 sm:p-6 text-left">
                     <DialogTitle className="text-2xl sm:text-3xl">
