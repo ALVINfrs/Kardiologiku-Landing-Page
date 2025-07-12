@@ -44,11 +44,11 @@ interface TestimonialCardProps {
 
 // Terapkan tipe pada props komponen
 const TestimonialCard = ({ testimonial }: TestimonialCardProps) => (
-  <Card className="w-[350px] md:w-[450px]">
+  <Card className="w-[350px] md:w-[450px] bg-card text-card-foreground border-border transition-colors">
     <CardHeader>
       <div className="flex items-center space-x-4">
         <Avatar className="w-12 h-12">
-          <AvatarFallback className="bg-red-100 text-red-600">
+          <AvatarFallback className="bg-muted text-red-600 dark:bg-muted/40">
             {testimonial.name
               .split(" ")
               // 3. Beri tipe 'string' pada parameter 'n'
@@ -57,7 +57,7 @@ const TestimonialCard = ({ testimonial }: TestimonialCardProps) => (
           </AvatarFallback>
         </Avatar>
         <div>
-          <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
+          <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
           <p className="text-sm text-gray-500">
             {testimonial.age} • {testimonial.condition}
           </p>
@@ -70,20 +70,23 @@ const TestimonialCard = ({ testimonial }: TestimonialCardProps) => (
       </div>
     </CardHeader>
     <CardContent>
-      <p className="text-gray-600 italic">"{testimonial.text}"</p>
+      <p className="italic text-muted-foreground">"{testimonial.text}"</p>
     </CardContent>
   </Card>
 );
 
 const TestimoniSection = () => {
   return (
-    <section id="testimoni" className="py-20 bg-white">
+    <section
+      id="testimoni"
+      className="py-20 bg-background text-foreground transition-colors"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold text-foreground mb-4">
             Testimoni Pasien
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-foreground max-w-3xl mx-auto">
             Dengarkan pengalaman pasien yang telah merasakan manfaat layanan
             Kardiologiku
           </p>
@@ -97,8 +100,8 @@ const TestimoniSection = () => {
               />
             ))}
           </Marquee>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white"></div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white"></div>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
         </div>
       </div>
     </section>

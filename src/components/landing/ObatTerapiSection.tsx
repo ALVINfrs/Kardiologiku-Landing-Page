@@ -1749,7 +1749,7 @@ const ObatTerapiSection = () => {
   return (
     <section
       id="obat-terapi"
-      className="py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50"
+      className="py-20 bg-background text-foreground transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -1775,8 +1775,8 @@ const ObatTerapiSection = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Card className="h-full shadow-xl border-2 border-blue-100">
-              <CardHeader className="text-center bg-gradient-to-r from-red-50 to-pink-50">
+            <Card className="h-full shadow-xl border border-border bg-card text-card-foreground transition-colors">
+              <CardHeader className="text-center bg-muted text-muted-foreground dark:bg-muted/40 transition-colors">
                 <CardTitle className="flex items-center justify-center space-x-2">
                   <Heart className="h-6 w-6 text-red-500" />
                   <span>Anatomi & Konduksi Jantung</span>

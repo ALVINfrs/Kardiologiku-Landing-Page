@@ -599,7 +599,7 @@ const AritmiaCommandCenter = () => {
   return (
     <section
       id="care-hub"
-      className="py-20 sm:py-24 bg-slate-100 dark:bg-black/20"
+      className="py-20 sm:py-24 bg-background text-foreground"
     >
       <AnimatePresence>
         {toast.show && (

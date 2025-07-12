@@ -257,13 +257,16 @@ const FiturSection = () => {
   };
 
   return (
-    <section id="fitur" className="py-20 bg-gray-50">
+    <section
+      id="fitur"
+      className="py-20 bg-background text-foreground transition-colors"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4 sm:text-5xl">
+          <h2 className="text-4xl font-bold text-light-900 mb-4 sm:text-5xl">
             Fitur Unggulan
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-light-600 max-w-3xl mx-auto">
             Platform interaktif untuk edukasi, konsultasi, dan pengelolaan
             kesehatan jantung Anda.
           </p>
@@ -309,12 +312,12 @@ const FiturSection = () => {
                           className={`h-8 w-8 ${colorMap[feature.color].text}`}
                         />
                       </div>
-                      <CardTitle className="text-2xl text-gray-800">
+                      <CardTitle className="text-2xl text-foreground">
                         {feature.title}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow flex flex-col justify-between">
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-foreground mb-4">
                         {feature.description}
                       </p>
                       <div className="h-12 flex items-center justify-center">
