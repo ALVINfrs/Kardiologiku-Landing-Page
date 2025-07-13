@@ -1867,9 +1867,19 @@ const ObatTerapiSection = () => {
                   onValueChange={setActiveTab}
                   className="w-full"
                 >
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="obat">Obat-obatan</TabsTrigger>
-                    <TabsTrigger value="terapi">Prosedur</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-2 bg-muted dark:bg-muted/40 rounded-lg p-1">
+                    <TabsTrigger
+                      value="obat"
+                      className="data-[state=active]:bg-white data-[state=active]:text-black dark:data-[state=active]:bg-slate-200 dark:data-[state=active]:text-slate-900 rounded-md transition-colors"
+                    >
+                      Obat-obatan
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="prosedur"
+                      className="data-[state=active]:bg-white data-[state=active]:text-black dark:data-[state=active]:bg-slate-200 dark:data-[state=active]:text-slate-900 rounded-md transition-colors"
+                    >
+                      Prosedur
+                    </TabsTrigger>
                   </TabsList>
                   <TabsContent value="obat">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -1902,10 +1912,13 @@ const ObatTerapiSection = () => {
                       ))}
                     </div>
                   </TabsContent>
-                  <TabsContent value="terapi">
+                  <TabsContent value="prosedur">
                     <div className="space-y-4 mt-4">
                       {procedures.map((proc) => (
-                        <Card key={proc.id} className="bg-gray-50">
+                        <Card
+                          key={proc.id}
+                          className="bg-card text-card-foreground shadow-md transition-colors border border-border"
+                        >
                           <CardHeader>
                             <CardTitle>{proc.name}</CardTitle>
                             <CardDescription>
