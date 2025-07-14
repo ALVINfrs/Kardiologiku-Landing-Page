@@ -11,6 +11,7 @@ import AritmiaComandCenter from "./components/landing/AritmiaCommandCenter";
 import WebAppShowcaseSection from "./components/landing/WebAppShowcaseSection";
 import PengingatObatSection from "./components/landing/PengingatObatSection";
 import InteractiveEducationSection from "./components/landing/InteractiveEducationSection";
+import FoodJournalSection from "./components/landing/FoodJournalSection";
 
 const KardiologikuLandingPage = () => {
   return (
@@ -21,6 +22,7 @@ const KardiologikuLandingPage = () => {
         <TentangAritmiaSection />
         <InteractiveEducationSection />
         <AritmiaComandCenter />
+        <FoodJournalSection />
         <DokterKamiSection />
         <ObatTerapiSection />
         <FiturSection />
