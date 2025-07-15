@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -841,6 +841,76 @@ const AritmiaCard: React.FC<{
 };
 
 const TentangAritmiaSection = () => {
+  const symptoms = [
+    "Palpitasi hebat (jantung berdebar kencang, tidak beraturan, atau terasa berhenti sejenak)",
+    "Sesak napas saat aktivitas ringan atau saat istirahat",
+    "Nyeri dada seperti ditekan atau tertindih, bisa menjalar ke lengan kiri atau rahang",
+    "Pusing, melayang, atau hampir pingsan secara tiba-tiba (sinkop)",
+    "Kelelahan ekstrem tanpa sebab jelas, terutama setelah bangun tidur",
+    "Detak jantung terlalu cepat (takikardia) atau terlalu lambat (bradikardia)",
+    "Keringat dingin disertai detak jantung tidak normal",
+    "Gangguan tidur karena rasa tidak nyaman di dada atau jantung berdebar saat malam",
+    "Warna kulit pucat atau kebiruan, terutama di bibir dan ujung jari",
+    "Pembengkakan kaki/tungkai akibat fungsi jantung terganggu",
+    "Riwayat keluarga dengan aritmia atau kematian jantung mendadak",
+    "Detak jantung tidak konsisten saat diukur dengan alat atau smartwatch",
+  ];
+
+  const [availableVoices, setAvailableVoices] = useState<
+    SpeechSynthesisVoice[]
+  >([]);
+  const [selectedVoice, setSelectedVoice] = useState<string>("");
+  const [activeSymptom, setActiveSymptom] = useState<string | null>(null);
+  const [progress, setProgress] = useState<number>(0);
+  const progressRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const updateVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const filtered = voices.filter((v) => v.lang.includes("id"));
+      setAvailableVoices(filtered);
+      if (filtered.length) setSelectedVoice(filtered[0].name);
+    };
+    updateVoices();
+    window.speechSynthesis.onvoiceschanged = updateVoices;
+  }, []);
+
+  const handleSpeak = (text: string) => {
+    navigator.clipboard.writeText(text);
+    const synth = window.speechSynthesis;
+    if (synth.speaking) synth.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "id-ID";
+    const voice = availableVoices.find((v) => v.name === selectedVoice);
+    if (voice) utterance.voice = voice;
+
+    setActiveSymptom(text);
+    setProgress(0);
+
+    const duration = text.length * 30;
+    let elapsed = 0;
+    progressRef.current = setInterval(() => {
+      elapsed += 200;
+      setProgress(Math.min((elapsed / duration) * 100, 100));
+    }, 200);
+
+    utterance.onend = () => {
+      clearInterval(progressRef.current!);
+      setActiveSymptom(null);
+      setProgress(100);
+    };
+
+    synth.speak(utterance);
+  };
+
+  const handleStop = () => {
+    window.speechSynthesis.cancel();
+    setActiveSymptom(null);
+    setProgress(0);
+    clearInterval(progressRef.current!);
+  };
+
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAritmia, setSelectedAritmia] = useState<Arrhythmia | null>(
@@ -1090,6 +1160,7 @@ const TentangAritmiaSection = () => {
             )}
           </DialogContent>
         </Dialog>
+
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -1111,25 +1182,22 @@ const TentangAritmiaSection = () => {
               }}
             >
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                Gejala Aritmia yang Harus Diwaspadai
+                Gejala Aritmia yang Perlu Diwaspadai
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Kenali tanda-tanda penting yang bisa mengindikasikan gangguan
-                irama jantung. Deteksi dini sangat penting untuk mencegah
-                komplikasi yang lebih serius.
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Dengarkan dan pahami gejala berikut. Anda juga bisa memilih
+                suara wanita untuk membacakan.
               </p>
 
               <div className="space-y-4">
-                {[
-                  "Palpitasi intens (jantung terasa berdebar keras, tidak beraturan, atau 'kosong')",
-                  "Kesulitan bernapas bahkan saat istirahat",
-                  "Tekanan berat atau rasa seperti 'tertindih' di dada",
-                  "Kepala ringan atau hampir kehilangan kesadaran",
-                  "Kelelahan ekstrem yang datang tiba-tiba tanpa sebab jelas",
-                ].map((symptom, idx) => (
+                {symptoms.map((symptom, idx) => (
                   <motion.div
                     key={idx}
-                    className="group flex items-start space-x-3 p-3 rounded-md hover:bg-red-100/60 dark:hover:bg-red-800/40 transition relative"
+                    className={`group flex flex-col gap-2 sm:flex-row sm:items-center p-3 rounded-md transition ${
+                      activeSymptom === symptom
+                        ? "bg-red-100 dark:bg-red-800/30 border border-red-400"
+                        : "hover:bg-red-100/60 dark:hover:bg-red-800/40"
+                    }`}
                     variants={{
                       hidden: { opacity: 0, y: 20 },
                       visible: {
@@ -1139,37 +1207,43 @@ const TentangAritmiaSection = () => {
                       },
                     }}
                   >
-                    <div className="relative">
-                      <div className="w-2 h-2 bg-red-600 rounded-full mt-2 animate-ping absolute" />
-                      <div className="w-2 h-2 bg-red-600 rounded-full mt-2 relative z-10" />
+                    <div className="flex items-start space-x-3 w-full">
+                      <div className="relative">
+                        <div className="w-2 h-2 bg-red-600 rounded-full mt-2 animate-ping absolute" />
+                        <div className="w-2 h-2 bg-red-600 rounded-full mt-2 relative z-10" />
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300 flex-1">
+                        {symptom}
+                      </p>
                     </div>
-                    <p className="text-gray-700 dark:text-gray-300 flex-1">
-                      {symptom}
-                    </p>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(symptom);
-                        const msg = new SpeechSynthesisUtterance(symptom);
-                        msg.lang = "id-ID";
-                        const voices = window.speechSynthesis.getVoices();
-                        const femaleVoice =
-                          voices.find(
-                            (v) =>
-                              v.lang.includes("id") &&
-                              (v.name.toLowerCase().includes("female") ||
-                                v.name.toLowerCase().includes("google"))
-                          ) || voices[0];
-                        msg.voice = femaleVoice;
-                        window.speechSynthesis.cancel();
-                        window.speechSynthesis.speak(msg);
-                      }}
-                      className="text-sm text-red-500 hover:underline ml-auto"
-                      aria-label={`Salin dan baca: ${symptom}`}
-                    >
-                      🔊 Salin & Baca
-                    </button>
+                    <div className="flex flex-col gap-1 w-full sm:w-auto">
+                      <button
+                        onClick={() => handleSpeak(symptom)}
+                        className="text-sm text-red-600 hover:underline"
+                      >
+                        🔊 Salin & Baca
+                      </button>
+                      {activeSymptom === symptom && (
+                        <div className="w-full h-1 bg-red-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-red-600 transition-all"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </motion.div>
                 ))}
+              </div>
+
+              {/* Stop button */}
+              <div className="mt-6">
+                <Button
+                  onClick={handleStop}
+                  className="bg-gray-500 hover:bg-gray-600 text-white dark:bg-gray-700 dark:hover:bg-gray-600"
+                >
+                  🛑 Hentikan Suara
+                </Button>
               </div>
             </motion.div>
 
@@ -1185,7 +1259,7 @@ const TentangAritmiaSection = () => {
               }}
               className="relative bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl text-center border border-red-200 dark:border-red-800 overflow-hidden"
             >
-              {/* Pulse Animation */}
+              {/* Pulse animasi background */}
               <motion.div
                 animate={{
                   scale: [1, 1.1, 1],
@@ -1194,15 +1268,76 @@ const TentangAritmiaSection = () => {
                 transition={{ repeat: Infinity, duration: 3 }}
                 className="absolute -top-6 -left-6 w-24 h-24 bg-red-400/30 rounded-full z-0 blur"
               />
+
+              {/* Ikon utama */}
               <ShieldAlert className="h-16 w-16 text-red-600 mx-auto mb-4 relative z-10" />
+
               <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 relative z-10">
                 Deteksi Dini: Kunci Menyelamatkan Hidup
               </h4>
-              <p className="text-gray-600 dark:text-gray-400 mb-6 relative z-10">
-                Jangan tunggu sampai terlambat. Konsultasikan keluhan Anda sejak
-                awal untuk mencegah stroke, gagal jantung, atau henti jantung
-                mendadak.
+
+              <p className="text-gray-600 dark:text-gray-400 mb-4 relative z-10 text-sm leading-relaxed">
+                Aritmia sering tidak disadari hingga berakibat fatal. Dapatkan
+                pemeriksaan irama jantung dengan dokter spesialis tepercaya.
               </p>
+
+              {/* ✅ Daftar manfaat dengan ikon */}
+              <ul className="text-left text-gray-700 dark:text-gray-300 text-sm space-y-3 mb-6 relative z-10">
+                <li className="flex items-center gap-2">
+                  <span className="text-red-500">🫀</span> Konsultasi langsung
+                  dengan dokter jantung berpengalaman
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-500">📈</span> Evaluasi EKG dan
+                  deteksi dini irama jantung
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">💊</span> Rekomendasi terapi
+                  dan obat yang sesuai
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-purple-500">🌐</span> Konsultasi online
+                  dan offline sesuai kebutuhan
+                </li>
+              </ul>
+
+              {/* 📊 Statistik edukatif */}
+              <div className="text-left bg-red-100/40 dark:bg-red-800/40 rounded-lg p-4 mb-6 text-sm relative z-10">
+                <p className="font-medium text-gray-800 dark:text-gray-100 mb-2">
+                  📊 Statistik Aritmia Indonesia:
+                </p>
+                <ul className="space-y-1 text-gray-700 dark:text-gray-300">
+                  <li>• 1 dari 4 orang usia 40+ berisiko mengalami aritmia.</li>
+                  <li>
+                    • 70% kasus stroke iskemik terjadi karena fibrilasi atrium
+                    tidak terdeteksi.
+                  </li>
+                  <li>
+                    • Deteksi dini dapat menurunkan risiko komplikasi hingga
+                    60%.
+                  </li>
+                </ul>
+              </div>
+
+              {/* 🧑‍⚕️ Foto Dokter + Testimoni */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 mb-6 relative z-10">
+                <img
+                  src="/images/dr-siti-kardiolog.jpg"
+                  alt="Dr. Siti Nur Aini"
+                  className="w-16 h-16 rounded-full object-cover shadow-md border border-red-400"
+                />
+                <div className="text-left">
+                  <p className="text-sm text-gray-800 dark:text-white font-semibold">
+                    Dr. Siti Nur Aini, SpJP(K)
+                  </p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    “Banyak pasien tidak menyadari aritmia hingga terlambat.
+                    Pemeriksaan awal bisa menyelamatkan hidup Anda.”
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA Button */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -1210,15 +1345,14 @@ const TentangAritmiaSection = () => {
               >
                 <Button
                   size="lg"
-                  className="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 transition-all"
-                  aria-label="Jadwalkan konsultasi medis terkait aritmia"
+                  className="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
                 >
                   📅 Jadwalkan Konsultasi Sekarang
                 </Button>
               </motion.div>
-              <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 relative z-10">
-                Konsultasi bisa dilakukan secara online atau langsung ke klinik
-                jantung terdekat.
+
+              <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 relative z-10">
+                Tersedia setiap hari | Klinik Jantung & Telekonsultasi
               </p>
             </motion.div>
           </div>
