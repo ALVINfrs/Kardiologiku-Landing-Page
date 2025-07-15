@@ -847,6 +847,11 @@ const TentangAritmiaSection = () => {
     null
   );
   const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
 
   const filteredData = useMemo(() => {
     let data = arrhythmiaData;
@@ -1085,48 +1090,139 @@ const TentangAritmiaSection = () => {
             )}
           </DialogContent>
         </Dialog>
-
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-8 mt-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Gejala Umum yang Harus Diwaspadai
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.2 },
+            },
+          }}
+          className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-8 mt-20"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            {/* Gejala */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, x: -40 },
+                visible: { opacity: 1, x: 0, transition: { duration: 0.7 } },
+              }}
+            >
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Gejala Aritmia yang Harus Diwaspadai
               </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Kenali tanda-tanda penting yang bisa mengindikasikan gangguan
+                irama jantung. Deteksi dini sangat penting untuk mencegah
+                komplikasi yang lebih serius.
+              </p>
+
               <div className="space-y-4">
                 {[
-                  "Palpitasi (sensasi jantung berdebar, melompat, atau berhenti sejenak)",
-                  "Sesak napas saat aktivitas ringan atau bahkan istirahat",
-                  "Nyeri atau rasa tidak nyaman di dada seperti ditekan",
-                  "Pusing, kepala terasa ringan, atau sensasi seperti akan pingsan",
-                  "Kelelahan ekstrem yang tidak dapat dijelaskan",
-                ].map((gejala, idx) => (
-                  <div key={idx} className="flex items-start space-x-3">
-                    <div className="w-2 h-2 bg-red-600 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-gray-700 dark:text-gray-300">{gejala}</p>
-                  </div>
+                  "Palpitasi intens (jantung terasa berdebar keras, tidak beraturan, atau 'kosong')",
+                  "Kesulitan bernapas bahkan saat istirahat",
+                  "Tekanan berat atau rasa seperti 'tertindih' di dada",
+                  "Kepala ringan atau hampir kehilangan kesadaran",
+                  "Kelelahan ekstrem yang datang tiba-tiba tanpa sebab jelas",
+                ].map((symptom, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="group flex items-start space-x-3 p-3 rounded-md hover:bg-red-100/60 dark:hover:bg-red-800/40 transition relative"
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.5 },
+                      },
+                    }}
+                  >
+                    <div className="relative">
+                      <div className="w-2 h-2 bg-red-600 rounded-full mt-2 animate-ping absolute" />
+                      <div className="w-2 h-2 bg-red-600 rounded-full mt-2 relative z-10" />
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-300 flex-1">
+                      {symptom}
+                    </p>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(symptom);
+                        const msg = new SpeechSynthesisUtterance(symptom);
+                        msg.lang = "id-ID";
+                        const voices = window.speechSynthesis.getVoices();
+                        const femaleVoice =
+                          voices.find(
+                            (v) =>
+                              v.lang.includes("id") &&
+                              (v.name.toLowerCase().includes("female") ||
+                                v.name.toLowerCase().includes("google"))
+                          ) || voices[0];
+                        msg.voice = femaleVoice;
+                        window.speechSynthesis.cancel();
+                        window.speechSynthesis.speak(msg);
+                      }}
+                      className="text-sm text-red-500 hover:underline ml-auto"
+                      aria-label={`Salin dan baca: ${symptom}`}
+                    >
+                      🔊 Salin & Baca
+                    </button>
+                  </motion.div>
                 ))}
               </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center">
-              <ShieldAlert className="h-16 w-16 text-red-600 mx-auto mb-4" />
-              <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Deteksi Dini Adalah Kunci
+            </motion.div>
+
+            {/* CTA */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, scale: 0.9 },
+                visible: {
+                  opacity: 1,
+                  scale: 1,
+                  transition: { duration: 0.7 },
+                },
+              }}
+              className="relative bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl text-center border border-red-200 dark:border-red-800 overflow-hidden"
+            >
+              {/* Pulse Animation */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{ repeat: Infinity, duration: 3 }}
+                className="absolute -top-6 -left-6 w-24 h-24 bg-red-400/30 rounded-full z-0 blur"
+              />
+              <ShieldAlert className="h-16 w-16 text-red-600 mx-auto mb-4 relative z-10" />
+              <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 relative z-10">
+                Deteksi Dini: Kunci Menyelamatkan Hidup
               </h4>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Penanganan aritmia yang tepat waktu dapat mencegah komplikasi
-                serius seperti stroke dan gagal jantung. Jangan abaikan
-                gejalanya.
+              <p className="text-gray-600 dark:text-gray-400 mb-6 relative z-10">
+                Jangan tunggu sampai terlambat. Konsultasikan keluhan Anda sejak
+                awal untuk mencegah stroke, gagal jantung, atau henti jantung
+                mendadak.
               </p>
-              <Button
-                size="lg"
-                className="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
-                aria-label="Jadwalkan konsultasi medis"
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative z-10"
               >
-                Jadwalkan Konsultasi Sekarang
-              </Button>
-            </div>
+                <Button
+                  size="lg"
+                  className="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 transition-all"
+                  aria-label="Jadwalkan konsultasi medis terkait aritmia"
+                >
+                  📅 Jadwalkan Konsultasi Sekarang
+                </Button>
+              </motion.div>
+              <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 relative z-10">
+                Konsultasi bisa dilakukan secara online atau langsung ke klinik
+                jantung terdekat.
+              </p>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
