@@ -12,6 +12,7 @@ import WebAppShowcaseSection from "./components/landing/WebAppShowcaseSection";
 import PengingatObatSection from "./components/landing/PengingatObatSection";
 import InteractiveEducationSection from "./components/landing/InteractiveEducationSection";
 import FoodJournalSection from "./components/landing/FoodJournalSection";
+import HeartRiskCalculator from "./components/landing/HeartRiskCalculator";
 
 const KardiologikuLandingPage = () => {
   return (
@@ -23,6 +24,7 @@ const KardiologikuLandingPage = () => {
         <InteractiveEducationSection />
         <AritmiaComandCenter />
         <FoodJournalSection />
+        <HeartRiskCalculator />
         <DokterKamiSection />
         <ObatTerapiSection />
         <FiturSection />
