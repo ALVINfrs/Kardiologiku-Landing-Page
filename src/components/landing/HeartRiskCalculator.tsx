@@ -30,8 +30,8 @@ import {
   Activity,
   ShieldCheck,
   Zap,
-  Sun,
   Cloud,
+  Sun,
 } from "lucide-react";
 
 // --- Tipe Data ---
@@ -101,7 +101,7 @@ const AnimatedNumber: FC<{ value: number }> = ({ value }) => {
 
 // --- Komponen Utama Kalkulator ---
 const HeartRiskCalculator: FC = () => {
-  // Inisialisasi state dengan penanganan error dari localStorage
+  // Inisialisasi state
   const [formData, setFormData] = useState<FormData>(() => {
     const saved = localStorage.getItem("formData");
     return saved
@@ -162,11 +162,6 @@ const HeartRiskCalculator: FC = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    const saved = localStorage.getItem("theme");
-    return saved ? (saved as "light" | "dark") : "dark";
-  });
-
   const [riskScores, setRiskScores] = useState({
     heartDisease: 0,
     arrhythmia: 0,
@@ -187,11 +182,10 @@ const HeartRiskCalculator: FC = () => {
         JSON.stringify(simulationToggles)
       );
       localStorage.setItem("healthLog", JSON.stringify(healthLog));
-      localStorage.setItem("theme", theme);
     } catch (e) {
       console.error("Error saving to localStorage:", e);
     }
-  }, [formData, dangerousArrhythmiaData, simulationToggles, healthLog, theme]);
+  }, [formData, dangerousArrhythmiaData, simulationToggles, healthLog]);
 
   const handleFormChange = <T extends keyof FormData>(
     field: T,
@@ -226,10 +220,10 @@ const HeartRiskCalculator: FC = () => {
       arrhythmiaScore: riskScores.arrhythmia,
       geneticSADSScore: riskScores.geneticSADS,
     };
-    setHealthLog((prev) => [...prev, newEntry].slice(-10)); // Keep last 10 entries
+    setHealthLog((prev) => [...prev, newEntry].slice(-10));
   };
 
-  // Define card variants with proper TypeScript typing
+  // Define card variants
   const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
@@ -289,7 +283,7 @@ const HeartRiskCalculator: FC = () => {
 
       // --- Weather-Based Adjustment ---
       if (weatherData.temperature > 35 || weatherData.humidity > 80) {
-        hdScore += 10; // Heat stress or high humidity increases risk
+        hdScore += 10;
         arrhythmiaScore += 5;
       }
 
@@ -414,11 +408,7 @@ const HeartRiskCalculator: FC = () => {
   return (
     <section
       id="kalkulator-risiko"
-      className={`py-24 sm:py-32 ${
-        theme === "dark"
-          ? "bg-gray-900 text-white"
-          : "bg-gray-100 text-gray-900"
-      }`}
+      className="py-24 sm:py-32 bg-background text-foreground transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -428,48 +418,20 @@ const HeartRiskCalculator: FC = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <HeartPulse
-            className={`h-12 w-12 mx-auto ${
-              theme === "dark" ? "text-red-500" : "text-red-700"
-            } mb-4`}
-          />
-          <h2
-            className={`text-4xl sm:text-5xl font-extrabold ${
-              theme === "dark" ? "mb-4" : "mb-4 text-gray-900"
-            }`}
-          >
+          <HeartPulse className="h-12 w-12 mx-auto text-red-600 dark:text-red-400 mb-4" />
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-foreground mb-4">
             Kalkulator Risiko Jantung & Aritmia
           </h2>
-          <p
-            className={`text-xl ${
-              theme === "dark" ? "text-gray-400" : "text-gray-600"
-            } max-w-3xl mx-auto`}
-          >
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Gunakan simulasi interaktif ini untuk memperkirakan risiko Anda dan
             pahami bagaimana perubahan gaya hidup dapat membuat perbedaan besar.
           </p>
           <div className="mt-4 text-xs flex items-center justify-center gap-2">
-            <AlertCircle
-              className={`w-4 h-4 ${
-                theme === "dark" ? "text-yellow-500" : "text-yellow-700"
-              }`}
-            />
-            <span
-              className={
-                theme === "dark" ? "text-yellow-500" : "text-yellow-700"
-              }
-            >
+            <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+            <span className="text-yellow-600 dark:text-yellow-400">
               Disclaimer: Ini adalah simulasi dan bukan pengganti nasihat medis
               profesional.
             </span>
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="theme-toggle">Tema:</Label>
-            <Switch
-              id="theme-toggle"
-              checked={theme === "dark"}
-              onCheckedChange={(c) => setTheme(c ? "dark" : "light")}
-            />
           </div>
         </motion.div>
 
@@ -482,39 +444,19 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-white border-gray-300"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
                 <CardHeader>
-                  <CardTitle
-                    className={`flex items-center gap-2 ${
-                      theme === "dark" ? "text-red-400" : "text-red-600"
-                    }`}
-                  >
+                  <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
                     <HeartPulse className="w-6 h-6" /> Data Diri & Medis
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-4">
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <Label
-                        htmlFor="age"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
-                      >
+                      <Label htmlFor="age" className="text-muted-foreground">
                         Usia
                       </Label>
-                      <span
-                        className={
-                          theme === "dark" ? "text-red-400" : "text-red-600"
-                        }
-                        font-bold
-                      >
+                      <span className="text-red-600 dark:text-red-400 font-bold">
                         {formData.age}
                       </span>
                     </div>
@@ -529,11 +471,7 @@ const HeartRiskCalculator: FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
-                    >
+                    <Label className="text-muted-foreground">
                       Jenis Kelamin
                     </Label>
                     <RadioGroup
@@ -557,18 +495,11 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex justify-between items-center">
                       <Label
                         htmlFor="systolicBP"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Tekanan Darah Sistolik (mmHg)
                       </Label>
-                      <span
-                        className={
-                          theme === "dark" ? "text-red-400" : "text-red-600"
-                        }
-                        font-bold
-                      >
+                      <span className="text-red-600 dark:text-red-400 font-bold">
                         {formData.systolicBP}
                       </span>
                     </div>
@@ -587,18 +518,11 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex justify-between items-center">
                       <Label
                         htmlFor="totalCholesterol"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Kolesterol Total (mg/dL)
                       </Label>
-                      <span
-                        className={
-                          theme === "dark" ? "text-red-400" : "text-red-600"
-                        }
-                        font-bold
-                      >
+                      <span className="text-red-600 dark:text-red-400 font-bold">
                         {formData.totalCholesterol}
                       </span>
                     </div>
@@ -617,18 +541,11 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex justify-between items-center">
                       <Label
                         htmlFor="hdlCholesterol"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Kolesterol HDL (mg/dL)
                       </Label>
-                      <span
-                        className={
-                          theme === "dark" ? "text-red-400" : "text-red-600"
-                        }
-                        font-bold
-                      >
+                      <span className="text-red-600 dark:text-red-400 font-bold">
                         {formData.hdlCholesterol}
                       </span>
                     </div>
@@ -653,30 +570,15 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-white border-gray-300"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
                 <CardHeader>
-                  <CardTitle
-                    className={`flex items-center gap-2 ${
-                      theme === "dark" ? "text-red-400" : "text-red-600"
-                    }`}
-                  >
+                  <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
                     <Activity className="w-6 h-6" /> Gaya Hidup & Riwayat
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-4">
                   <div className="flex items-center justify-between">
-                    <Label
-                      htmlFor="isSmoker"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
-                    >
+                    <Label htmlFor="isSmoker" className="text-muted-foreground">
                       Apakah Anda Merokok?
                     </Label>
                     <Switch
@@ -688,9 +590,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="hasDiabetes"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Apakah Anda Menderita Diabetes?
                     </Label>
@@ -705,9 +605,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="familyHistory"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Ada Riwayat Penyakit Jantung Koroner di Keluarga?
                     </Label>
@@ -720,11 +618,7 @@ const HeartRiskCalculator: FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
-                    >
+                    <Label className="text-muted-foreground">
                       Aktivitas Fisik Mingguan
                     </Label>
                     <RadioGroup
@@ -755,11 +649,7 @@ const HeartRiskCalculator: FC = () => {
                     </RadioGroup>
                   </div>
                   <div className="space-y-2">
-                    <Label
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
-                    >
+                    <Label className="text-muted-foreground">
                       Konsumsi Alkohol
                     </Label>
                     <RadioGroup
@@ -793,19 +683,9 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-white border-gray-300"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
                 <CardHeader>
-                  <CardTitle
-                    className={`flex items-center gap-2 ${
-                      theme === "dark" ? "text-yellow-400" : "text-yellow-600"
-                    }`}
-                  >
+                  <CardTitle className="flex items-center gap-2 text-yellow-600 dark:text-yellow-400">
                     <Zap className="w-6 h-6" /> Kajian Risiko Henti Jantung
                     Mendadak (SADS)
                   </CardTitle>
@@ -818,9 +698,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="familyHistorySCD"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Riwayat henti jantung mendadak (usia lebih 45 thn) di
                       keluarga?
@@ -836,9 +714,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="unexplainedSyncope"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Pernah pingsan mendadak tanpa sebab yang jelas?
                     </Label>
@@ -851,7 +727,7 @@ const HeartRiskCalculator: FC = () => {
                     />
                   </div>
                   {dangerousArrhythmiaData.unexplainedSyncope && (
-                    <div className="space-y-2 pl-4 border-l-2 border-yellow-400">
+                    <div className="space-y-2 pl-4 border-l-2 border-yellow-400 dark:border-yellow-600">
                       <Label>Kapan biasanya pingsan terjadi?</Label>
                       <RadioGroup
                         value={dangerousArrhythmiaData.syncopeTrigger}
@@ -877,9 +753,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="nocturnalGasping"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Pernah terbangun di malam hari karena tersengal-sengal?
                     </Label>
@@ -894,9 +768,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="hasBrugadaPattern"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Pernah didiagnosis dokter memiliki pola EKG Brugada Tipe
                       1?
@@ -912,9 +784,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="hasLQTdiagnosis"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Pernah didiagnosis dokter memiliki Long QT Syndrome
                       (LQTS)?
@@ -930,9 +800,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="drugInducedQT"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Mengonsumsi obat yang dapat memperpanjang interval QT?
                     </Label>
@@ -947,9 +815,7 @@ const HeartRiskCalculator: FC = () => {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="congenitalDeafness"
-                      className={
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      }
+                      className="text-muted-foreground"
                     >
                       Memiliki riwayat tuli (tidak bisa mendengar) sejak lahir?
                     </Label>
@@ -971,19 +837,9 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-white border-gray-300"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
                 <CardHeader>
-                  <CardTitle
-                    className={`flex items-center gap-2 ${
-                      theme === "dark" ? "text-yellow-400" : "text-yellow-600"
-                    }`}
-                  >
+                  <CardTitle className="flex items-center gap-2 text-yellow-600 dark:text-yellow-400">
                     <Cloud className="w-6 h-6" /> Kondisi Cuaca
                   </CardTitle>
                   <CardDescription>
@@ -995,20 +851,11 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex justify-between items-center">
                       <Label
                         htmlFor="temperature"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Suhu (°C)
                       </Label>
-                      <span
-                        className={
-                          theme === "dark"
-                            ? "text-yellow-400"
-                            : "text-yellow-600"
-                        }
-                        font-bold
-                      >
+                      <span className="text-yellow-600 dark:text-yellow-400 font-bold">
                         {weatherData.temperature}
                       </span>
                     </div>
@@ -1027,20 +874,11 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex justify-between items-center">
                       <Label
                         htmlFor="humidity"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Kelembapan (%)
                       </Label>
-                      <span
-                        className={
-                          theme === "dark"
-                            ? "text-yellow-400"
-                            : "text-yellow-600"
-                        }
-                        font-bold
-                      >
+                      <span className="text-yellow-600 dark:text-yellow-400 font-bold">
                         {weatherData.humidity}
                       </span>
                     </div>
@@ -1065,19 +903,9 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-white border-gray-300"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
                 <CardHeader>
-                  <CardTitle
-                    className={`flex items-center gap-2 ${
-                      theme === "dark" ? "text-blue-400" : "text-blue-600"
-                    }`}
-                  >
+                  <CardTitle className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
                     <Sun className="w-6 h-6" /> Log Kesehatan
                   </CardTitle>
                   <CardDescription>
@@ -1087,19 +915,11 @@ const HeartRiskCalculator: FC = () => {
                 <CardContent className="space-y-4 pt-4">
                   <button
                     onClick={addToHealthLog}
-                    className={
-                      theme === "dark"
-                        ? "bg-blue-600 text-white px-4 py-2 rounded"
-                        : "bg-blue-400 text-white px-4 py-2 rounded"
-                    }
+                    className="bg-blue-400 text-white px-4 py-2 rounded dark:bg-blue-600"
                   >
                     Tambah ke Log
                   </button>
-                  <ul
-                    className={
-                      theme === "dark" ? "text-gray-300" : "text-gray-700"
-                    }
-                  >
+                  <ul className="text-muted-foreground">
                     {healthLog.map((entry, index) => (
                       <li key={index} className="py-1">
                         {entry.date}: HD={entry.heartDiseaseScore}%, Arr=
@@ -1120,24 +940,14 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700 text-center"
-                    : "bg-white border-gray-300 text-center"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors text-center">
                 <CardHeader>
                   <CardTitle>Hasil Estimasi Risiko Anda</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 gap-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col items-center gap-2">
-                      <h3
-                        className={`text-md font-semibold ${
-                          theme === "dark" ? "text-red-400" : "text-red-600"
-                        }`}
-                      >
+                      <h3 className="text-md font-semibold text-red-600 dark:text-red-400">
                         Penyakit Jantung
                       </h3>
                       <div style={{ width: 120, height: 120 }}>
@@ -1180,11 +990,7 @@ const HeartRiskCalculator: FC = () => {
                       </p>
                     </div>
                     <div className="flex flex-col items-center gap-2">
-                      <h3
-                        className={`text-md font-semibold ${
-                          theme === "dark" ? "text-red-400" : "text-red-600"
-                        }`}
-                      >
+                      <h3 className="text-md font-semibold text-red-600 dark:text-red-400">
                         Aritmia Umum
                       </h3>
                       <div style={{ width: 120, height: 120 }}>
@@ -1227,12 +1033,8 @@ const HeartRiskCalculator: FC = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex flex-col items-center gap-2 border-t border-gray-700 pt-4">
-                    <h3
-                      className={`text-md font-semibold ${
-                        theme === "dark" ? "text-yellow-400" : "text-yellow-600"
-                      } flex items-center gap-1`}
-                    >
+                  <div className="flex flex-col items-center gap-2 border-t border-border pt-4">
+                    <h3 className="text-md font-semibold text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
                       <Zap size={16} /> Risiko Genetik (SADS)
                     </h3>
                     <div style={{ width: 120, height: 120 }}>
@@ -1284,19 +1086,9 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-white border-gray-300"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
                 <CardHeader>
-                  <CardTitle
-                    className={`flex items-center gap-2 ${
-                      theme === "dark" ? "text-red-400" : "text-red-600"
-                    }`}
-                  >
+                  <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
                     <ShieldCheck className="w-6 h-6" /> Simulasi Perubahan Gaya
                     Hidup
                   </CardTitle>
@@ -1310,9 +1102,7 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex items-center justify-between">
                       <Label
                         htmlFor="sim-smoke"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Simulasikan Berhenti Merokok
                       </Label>
@@ -1327,9 +1117,7 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex items-center justify-between">
                       <Label
                         htmlFor="sim-exercise"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Simulasikan Olahraga Teratur
                       </Label>
@@ -1346,9 +1134,7 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex items-center justify-between">
                       <Label
                         htmlFor="sim-diet"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Simulasikan Diet Sehat
                       </Label>
@@ -1363,9 +1149,7 @@ const HeartRiskCalculator: FC = () => {
                     <div className="flex items-center justify-between">
                       <Label
                         htmlFor="sim-diabetes"
-                        className={
-                          theme === "dark" ? "text-gray-300" : "text-gray-700"
-                        }
+                        className="text-muted-foreground"
                       >
                         Simulasikan Kontrol Gula Darah
                       </Label>
@@ -1388,30 +1172,14 @@ const HeartRiskCalculator: FC = () => {
               initial="hidden"
               animate="visible"
             >
-              <Card
-                className={
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-white border-gray-300"
-                }
-              >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
                 <CardHeader>
-                  <CardTitle
-                    className={
-                      theme === "dark" ? "text-red-400" : "text-red-600"
-                    }
-                  >
+                  <CardTitle className="text-red-600 dark:text-red-400">
                     Rekomendasi Personal
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul
-                    className={
-                      theme === "dark"
-                        ? "space-y-3 list-disc list-inside text-gray-300"
-                        : "space-y-3 list-disc list-inside text-gray-700"
-                    }
-                  >
+                  <ul className="space-y-3 list-disc list-inside text-muted-foreground">
                     <AnimatePresence>
                       {recommendations.map((rec, index) => (
                         <motion.li
