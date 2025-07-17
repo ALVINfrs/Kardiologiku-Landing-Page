@@ -12,6 +12,12 @@ import {
   RadialBar,
   ResponsiveContainer,
   PolarAngleAxis,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
 } from "recharts";
 import {
   Card,
@@ -32,6 +38,7 @@ import {
   Zap,
   Cloud,
   Sun,
+  Brain,
 } from "lucide-react";
 
 // --- Tipe Data ---
@@ -85,6 +92,13 @@ interface HealthLogEntry {
   geneticSADSScore: number;
 }
 
+interface Insight {
+  summary: string;
+  trendAnalysis: string;
+  longTermPrediction: string;
+  topRecommendations: string[];
+}
+
 // --- Komponen Angka yang Dianimasikan ---
 const AnimatedNumber: FC<{ value: number }> = ({ value }) => {
   const spring = useSpring(value, { mass: 0.8, stiffness: 75, damping: 15 });
@@ -101,7 +115,6 @@ const AnimatedNumber: FC<{ value: number }> = ({ value }) => {
 
 // --- Komponen Utama Kalkulator ---
 const HeartRiskCalculator: FC = () => {
-  // Inisialisasi state
   const [formData, setFormData] = useState<FormData>(() => {
     const saved = localStorage.getItem("formData");
     return saved
@@ -167,9 +180,13 @@ const HeartRiskCalculator: FC = () => {
     arrhythmia: 0,
     geneticSADS: 0,
   });
-  const [recommendations, setRecommendations] = useState<string[]>([]);
+  const [insight, setInsight] = useState<Insight>({
+    summary: "",
+    trendAnalysis: "",
+    longTermPrediction: "",
+    topRecommendations: [],
+  });
 
-  // Save to localStorage
   useEffect(() => {
     try {
       localStorage.setItem("formData", JSON.stringify(formData));
@@ -223,7 +240,6 @@ const HeartRiskCalculator: FC = () => {
     setHealthLog((prev) => [...prev, newEntry].slice(-10));
   };
 
-  // Define card variants
   const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
@@ -240,7 +256,6 @@ const HeartRiskCalculator: FC = () => {
       let brugadaScore = 0;
       let lqtsScore = 0;
 
-      // --- Existing Risk Calculation ---
       hdScore += Math.max(0, formData.age - 30) * 0.5;
       arrhythmiaScore += Math.max(0, formData.age - 40) * 0.7;
       if (formData.gender === "male") hdScore += 5;
@@ -281,13 +296,11 @@ const HeartRiskCalculator: FC = () => {
       if (formData.alcohol === "heavy") arrhythmiaScore += 15;
       if (formData.alcohol === "moderate") arrhythmiaScore += 7;
 
-      // --- Weather-Based Adjustment ---
       if (weatherData.temperature > 35 || weatherData.humidity > 80) {
         hdScore += 10;
         arrhythmiaScore += 5;
       }
 
-      // --- Genetic Risk (Brugada & LQTS) ---
       if (dangerousArrhythmiaData.hasBrugadaPattern) brugadaScore += 60;
       if (
         dangerousArrhythmiaData.unexplainedSyncope &&
@@ -326,47 +339,55 @@ const HeartRiskCalculator: FC = () => {
         ),
       });
 
-      const newRecs: string[] = [];
-      if (
-        riskScores.heartDisease > 50 ||
-        riskScores.arrhythmia > 50 ||
-        riskScores.geneticSADS > 40
-      )
-        newRecs.push(
-          "Sangat disarankan untuk konsultasi dengan dokter spesialis jantung untuk evaluasi lebih lanjut."
-        );
-      if (dangerousArrhythmiaData.unexplainedSyncope)
-        newRecs.push(
-          "Pingsan tanpa sebab yang jelas (sinkop) memerlukan evaluasi medis segera untuk menyingkirkan penyebab serius."
-        );
-      if (dangerousArrhythmiaData.familyHistorySCD)
-        newRecs.push(
-          "Riwayat henti jantung mendadak di keluarga adalah faktor risiko kuat. Diskusikan skrining genetik dengan dokter Anda."
-        );
-      if (dangerousArrhythmiaData.hasBrugadaPattern)
-        newRecs.push(
-          "Jika terdiagnosis pola Brugada, hindari pemicu seperti demam tinggi dan konsultasikan semua obat-obatan Anda dengan kardiolog."
-        );
-      if (isEffectivelySmoker)
-        newRecs.push(
-          "Berhenti merokok adalah langkah paling signifikan untuk mengurangi risiko Anda."
-        );
-      if (formData.systolicBP > 130)
-        newRecs.push(
-          "Pantau dan kelola tekanan darah Anda melalui diet rendah garam dan olahraga."
-        );
-      if (weatherData.temperature > 35)
-        newRecs.push(
-          "Hindari aktivitas berat di cuaca panas ekstrem untuk mengurangi risiko."
-        );
+      const generateInsight = () => {
+        const summary = `Berdasarkan data Anda saat ini (usia ${formData.age} tahun, tekanan darah ${formData.systolicBP} mmHg, kolesterol total ${formData.totalCholesterol} mg/dL), risiko penyakit jantung Anda adalah ${riskScores.heartDisease}%, aritmia ${riskScores.arrhythmia}%, dan risiko genetik SADS ${riskScores.geneticSADS}%.`;
+        const trendAnalysis =
+          healthLog.length > 1
+            ? `Tren risiko Anda: Penyakit jantung rata-rata ${Math.round(
+                healthLog.reduce((a, b) => a + b.heartDiseaseScore, 0) /
+                  healthLog.length
+              )}%, aritmia ${Math.round(
+                healthLog.reduce((a, b) => a + b.arrhythmiaScore, 0) /
+                  healthLog.length
+              )}%, SADS ${Math.round(
+                healthLog.reduce((a, b) => a + b.geneticSADSScore, 0) /
+                  healthLog.length
+              )}% dalam ${healthLog.length} hari terakhir.`
+            : "Belum cukup data untuk analisis tren.";
+        const longTermPrediction = `Jika pola gaya hidup tetap, risiko jantung Anda dapat meningkat sebesar ${Math.min(
+          100,
+          riskScores.heartDisease + (formData.age + 5 - 30) * 0.5
+        )}% dalam 5 tahun. Dengan perubahan positif (berhenti merokok, olahraga teratur), risiko ini dapat dikurangi hingga ${Math.max(
+          0,
+          riskScores.heartDisease - 15
+        )}%.`;
+        const topRecommendations = [];
+        if (riskScores.heartDisease > 50)
+          topRecommendations.push(
+            "Prioritaskan konsultasi dokter dan pantau tekanan darah."
+          );
+        if (riskScores.arrhythmia > 50)
+          topRecommendations.push(
+            "Hindari pemicu aritmia seperti stres berat."
+          );
+        if (riskScores.geneticSADS > 40)
+          topRecommendations.push("Segera lakukan skrining genetik.");
+        if (isEffectivelySmoker)
+          topRecommendations.push(
+            "Berhenti merokok untuk penurunan risiko signifikan."
+          );
+        if (topRecommendations.length === 0)
+          topRecommendations.push("Jaga gaya hidup sehat untuk risiko rendah.");
 
-      setRecommendations(
-        newRecs.length > 0
-          ? newRecs
-          : [
-              "Pola hidup dan profil risiko Anda tampak baik! Pertahankan untuk menjaga risiko tetap rendah.",
-            ]
-      );
+        setInsight({
+          summary,
+          trendAnalysis,
+          longTermPrediction,
+          topRecommendations,
+        });
+      };
+
+      generateInsight();
     };
 
     calculateRisk();
@@ -375,6 +396,7 @@ const HeartRiskCalculator: FC = () => {
     simulationToggles,
     dangerousArrhythmiaData,
     weatherData,
+    healthLog,
     riskScores.heartDisease,
     riskScores.arrhythmia,
     riskScores.geneticSADS,
@@ -436,7 +458,6 @@ const HeartRiskCalculator: FC = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-          {/* --- Panel Input --- */}
           <div className="lg:col-span-3 space-y-6">
             <motion.div
               custom={0}
@@ -932,7 +953,6 @@ const HeartRiskCalculator: FC = () => {
             </motion.div>
           </div>
 
-          {/* --- Panel Hasil & Simulasi --- */}
           <div className="lg:col-span-2 space-y-6 sticky top-24">
             <motion.div
               custom={5}
@@ -1181,7 +1201,7 @@ const HeartRiskCalculator: FC = () => {
                 <CardContent>
                   <ul className="space-y-3 list-disc list-inside text-muted-foreground">
                     <AnimatePresence>
-                      {recommendations.map((rec, index) => (
+                      {insight.topRecommendations.map((rec, index) => (
                         <motion.li
                           key={rec}
                           initial={{ opacity: 0, x: -10 }}
@@ -1194,6 +1214,83 @@ const HeartRiskCalculator: FC = () => {
                       ))}
                     </AnimatePresence>
                   </ul>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              custom={8}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Card className="bg-card text-card-foreground border-border transition-colors">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
+                    <Brain className="w-6 h-6" /> AI Insight & Tren
+                  </CardTitle>
+                  <CardDescription>
+                    Analisis mendalam dan visualisasi tren risiko Anda.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">
+                      Ringkasan
+                    </h4>
+                    <p className="text-muted-foreground">{insight.summary}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">
+                      Analisis Tren
+                    </h4>
+                    <div style={{ width: "100%", height: 200 }}>
+                      <ResponsiveContainer>
+                        <LineChart
+                          data={healthLog.map((entry) => ({
+                            date: entry.date,
+                            heartDisease: entry.heartDiseaseScore,
+                            arrhythmia: entry.arrhythmiaScore,
+                            geneticSADS: entry.geneticSADSScore,
+                          }))}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="date" />
+                          <YAxis domain={[0, 100]} />
+                          <Tooltip />
+                          <Line
+                            type="monotone"
+                            dataKey="heartDisease"
+                            stroke="#ef4444"
+                            name="Penyakit Jantung"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="arrhythmia"
+                            stroke="#fb923c"
+                            name="Aritmia"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="geneticSADS"
+                            stroke="#facc15"
+                            name="SADS"
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <p className="text-muted-foreground mt-2">
+                      {insight.trendAnalysis}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">
+                      Prediksi Jangka Panjang
+                    </h4>
+                    <p className="text-muted-foreground">
+                      {insight.longTermPrediction}
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
