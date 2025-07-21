@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Navbar from "@/components/landing/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
 import TentangAritmiaSection from "@/components/landing/TentangAritmiaSection";
@@ -13,8 +14,26 @@ import PengingatObatSection from "./components/landing/PengingatObatSection";
 import InteractiveEducationSection from "./components/landing/InteractiveEducationSection";
 import FoodJournalSection from "./components/landing/FoodJournalSection";
 import HeartRiskCalculator from "./components/landing/HeartRiskCalculator";
+import LoadingScreen from "./components/LoadingScreen";
 
 const KardiologikuLandingPage = () => {
+  const [isLoading, setIsLoading] = useState(true); // <-- TAMBAHKAN STATE LOADING
+
+  useEffect(() => {
+    // Simulasikan waktu loading, misalnya 3.5 detik
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3500);
+
+    // Cleanup timer jika komponen di-unmount
+    return () => clearTimeout(timer);
+  }, []); // <-- [] berarti useEffect hanya berjalan sekali saat komponen dimuat
+
+  // Tampilkan LoadingScreen jika isLoading true
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
