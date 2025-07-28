@@ -8,6 +8,7 @@ const LoadingScreen = () => {
   const [themeReady, setThemeReady] = useState(false);
 
   useEffect(() => {
+    // Logika untuk menerapkan tema yang tersimpan (light/dark)
     const savedTheme = localStorage.getItem("theme") || "light";
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
@@ -17,29 +18,30 @@ const LoadingScreen = () => {
     setThemeReady(true);
   }, []);
 
+  // Mencegah flash of unstyled content
   if (!themeReady) return null;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-rose-100 dark:from-slate-900 dark:to-slate-800 px-4">
       <motion.div
         className="relative flex flex-col items-center justify-center w-full max-w-md"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
       >
-        {/* Complex Heart & EKG Centerpiece */}
+        {/* Centerpiece: Jantung & EKG */}
         <div className="relative w-72 h-72 flex items-center justify-center">
-          {/* Glow ring */}
+          {/* Cincin cahaya (Glow ring) */}
           <motion.div
             className="absolute w-72 h-72 bg-red-200 dark:bg-red-900/50 rounded-full blur-2xl"
             animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 3, repeat: Infinity }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
 
-          {/* Outline ring */}
+          {/* Cincin garis (Outline ring) */}
           <div className="absolute w-80 h-80 border-4 border-white/50 dark:border-slate-500/50 rounded-full" />
 
-          {/* Beating Heart */}
+          {/* Jantung yang berdetak */}
           <motion.div
             animate={{ scale: [1, 1.05, 1] }}
             transition={{
@@ -48,10 +50,10 @@ const LoadingScreen = () => {
               ease: "easeInOut",
             }}
           >
-            <Heart className="h-32 w-32 text-red-500 dark:text-red-600 fill-red-500/30 dark:fill-red-500/20" />
+            <Heart className="h-32 w-32 text-red-500 dark:text-red-600 fill-current" />
           </motion.div>
 
-          {/* EKG Path */}
+          {/* Garis EKG */}
           <svg
             className="absolute w-full h-auto text-red-400 dark:text-red-500"
             viewBox="0 0 200 100"
@@ -62,10 +64,10 @@ const LoadingScreen = () => {
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              initial={{ strokeDasharray: 500, strokeDashoffset: 500 }}
-              animate={{ strokeDashoffset: [500, 0] }}
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
               transition={{
-                duration: 2.5,
+                duration: 2,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -73,82 +75,19 @@ const LoadingScreen = () => {
           </svg>
         </div>
 
-        {/* Text - Fade In Staggered */}
+        {/* --- Teks yang Disederhanakan --- */}
         <motion.div
-          className="mt-10 text-center"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.4,
-              },
-            },
-          }}
+          className="mt-12 text-center"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <motion.p
-            className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            Menganalisis Kondisi Kardiovaskular...
-          </motion.p>
-
-          <motion.p
-            className="text-sm text-gray-600 dark:text-gray-400 mt-3"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            Inisialisasi protokol diagnostik tingkat lanjut. Harap bersabar.
-          </motion.p>
-
-          <motion.p
-            className="text-sm text-gray-500 dark:text-gray-400 mt-4 italic"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-          >
-            Mohon tunggu, kami sedang memuat pengalaman terbaik untuk Anda.
-          </motion.p>
-          <motion.p
-            className="text-base font-medium text-gray-700 dark:text-gray-300 mt-6"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.6 }}
-          >
-            Memuat sistem pemantauan kardiovaskular tingkat lanjut...
-          </motion.p>
-
-          <motion.p
-            className="text-sm text-gray-600 dark:text-gray-400 mt-2"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2, duration: 0.6 }}
-          >
-            Sinkronisasi modul klinis dan analisis irama jantung.
-          </motion.p>
-
-          <motion.p
-            className="text-sm text-gray-500 dark:text-gray-400 mt-2"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.5, duration: 0.6 }}
-          >
-            Menyiapkan antarmuka interaktif dan animasi EKG real-time...
-          </motion.p>
-
-          <motion.p
-            className="text-sm text-gray-500 dark:text-gray-400 mt-4 italic"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 3, duration: 0.6 }}
-          >
-            Terima kasih atas kesabaran Anda. Kami sedang menyiapkan pengalaman
-            terbaik untuk Anda.
-          </motion.p>
+          <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+            Memuat Kardiologiku
+          </p>
+          <p className="text-base text-gray-600 dark:text-gray-400 mt-3">
+            Mohon tunggu sebentar...
+          </p>
         </motion.div>
       </motion.div>
     </div>
