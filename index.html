@@ -2,11 +2,17 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
-    <title>Kardiologiku - Kenali & Atasi Aritmia Jantung Sejak Dini</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Title -->
+    <title>Kardiologiku - Kenali & Atasi Aritmia Jantung Sejak Dini</title>
+
+    <!-- Primary Meta Tags -->
+    <meta
+      name="title"
+      content="Kardiologiku - Kenali & Atasi Aritmia Jantung Sejak Dini"
+    />
     <meta
       name="description"
       content="Platform edukasi dan konsultasi terpercaya untuk memahami aritmia (gangguan irama jantung). Dapatkan informasi lengkap, konsultasi dokter spesialis, dan panduan perawatan."
@@ -17,13 +23,32 @@
     />
     <meta name="author" content="Kardiologiku Team" />
     <meta name="theme-color" content="#dc2626" />
-
     <link rel="canonical" href="https://kardiologiku.vercel.app" />
     <meta
       name="robots"
       content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
     />
 
+    <!-- Icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Kardiologiku" />
+
+    <!-- Preload Important Assets -->
+    <link rel="preload" as="image" href="/logo.png" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kardiologiku" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:url" content="https://kardiologiku.vercel.app" />
     <meta
       property="og:title"
       content="Kardiologiku - Solusi Cerdas untuk Kesehatan Jantung Anda"
@@ -34,15 +59,12 @@
     />
     <meta
       property="og:image"
-      content="https://kardiologiku.vercel.app/logo.png"
+      content="https://kardiologiku.vercel.app/images/og-cover.jpg"
     />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
-    <meta property="og:url" content="https://kardiologiku.vercel.app" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Kardiologiku" />
-    <meta property="og:locale" content="id_ID" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
@@ -54,8 +76,10 @@
     />
     <meta
       name="twitter:image"
-      content="https://kardiologiku.vercel.app/logo.png"
+      content="https://kardiologiku.vercel.app/images/og-cover.jpg"
     />
+
+    <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -77,6 +101,36 @@
             "@type": "EntryPoint",
             "urlTemplate": "https://kardiologiku.vercel.app/search?q={search_term_string}"
           },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Kardiologiku",
+        "url": "https://kardiologiku.vercel.app",
+        "logo": "https://kardiologiku.vercel.app/logo.png",
+        "sameAs": [
+          "https://www.instagram.com/kardiologiku",
+          "https://www.youtube.com/@kardiologiku"
+        ]
+      }
+    </script>
+
+    <!-- Website Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Kardiologiku",
+        "url": "https://kardiologiku.vercel.app",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://kardiologiku.vercel.app/search?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       }
