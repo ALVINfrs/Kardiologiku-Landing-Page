@@ -15,6 +15,7 @@ import InteractiveEducationSection from "./components/landing/InteractiveEducati
 import FoodJournalSection from "./components/landing/FoodJournalSection";
 import HeartRiskCalculator from "./components/landing/HeartRiskCalculator";
 import LoadingScreen from "./components/LoadingScreen";
+import AritmiaMythBuster from "./components/landing/AritmiaMythBuster";
 
 const KardiologikuLandingPage = () => {
   const [isLoading, setIsLoading] = useState(true); // <-- TAMBAHKAN STATE LOADING
@@ -47,6 +48,7 @@ const KardiologikuLandingPage = () => {
         <DokterKamiSection />
         <ObatTerapiSection />
         <FiturSection />
+        <AritmiaMythBuster />
         <PengingatObatSection />
         <WebAppShowcaseSection />
         <TestimoniSection />
