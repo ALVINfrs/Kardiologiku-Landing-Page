@@ -771,7 +771,7 @@ const ArrhythmiaClinicalCommand: React.FC = () => {
   return (
     <section
       id="clinical-command"
-      className="py-24 sm:py-32 bg-gray-900 text-white"
+      className="py-24 sm:py-32 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -806,7 +806,7 @@ const ArrhythmiaClinicalCommand: React.FC = () => {
                   <motion.div key={c.id} whileHover={{ y: -5, scale: 1.03 }}>
                     <Card
                       onClick={() => handleSelectCase(c)}
-                      className="bg-gray-800 border-gray-700 h-full flex flex-col hover:border-red-500 cursor-pointer"
+                      className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 h-full flex flex-col hover:border-red-500 cursor-pointer min-h-0"
                     >
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -848,7 +848,7 @@ const ArrhythmiaClinicalCommand: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <Card className="bg-black border-2 border-gray-700 h-full">
+                  <Card className="bg-white dark:bg-black border-2 border-gray-700 h-full">
                     <CardHeader className="flex flex-row justify-between items-center p-4 border-b border-gray-700">
                       <CardTitle className="text-lg text-green-400 font-mono">
                         LIVE EKG MONITOR
@@ -920,7 +920,7 @@ const ArrhythmiaClinicalCommand: React.FC = () => {
                 </div>
 
                 <div>
-                  <Card className="bg-gray-800 border-gray-700">
+                  <Card className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
                     <CardHeader>
                       <CardTitle>Panel Intervensi</CardTitle>
                       <CardDescription>
@@ -947,7 +947,7 @@ const ArrhythmiaClinicalCommand: React.FC = () => {
               </div>
 
               <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
                   <CardHeader>
                     <CardTitle>Log Tindakan & Status</CardTitle>
                   </CardHeader>
@@ -977,7 +977,7 @@ const ArrhythmiaClinicalCommand: React.FC = () => {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                     >
-                      <Card className="bg-green-900/50 border-green-700 h-full">
+                      <Card className="bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700">
                         <CardHeader>
                           <CardTitle className="text-green-400 flex items-center gap-2">
                             <CheckCircle /> Debrief Klinis
