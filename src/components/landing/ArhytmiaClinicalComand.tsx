@@ -24,6 +24,7 @@ import {
   Stethoscope,
   Zap,
   XCircle,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +41,9 @@ type EKGPattern =
   | "first_degree_block"
   | "third_degree_block"
   | "asystole"
+  | "ist"
   | "pvc";
+
 type InterventionType =
   | "vagal"
   | "adenosine"
@@ -104,6 +107,7 @@ const EKG_PATHS_EXT = {
   third_degree_block:
     "M0 15 l5-3 l5 3 l20 0 l5-3 l5 3 l5-10 l5 20 l5-12 l20 0 l5-3 l5 3",
   pvc: "M0 15 L20 15 L22 10 L26 20 L28 15 L35 15 L40 25 L45 0 L50 20 L55 15 L85 15 L87 10 L91 20 L93 15 L100 15",
+  ist: "M0 15 L12 15 L14 12 L16 18 L18 15 L20 16 L22 15 L34 15 L36 12 L38 18 L40 15 L42 16 L44 15 L56 15 L58 12 L60 18 L62 15 L64 16 L66 15 L78 15 L80 12 L82 18 L84 15 L86 16 L88 15 L100 15", // <-- TAMBAHKAN DI SINI
 };
 
 // --- DATABASE KASUS KLINIS LENGKAP (12 KASUS) ---
@@ -564,6 +568,50 @@ const clinicalCases: CaseStudy[] = [
     ],
     longTermManagement:
       "Prognosis sangat buruk. Fokus utama adalah mencari dan mengatasi penyebab yang mendasari.",
+  },
+  {
+    id: "ist_case",
+    title: "IST pada Pekerja Muda",
+    icon: User,
+    arrhythmiaType: "ist", // <-- Diubah menjadi 'ist'
+    patient: {
+      name: "Bella",
+      age: 28,
+      background:
+        "Analis data yang sering bekerja di bawah tekanan dan kurang minum air.",
+      initialSymptoms:
+        "Jantung sering terasa berdebar cepat tanpa alasan jelas, bahkan saat duduk bekerja, disertai kelelahan.",
+    },
+    initialVitals: { bpm: 115, bp: "110/75", spo2: 99, stable: true },
+    ekgDetails: {
+      rhythm: "Regular Sinus Tachycardia",
+      p_wave: "Normal, sinus, 1 P untuk setiap QRS",
+      pr_interval: "Normal",
+      qrs_complex: "Sempit",
+    },
+    interventions: {
+      beta_blocker: {
+        success: true,
+        outcomeDescription:
+          "Pemberian Bisoprolol dosis rendah secara signifikan menurunkan detak jantung istirahat dan mengurangi keluhan.",
+        resultingVitals: { bpm: 80, bp: "105/70", spo2: 99, stable: true },
+        resultingEKG: "normal",
+      },
+      vagal: {
+        success: false,
+        outcomeDescription:
+          "Manuver vagal tidak efektif karena ini bukan aritmia re-entrant; detak jantung hanya melambat sesaat lalu kembali cepat.",
+        resultingVitals: { bpm: 110, bp: "110/75", spo2: 99, stable: true },
+        resultingEKG: "ist",
+      },
+    },
+    learningPoints: [
+      "IST adalah diagnosis eksklusi, artinya penyebab lain takikardia harus disingkirkan dulu (seperti anemia atau hipertiroid).",
+      "Kondisi ini seringkali jinak namun bisa sangat mengganggu kualitas hidup.",
+      "Fokus penanganan adalah manajemen gejala dan gaya hidup.",
+    ],
+    longTermManagement:
+      "Meningkatkan hidrasi dan asupan elektrolit, program olahraga bertahap (reconditioning), manajemen stres, dan obat-obatan seperti beta-blocker atau ivabradine jika diperlukan.",
   },
 ];
 
