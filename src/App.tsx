@@ -18,6 +18,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import AritmiaMythBuster from "./components/landing/AritmiaMythBuster";
 import ArrhythmiaClinicalCommand from "./components/landing/ArhytmiaClinicalComand";
 import LifestyleImpactSimulator from "./components/landing/LifestyleImpactSimulator";
+import PersonalizedActionPlanner from "./components/landing/PersonalizedActionPlanner";
 
 const KardiologikuLandingPage = () => {
   const [isLoading, setIsLoading] = useState(true); // <-- TAMBAHKAN STATE LOADING
@@ -45,6 +46,7 @@ const KardiologikuLandingPage = () => {
         <TentangAritmiaSection />
         <ArrhythmiaClinicalCommand />
         <LifestyleImpactSimulator />
+        <PersonalizedActionPlanner />
         <InteractiveEducationSection />
         <AritmiaComandCenter />
         <FoodJournalSection />
