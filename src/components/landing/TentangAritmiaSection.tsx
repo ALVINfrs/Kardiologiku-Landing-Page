@@ -25,6 +25,7 @@ import {
   Share2,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import ReactPlayer from "react-player";
@@ -834,6 +835,10 @@ const AritmiaCard: React.FC<{
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             {aritmia.description}
           </p>
+          <div className="mt-3 flex items-center gap-1 text-blue-500 text-sm font-medium">
+            <span>Klik untuk lihat detailnya</span>
+            <ChevronRight className="h-4 w-4" />
+          </div>
         </CardContent>
       </Card>
     </motion.div>
@@ -1051,20 +1056,20 @@ const TentangAritmiaSection = () => {
             ) : (
               selectedAritmia && (
                 <>
-                  <DialogHeader>
-                    <DialogTitle className="text-3xl font-bold mb-4">
+                  <DialogHeader className="flex justify-between items-center">
+                    <DialogTitle className="text-3xl font-bold">
                       {selectedAritmia.title}
                     </DialogTitle>
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() => handleShare(selectedAritmia)}
-                      className="absolute top-4 right-4"
                       aria-label={`Bagikan informasi tentang ${selectedAritmia.title}`}
                     >
                       <Share2 className="h-5 w-5" />
                     </Button>
                   </DialogHeader>
+
                   <div
                     className={cn(
                       "w-full p-4 rounded-lg",
