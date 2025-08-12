@@ -1154,7 +1154,7 @@ const LifestyleImpactSimulator: React.FC = () => {
                         <HelpCircle /> Pelajari Lebih Lanjut
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-4xl">
+                    <DialogContent className="w-full max-w-full sm:max-w-lg p-4 sm:p-6">
                       <DialogHeader>
                         <DialogTitle>Edukasi Kesehatan Jantung</DialogTitle>
                       </DialogHeader>
@@ -1192,16 +1192,19 @@ const LifestyleImpactSimulator: React.FC = () => {
                           </ul>
                         </TabsContent>
                         <TabsContent value="triggers">
-                          <ul className="space-y-2">
-                            {triggers.map((t) => (
-                              <li key={t.id}>
-                                <strong>{t.name}:</strong> {t.description}
-                                <br />
-                                Risiko: {t.riskFactors.join(", ")}
-                              </li>
-                            ))}
-                          </ul>
+                          <div className="max-h-[70vh] overflow-y-auto pr-2">
+                            <ul className="space-y-2">
+                              {triggers.map((t) => (
+                                <li key={t.id}>
+                                  <strong>{t.name}:</strong> {t.description}
+                                  <br />
+                                  Risiko: {t.riskFactors.join(", ")}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </TabsContent>
+
                         <TabsContent value="profiles">
                           <ul className="space-y-2">
                             <li>
