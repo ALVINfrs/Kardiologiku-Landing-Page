@@ -274,7 +274,7 @@ const EKGVisual: React.FC<{ pattern: EKGPattern; bpm: number }> = ({
     bpm > 0 ? (60 / bpm) * (dataLength / 40) * 1000 : 5000;
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-black">
+    <div className="w-full h-full relative overflow-hidden bg-white dark:bg-black">
       <AnimatePresence>
         <motion.div
           key={pattern}
@@ -834,7 +834,7 @@ const LifestyleImpactSimulator: React.FC = () => {
   return (
     <section
       id="lifestyle-simulator"
-      className="py-24 sm:py-32 bg-gray-900 text-white"
+      className="py-24 sm:py-32 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -861,7 +861,7 @@ const LifestyleImpactSimulator: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="lg:col-span-1 space-y-6"
           >
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="text-blue-400" />
@@ -908,7 +908,7 @@ const LifestyleImpactSimulator: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Zap className="text-yellow-400" />
@@ -939,7 +939,7 @@ const LifestyleImpactSimulator: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="text-orange-400" />
@@ -1025,7 +1025,7 @@ const LifestyleImpactSimulator: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="text-purple-400" />
@@ -1058,8 +1058,8 @@ const LifestyleImpactSimulator: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="lg:col-span-2 space-y-6"
           >
-            <Card className="bg-black border-2 border-gray-700">
-              <CardHeader className="flex flex-row justify-between items-center p-4 border-b border-gray-700">
+            <Card className="bg-white dark:bg-black border-2 border-gray-300 dark:border-gray-700">
+              <CardHeader className="flex flex-row justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
                 <CardTitle className="text-lg text-green-400 font-mono">
                   LIVE EKG MONITOR
                 </CardTitle>
@@ -1125,9 +1125,9 @@ const LifestyleImpactSimulator: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-blue-900/30 border-blue-700">
+            <Card className="bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 text-gray-900 dark:text-gray-100">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-blue-300">
+                <CardTitle className="flex items-center gap-2 text-blue-500">
                   <BrainCircuit /> AI Bio-Feedback & Edukasi
                 </CardTitle>
               </CardHeader>
@@ -1139,7 +1139,7 @@ const LifestyleImpactSimulator: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className="text-gray-300 italic"
+                    className="text-gray-500 italic"
                   >
                     {aiInsight}
                   </motion.div>
@@ -1243,7 +1243,7 @@ const LifestyleImpactSimulator: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-purple-300">
                   <TrendingUp /> Riwayat Vital Signs
