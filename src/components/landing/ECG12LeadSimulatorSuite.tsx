@@ -342,7 +342,7 @@ const rhythms: RhythmInfo[] = [
     ],
     erProtocol: {
       stable: [
-        "Sama seperti AFib: Kontrol laju dengan Diltiazem atau Metoprolol.",
+        "Sama seperti AFib: Kontrol laju dengan Diltiazem atau Metoprolol,Loprolol juga sama.",
       ],
       unstable: [
         "Kardioversi listrik tersinkronisasi. Sangat sensitif, seringkali hanya butuh energi rendah (mulai 50J).",
