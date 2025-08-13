@@ -22,6 +22,7 @@ import {
   AlertTriangle,
   CheckCircle,
   XCircle,
+  ChevronRight,
 } from "lucide-react";
 
 interface Medication {
@@ -1861,6 +1862,7 @@ const ObatTerapiSection = () => {
                   Pilih antara obat-obatan atau prosedur medis
                 </CardDescription>
               </CardHeader>
+
               <CardContent>
                 <Tabs
                   value={activeTab}
@@ -1906,6 +1908,10 @@ const ObatTerapiSection = () => {
                               <p className="text-sm text-gray-600">
                                 {med.description}
                               </p>
+                              <div className="mt-3 flex items-center gap-1 text-blue-500 text-sm font-medium">
+                                <span>Klik untuk lihat detailnya</span>
+                                <ChevronRight className="h-4 w-4" />
+                              </div>
                             </CardContent>
                           </Card>
                         </motion.div>
