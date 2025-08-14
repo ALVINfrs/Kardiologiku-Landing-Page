@@ -984,7 +984,7 @@ const PersonalizedActionPlanner: React.FC = () => {
                       <HelpCircle /> Jelajahi Guidelines & Tips
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogContent className="w-full max-w-[95vw] sm:max-w-4xl max-h-[80vh] overflow-y-auto overflow-x-hidden break-words">
                     <DialogHeader>
                       <DialogTitle>
                         Edukasi Manajemen Aritmia (Berdasarkan AHA/Mayo
