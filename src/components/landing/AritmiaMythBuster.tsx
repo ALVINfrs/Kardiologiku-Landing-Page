@@ -359,6 +359,79 @@ const arrhythmiaMyths: MythFactItem[] = [
     evidenceLevel: "A",
     lastUpdated: "Juli 2025",
   },
+  // ...existing code...
+  {
+    id: 13,
+    category: "Gejala & Diagnosis",
+    myth: "Aritmia hanya terjadi pada orang tua, anak muda pasti aman.",
+    theTruth: "Aritmia bisa menyerang segala usia, bahkan atlet muda.",
+    deepDive:
+      "Beberapa jenis aritmia seperti Wolff-Parkinson-White syndrome atau Long QT syndrome justru sering ditemukan pada usia muda dan bisa memicu henti jantung mendadak pada atlet. Skrining EKG pada remaja dengan riwayat pingsan atau keluarga dengan kematian mendadak sangat penting.",
+    dataSnapshot: {
+      value: "5-10%",
+      label: "Kasus aritmia pada usia <30 tahun",
+      icon: <AlertTriangle />,
+    },
+    expertsTake:
+      "Kami sering menemukan aritmia serius pada pasien muda yang aktif secara fisik. Jangan abaikan gejala seperti pingsan atau jantung berdebar tiba-tiba.",
+    actionableTip:
+      "Jika Anda atau anak Anda mengalami pingsan saat aktivitas, segera konsultasikan ke dokter jantung.",
+    colorScheme: "blue",
+    severity: "tinggi",
+    readingTime: 3,
+    tags: ["anak muda", "atlet", "pingsan", "skrining"],
+    relatedMyths: [5, 8],
+    evidenceLevel: "B",
+    lastUpdated: "Agustus 2025",
+  },
+  {
+    id: 14,
+    category: "Pengobatan & Risiko Serius",
+    myth: "Obat pengencer darah pasti menyebabkan pendarahan berat.",
+    theTruth: "Risiko pendarahan bisa dikontrol dengan monitoring yang tepat.",
+    deepDive:
+      "Obat antikoagulan memang meningkatkan risiko pendarahan, namun manfaatnya dalam mencegah stroke pada pasien AFib jauh lebih besar. Dengan pemantauan INR (untuk warfarin) atau pemilihan DOAC yang sesuai, risiko pendarahan berat dapat diminimalkan.",
+    dataSnapshot: {
+      value: "2-3%",
+      label: "Risiko pendarahan mayor/tahun pada terapi antikoagulan",
+      icon: <Stethoscope />,
+    },
+    expertsTake:
+      "Dengan edukasi dan monitoring, sebagian besar pasien dapat menggunakan antikoagulan dengan aman.",
+    actionableTip:
+      "Laporkan segera jika ada tanda pendarahan (mimisan, urin merah, BAB hitam) ke dokter.",
+    colorScheme: "red",
+    severity: "sedang",
+    readingTime: 4,
+    tags: ["antikoagulan", "obat", "pendarahan", "monitoring"],
+    relatedMyths: [7, 3],
+    evidenceLevel: "A",
+    lastUpdated: "Agustus 2025",
+  },
+  {
+    id: 15,
+    category: "Gaya Hidup & Pemicu",
+    myth: "Aritmia tidak berbahaya selama tidak terasa gejala.",
+    theTruth: "Aritmia tanpa gejala tetap bisa menyebabkan komplikasi serius.",
+    deepDive:
+      "Banyak pasien AFib tidak merasakan gejala, namun tetap berisiko tinggi mengalami stroke atau gagal jantung. Deteksi dini dan pengobatan tetap penting meski tanpa keluhan.",
+    dataSnapshot: {
+      value: "30%",
+      label: "AFib tanpa gejala pada populasi lansia",
+      icon: <BarChart />,
+    },
+    expertsTake:
+      "Jangan menunggu gejala muncul untuk memulai pengobatan aritmia.",
+    actionableTip:
+      "Lakukan skrining EKG rutin jika Anda memiliki faktor risiko, meski merasa sehat.",
+    colorScheme: "orange",
+    severity: "tinggi",
+    readingTime: 3,
+    tags: ["tanpa gejala", "komplikasi", "skrining", "AFib"],
+    relatedMyths: [2, 11],
+    evidenceLevel: "A",
+    lastUpdated: "Agustus 2025",
+  },
 ];
 
 // Enhanced Main Component
