@@ -914,13 +914,13 @@ const AritmiaMythBuster: FC = () => {
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
         <AnimatePresence>
           {selectedItem && (
-            <DialogContent className="max-w-4xl p-0 max-h-[90vh]">
+            <DialogContent className="max-w-4xl w-full sm:w-[95vw] p-0 h-[90vh]">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
                 animate={{ opacity: 1, scale: 1, rotateX: 0 }}
                 exit={{ opacity: 0, scale: 0.95, rotateX: 10 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="h-full flex flex-col"
+                className="flex-1 overflow-y-auto px-6 pb-6 space-y-6 custom-scrollbar"
               >
                 {/* Enhanced Header */}
                 <DialogHeader
