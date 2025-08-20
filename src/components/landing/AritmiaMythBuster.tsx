@@ -914,13 +914,17 @@ const AritmiaMythBuster: FC = () => {
       <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
         <AnimatePresence>
           {selectedItem && (
-            <DialogContent className="max-w-4xl w-full sm:w-[95vw] p-0 h-[90vh]">
+            <DialogContent
+              className="max-w-4xl w-full sm:w-[95vw] h-[90vh] 
+             p-0 sm:rounded-2xl rounded-none 
+             flex flex-col safe-area-inset"
+            >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
                 animate={{ opacity: 1, scale: 1, rotateX: 0 }}
                 exit={{ opacity: 0, scale: 0.95, rotateX: 10 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="flex-1 overflow-y-auto px-6 pb-6 space-y-6 custom-scrollbar"
+                className="flex-1 overflow-y-auto px-6 pb-24 sm:pb-8 space-y-6 custom-scrollbar"
               >
                 {/* Enhanced Header */}
                 <DialogHeader
@@ -1183,7 +1187,13 @@ const AritmiaMythBuster: FC = () => {
                 </div>
 
                 {/* Enhanced Footer */}
-                <div className="p-6 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <div
+                  className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-800 
+                  border-t border-gray-200 dark:border-gray-700 
+                  flex flex-col sm:flex-row gap-3 sm:gap-6 
+                  justify-between items-center 
+                  sticky bottom-0"
+                >
                   <div className="flex items-center gap-4">
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center gap-2">
@@ -1196,23 +1206,14 @@ const AritmiaMythBuster: FC = () => {
 
                     {/* Share-like buttons */}
                     <div className="flex gap-2">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium"
-                      >
+                      <Button size="sm" variant="outline">
                         Bagikan
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-xs font-medium"
-                      >
+                      </Button>
+                      <Button size="sm" variant="outline">
                         Print PDF
-                      </motion.button>
+                      </Button>
                     </div>
                   </div>
-
                   <div className="flex gap-3">
                     <Button
                       variant="outline"
@@ -1224,7 +1225,6 @@ const AritmiaMythBuster: FC = () => {
                     </Button>
                     <Button
                       onClick={() => {
-                        // Navigate to next unread myth
                         const unreadMyths = arrhythmiaMyths.filter(
                           (m) => !userProgress.readMyths.has(m.id)
                         );
