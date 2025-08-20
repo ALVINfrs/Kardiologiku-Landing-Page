@@ -6,7 +6,6 @@ import {
   Pill,
   Plus,
   Sunrise,
-  Sunset,
   MoonStar,
   Trash2,
   X,
@@ -17,8 +16,6 @@ import {
   History,
   Settings,
   Bell,
-  Moon,
-  Sun,
   BarChart3,
   Shield,
   Heart,
@@ -34,6 +31,8 @@ import {
   RefreshCw,
   Eye,
   EyeOff,
+  Sun,
+  MoreVertical,
 } from "lucide-react";
 
 // Enhanced types
@@ -87,33 +86,6 @@ interface Statistics {
   missedDoses: number;
   upcomingReminders: number;
 }
-
-// Theme context
-const useTheme = () => {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem("theme") === "dark" ||
-        (!localStorage.getItem("theme") &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      );
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      if (isDark) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }
-  }, [isDark]);
-
-  return { isDark, setIsDark };
-};
 
 // Advanced Medicine Item Component
 const AdvancedMedicineItem = ({
@@ -516,10 +488,10 @@ const EnhancedReminderCard = ({
   const [reminderTime, setReminderTime] = useState(() => {
     try {
       const savedTime = localStorage.getItem(timeStorageKey);
-      return savedTime || `${String(schedule - 1).padStart(2, "0")}:00`;
+      return savedTime || `${String(schedule).padStart(2, "0")}:00`;
     } catch (error) {
       console.error(`Failed to load time for ${time}`, error);
-      return `${String(schedule - 1).padStart(2, "0")}:00`;
+      return `${String(schedule).padStart(2, "0")}:00`;
     }
   });
 
@@ -656,6 +628,7 @@ const EnhancedReminderCard = ({
       prev.map((med) => (med.id === updatedMedicine.id ? updatedMedicine : med))
     );
     setEditingMedicine(null);
+    setShowAddForm(false);
   };
 
   const toggleMedicine = (id: number) => {
@@ -735,7 +708,7 @@ const EnhancedReminderCard = ({
   };
 
   return (
-    <div className="w-full min-h-[600px]" style={{ perspective: "1200px" }}>
+    <div className="w-full h-auto" style={{ perspective: "1200px" }}>
       <AnimatePresence>
         {isMissed && !isFlipped && (
           <motion.div
@@ -752,16 +725,18 @@ const EnhancedReminderCard = ({
       </AnimatePresence>
 
       <motion.div
-        className="relative w-full min-h-[600px]"
+        className="relative w-full min-h-[700px]"
         style={{ transformStyle: "preserve-3d" }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
       >
         {/* Front Side */}
         <motion.div
-          onClick={() => setIsFlipped(true)}
-          className={`absolute w-full min-h-[600px] p-8 rounded-3xl flex flex-col justify-between cursor-pointer shadow-2xl bg-gradient-to-br ${bgColor} backdrop-blur-sm border border-white/20`}
-          style={{ backfaceVisibility: "hidden" }}
+          className={`relative w-full h-auto p-8 rounded-3xl flex flex-col justify-between shadow-2xl bg-gradient-to-br ${bgColor} backdrop-blur-sm border border-white/20`}
+          style={{
+            backfaceVisibility: "hidden",
+            minHeight: "700px",
+          }}
           whileHover={{ scale: 1.02, rotateZ: 1 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -772,29 +747,39 @@ const EnhancedReminderCard = ({
             >
               {icon}
             </motion.div>
-            <div className="flex flex-col items-end gap-2">
-              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-semibold bg-black/20 dark:bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
-                <Clock size={18} />
-                <span>{reminderTime}</span>
-              </div>
-              {medicines.filter((m) => m.reminderEnabled && !m.taken).length >
-                0 && (
-                <motion.div
-                  className="flex items-center gap-1 bg-blue-500/80 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm"
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <Bell size={14} />
-                  <span>
-                    {
-                      medicines.filter((m) => m.reminderEnabled && !m.taken)
-                        .length
-                    }{" "}
-                    pengingat
-                  </span>
-                </motion.div>
-              )}
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-semibold bg-black/20 dark:bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+              <Clock size={18} />
+              <span>{reminderTime}</span>
             </div>
+            {medicines.filter((m) => m.reminderEnabled && !m.taken).length >
+              0 && (
+              <motion.div
+                className="flex items-center gap-1 bg-blue-500/80 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Bell size={14} />
+                <span>
+                  {
+                    medicines.filter((m) => m.reminderEnabled && !m.taken)
+                      .length
+                  }{" "}
+                  pengingat
+                </span>
+              </motion.div>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsFlipped(true);
+              }}
+              className="p-2 bg-black/20 dark:bg-white/20 rounded-full backdrop-blur-sm hover:bg-black/30 dark:hover:bg-white/30"
+              title="Lihat detail"
+            >
+              <MoreVertical className="h-4 w-4 text-white" />
+            </button>
           </div>
 
           <div className="text-center space-y-4">
@@ -846,511 +831,358 @@ const EnhancedReminderCard = ({
                 />
               </div>
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-green-400/30 to-green-600/30 rounded-full"
-                animate={{ opacity: [0.3, 0.6, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="flex justify-between text-xs mt-2 text-gray-600 dark:text-gray-400"
+              >
+                <span>{medicines.filter((m) => m.taken).length} diminum</span>
+                <span>{remainingMedsCount} tersisa</span>
+              </motion.div>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600 dark:text-gray-400">
-                Progress Hari Ini
-              </span>
-              <span className="font-bold text-gray-800 dark:text-gray-200">
-                {Math.round(progress)}% Selesai
-              </span>
-            </div>
+            {medicines.length > 0 && (
+              <div className="flex justify-center gap-4 text-sm">
+                <div className="flex items-center gap-2 bg-black/20 dark:bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+                  <Award className="h-4 w-4 text-yellow-500" />
+                  <span>Streak: {statistics.longestStreak} hari</span>
+                </div>
+                <div className="flex items-center gap-2 bg-black/20 dark:bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+                  <Bell className="h-4 w-4 text-blue-500" />
+                  <span>{statistics.upcomingReminders} pengingat</span>
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
 
-        {/* Back Side - Enhanced Management Interface */}
-        <div
-          className={`absolute w-full min-h-[600px] p-6 rounded-3xl shadow-2xl bg-gradient-to-br ${bgColor} backdrop-blur-sm border border-white/20`}
-          style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+        {/* Back Side */}
+        <motion.div
+          className="absolute inset-0 w-full h-full p-6 rounded-3xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-2xl border border-gray-200/20 flex flex-col"
+          style={{
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            minHeight: "700px",
+          }}
         >
-          {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-black/20 dark:bg-white/20 rounded-xl backdrop-blur-sm">
-                {icon}
-              </div>
-              <div>
-                <h4 className="text-2xl font-bold text-gray-800 dark:text-white">
-                  Kelola Obat {time}
-                </h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {medicines.length} obat terdaftar
-                </p>
-              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFlipped(false);
+                }}
+                className="p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+                Jadwal {time}
+              </h3>
             </div>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              className="p-2 bg-black/20 dark:bg-white/20 rounded-xl backdrop-blur-sm hover:bg-black/30 dark:hover:bg-white/30 transition-colors"
-              onClick={() => setIsFlipped(false)}
-            >
-              <X className="text-gray-700 dark:text-gray-300" size={20} />
-            </motion.button>
+            <input
+              type="time"
+              value={reminderTime}
+              onChange={(e) => setReminderTime(e.target.value)}
+              className="bg-gray-100 dark:bg-gray-800 border-none rounded-lg px-3 py-2 text-gray-800 dark:text-gray-200"
+            />
           </div>
 
-          {/* Statistics Dashboard */}
           <StatsDashboard statistics={statistics} />
 
-          {/* Time and Controls */}
-          <div className="flex items-center justify-between mb-6 p-4 bg-white/60 dark:bg-black/40 rounded-xl backdrop-blur-sm">
-            <div className="flex items-center gap-3">
-              <label
-                htmlFor={`time-${time}`}
-                className="text-sm font-medium text-gray-700 dark:text-gray-200"
-              >
-                Waktu Pengingat:
-              </label>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex-grow relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <input
-                type="time"
-                id={`time-${time}`}
-                value={reminderTime}
-                onChange={(e) => setReminderTime(e.target.value)}
-                className="bg-white/70 dark:bg-black/30 p-2 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none backdrop-blur-sm"
+                type="text"
+                placeholder="Cari obat..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg pl-10 pr-4 py-2 text-sm border-none"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowAddForm(true)}
-                className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all"
-              >
-                <Plus size={16} />
-                Tambah Obat
-              </motion.button>
-            </div>
+            <select
+              value={sortBy}
+              onChange={(e) =>
+                setSortBy(e.target.value as "name" | "priority" | "stock")
+              }
+              className="bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2 text-sm border-none"
+            >
+              <option value="name">Nama</option>
+              <option value="priority">Prioritas</option>
+              <option value="stock">Stok</option>
+            </select>
           </div>
 
-          {/* Search and Filter */}
-          {medicines.length > 0 && (
-            <div className="flex items-center gap-3 mb-4 p-3 bg-white/60 dark:bg-black/40 rounded-xl backdrop-blur-sm">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Cari obat..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-black/30 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
+          <div className="flex-grow overflow-y-auto space-y-4 mb-4 max-h-64">
+            <AnimatePresence>
+              {filteredAndSortedMedicines.map((medicine) => (
+                <AdvancedMedicineItem
+                  key={medicine.id}
+                  medicine={medicine}
+                  onToggle={() => toggleMedicine(medicine.id)}
+                  onDelete={() => deleteMedicine(medicine.id)}
+                  onEdit={(med) => {
+                    setNewMed({
+                      name: med.name,
+                      dose: med.dose,
+                      stock: med.stock,
+                      type: med.type,
+                      priority: med.priority,
+                      frequency: med.frequency,
+                      sideEffects: med.sideEffects,
+                      notes: med.notes,
+                      expiryDate: med.expiryDate,
+                      color: med.color,
+                      reminderEnabled: med.reminderEnabled,
+                    });
+                    setEditingMedicine(med);
+                    setShowAddForm(true);
+                  }}
+                  showDetails={showDetails[medicine.id] || false}
+                  onShowDetails={() =>
+                    setShowDetails((prev) => ({
+                      ...prev,
+                      [medicine.id]: !prev[medicine.id],
+                    }))
+                  }
                 />
-              </div>
-              <select
-                value={sortBy}
-                onChange={(e) =>
-                  setSortBy(e.target.value as "name" | "priority" | "stock")
-                }
-                className="bg-white/70 dark:bg-black/30 p-2 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-              >
-                <option value="name">Urutkan: Nama</option>
-                <option value="priority">Urutkan: Prioritas</option>
-                <option value="stock">Urutkan: Stok</option>
-              </select>
-            </div>
-          )}
-
-          {/* Medicine List */}
-          <div className="flex-1 min-h-[200px]">
-            {showAddForm && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 bg-white/80 dark:bg-black/50 rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-600"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h5 className="font-semibold text-gray-800 dark:text-white">
-                    Tambah Obat Baru
-                  </h5>
-                  <button
-                    onClick={() => setShowAddForm(false)}
-                    className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-                <form onSubmit={handleAddMedicine} className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      name="name"
-                      value={newMed.name}
-                      onChange={handleInputChange}
-                      placeholder="Nama obat..."
-                      className="w-full bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                      required
-                    />
-                    <input
-                      type="text"
-                      name="dose"
-                      value={newMed.dose}
-                      onChange={handleInputChange}
-                      placeholder="Dosis (cth: 50mg)"
-                      className="w-full bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input
-                      type="number"
-                      name="stock"
-                      value={newMed.stock}
-                      onChange={handleInputChange}
-                      placeholder="Stok"
-                      min="1"
-                      className="w-full bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                    />
-                    <select
-                      name="priority"
-                      value={newMed.priority}
-                      onChange={handleInputChange}
-                      className="bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                    >
-                      <option value="High">Prioritas Tinggi</option>
-                      <option value="Medium">Prioritas Sedang</option>
-                      <option value="Low">Prioritas Rendah</option>
-                    </select>
-                    <select
-                      name="frequency"
-                      value={newMed.frequency}
-                      onChange={handleInputChange}
-                      className="bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                    >
-                      <option value="Sekali">Sekali</option>
-                      <option value="2x Sehari">2x Sehari</option>
-                      <option value="3x Sehari">3x Sehari</option>
-                      <option value="Sesuai Kebutuhan">Sesuai Kebutuhan</option>
-                    </select>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <select
-                      name="type"
-                      value={newMed.type}
-                      onChange={handleInputChange}
-                      className="bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                    >
-                      {[
-                        "Beta-Blocker",
-                        "Anticoagulant",
-                        "Antiarrhythmic",
-                        "Vitamin",
-                        "ACE Inhibitor",
-                        "Diuretic",
-                        "Statin",
-                        "Lainnya",
-                      ].map((type) => (
-                        <option key={type} value={type}>
-                          {type}
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      type="date"
-                      name="expiryDate"
-                      value={newMed.expiryDate}
-                      onChange={handleInputChange}
-                      className="bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Efek samping (pisahkan dengan koma)"
-                      value={newMed.sideEffects.join(", ")}
-                      onChange={handleSideEffectsChange}
-                      className="bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                    />
-                    <select
-                      name="color"
-                      value={newMed.color}
-                      onChange={handleInputChange}
-                      className="bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none"
-                    >
-                      <option value="bg-blue-500">Biru</option>
-                      <option value="bg-green-500">Hijau</option>
-                      <option value="bg-purple-500">Ungu</option>
-                      <option value="bg-red-500">Merah</option>
-                      <option value="bg-yellow-500">Kuning</option>
-                      <option value="bg-pink-500">Pink</option>
-                    </select>
-                  </div>
-                  <textarea
-                    name="notes"
-                    value={newMed.notes}
-                    onChange={handleInputChange}
-                    placeholder="Catatan tambahan..."
-                    rows={2}
-                    className="w-full bg-white/70 dark:bg-black/30 p-3 rounded-lg border-2 border-transparent focus:border-red-500 focus:outline-none resize-none"
-                  />
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name="reminderEnabled"
-                      checked={newMed.reminderEnabled}
-                      onChange={handleInputChange}
-                      className="w-4 h-4"
-                    />
-                    <label className="text-sm text-gray-700 dark:text-gray-300">
-                      Aktifkan pengingat
-                    </label>
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="w-full p-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 hover:shadow-lg transition-all"
-                  >
-                    <Plus size={16} />
-                    Tambah Obat
-                  </motion.button>
-                </form>
-              </motion.div>
-            )}
-
-            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-              {filteredAndSortedMedicines.length === 0 ? (
-                <div className="text-center text-gray-600 dark:text-gray-300 py-12">
-                  <div className="mb-4">
-                    <Pill size={48} className="mx-auto opacity-50" />
-                  </div>
-                  <p className="text-lg font-semibold mb-2">
-                    {searchTerm
-                      ? "Tidak ada obat yang cocok"
-                      : "Belum ada obat"}
-                  </p>
-                  <p className="text-sm opacity-75">
-                    {searchTerm
-                      ? "Coba ubah kata kunci pencarian"
-                      : "Silakan tambahkan obat pertama Anda"}
-                  </p>
-                </div>
-              ) : (
-                <AnimatePresence>
-                  {filteredAndSortedMedicines.map((med) => (
-                    <AdvancedMedicineItem
-                      key={med.id}
-                      medicine={med}
-                      onToggle={() => toggleMedicine(med.id)}
-                      onDelete={() => deleteMedicine(med.id)}
-                      onEdit={setEditingMedicine}
-                      showDetails={showDetails[med.id] || false}
-                      onShowDetails={() =>
-                        setShowDetails((prev) => ({
-                          ...prev,
-                          [med.id]: !prev[med.id],
-                        }))
-                      }
-                    />
-                  ))}
-                </AnimatePresence>
-              )}
-            </div>
+              ))}
+            </AnimatePresence>
           </div>
 
-          {/* History Component */}
-          {history.length > 0 && (
-            <div className="mt-6">
-              <HistoryComponent history={history} />
-            </div>
-          )}
-        </div>
+          <HistoryComponent history={history} />
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!showAddForm) {
+                setNewMed({
+                  name: "",
+                  dose: "",
+                  stock: 30,
+                  type: "Lainnya",
+                  priority: "Medium",
+                  frequency: "Sekali",
+                  sideEffects: [],
+                  notes: "",
+                  expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                    .toISOString()
+                    .split("T")[0],
+                  color: "bg-blue-500",
+                  reminderEnabled: true,
+                });
+                setEditingMedicine(null);
+              }
+              setShowAddForm(true); // Always show form, reset is handled
+            }}
+            className="mt-6 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all"
+          >
+            <Plus size={18} />
+            {editingMedicine ? "Edit Obat" : "Tambah Obat Baru"}
+          </button>
+        </motion.div>
       </motion.div>
 
-      {/* Edit Medicine Modal */}
+      {/* --- FIX STARTS HERE: Add/Edit Form as a Modal Overlay --- */}
       <AnimatePresence>
-        {editingMedicine && (
+        {showAddForm && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-            onClick={() => setEditingMedicine(null)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowAddForm(false)} // Close on backdrop click
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+              initial={{ scale: 0.9, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 50 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-gray-100 dark:bg-gray-800 rounded-2xl w-full max-w-2xl shadow-2xl relative"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-                  Edit Obat
-                </h3>
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200">
+                  {editingMedicine ? "Edit Obat" : "Tambah Obat Baru"}
+                </h4>
                 <button
-                  onClick={() => setEditingMedicine(null)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                  onClick={() => setShowAddForm(false)}
+                  className="p-1 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleEditMedicine(editingMedicine);
-                }}
-                className="space-y-4"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Nama Obat
-                    </label>
-                    <input
-                      type="text"
-                      value={editingMedicine.name}
-                      onChange={(e) =>
-                        setEditingMedicine({
-                          ...editingMedicine,
-                          name: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-red-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Dosis
-                    </label>
-                    <input
-                      type="text"
-                      value={editingMedicine.dose}
-                      onChange={(e) =>
-                        setEditingMedicine({
-                          ...editingMedicine,
-                          dose: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-red-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Stok
-                    </label>
-                    <input
-                      type="number"
-                      value={editingMedicine.stock}
-                      onChange={(e) =>
-                        setEditingMedicine({
-                          ...editingMedicine,
-                          stock: Number(e.target.value),
-                        })
-                      }
-                      className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-red-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Prioritas
-                    </label>
-                    <select
-                      value={editingMedicine.priority}
-                      onChange={(e) =>
-                        setEditingMedicine({
-                          ...editingMedicine,
-                          priority: e.target.value as Priority,
-                        })
-                      }
-                      className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-red-500 focus:outline-none"
-                    >
-                      <option value="High">Prioritas Tinggi</option>
-                      <option value="Medium">Prioritas Sedang</option>
-                      <option value="Low">Prioritas Rendah</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Frekuensi
-                    </label>
-                    <select
-                      value={editingMedicine.frequency}
-                      onChange={(e) =>
-                        setEditingMedicine({
-                          ...editingMedicine,
-                          frequency: e.target.value as Frequency,
-                        })
-                      }
-                      className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-red-500 focus:outline-none"
-                    >
-                      <option value="Sekali">Sekali</option>
-                      <option value="2x Sehari">2x Sehari</option>
-                      <option value="3x Sehari">3x Sehari</option>
-                      <option value="Sesuai Kebutuhan">Sesuai Kebutuhan</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Catatan
-                  </label>
-                  <textarea
-                    value={editingMedicine.notes}
-                    onChange={(e) =>
-                      setEditingMedicine({
-                        ...editingMedicine,
-                        notes: e.target.value,
-                      })
-                    }
-                    rows={3}
-                    className="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-red-500 focus:outline-none resize-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
+              {/* Scrollable Form Content */}
+              <div className="p-6 max-h-[70vh] overflow-y-auto">
+                <form
+                  onSubmit={
+                    editingMedicine
+                      ? (e) => {
+                          e.preventDefault();
+                          handleEditMedicine({
+                            ...editingMedicine,
+                            ...newMed,
+                            stock: Number(newMed.stock),
+                          });
+                        }
+                      : handleAddMedicine
+                  }
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                >
                   <input
-                    type="checkbox"
-                    checked={editingMedicine.reminderEnabled}
-                    onChange={(e) =>
-                      setEditingMedicine({
-                        ...editingMedicine,
-                        reminderEnabled: e.target.checked,
-                      })
-                    }
-                    className="w-4 h-4"
+                    name="name"
+                    value={newMed.name}
+                    onChange={handleInputChange}
+                    placeholder="Nama Obat"
+                    required
+                    className="md:col-span-2 bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <label className="text-sm text-gray-700 dark:text-gray-300">
-                    Aktifkan pengingat
-                  </label>
-                </div>
+                  <input
+                    name="dose"
+                    value={newMed.dose}
+                    onChange={handleInputChange}
+                    placeholder="Dosis (misal: 1 tablet)"
+                    required
+                    className="bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <input
+                    name="stock"
+                    type="number"
+                    value={newMed.stock}
+                    onChange={handleInputChange}
+                    placeholder="Stok"
+                    required
+                    className="bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <select
+                    name="type"
+                    value={newMed.type}
+                    onChange={handleInputChange}
+                    className="bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Beta-Blocker">Beta-Blocker</option>
+                    <option value="Anticoagulant">Anticoagulant</option>
+                    <option value="Antiarrhythmic">Antiarrhythmic</option>
+                    <option value="Vitamin">Vitamin</option>
+                    <option value="ACE Inhibitor">ACE Inhibitor</option>
+                    <option value="Diuretic">Diuretic</option>
+                    <option value="Statin">Statin</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                  <select
+                    name="priority"
+                    value={newMed.priority}
+                    onChange={handleInputChange}
+                    className="bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                  <select
+                    name="frequency"
+                    value={newMed.frequency}
+                    onChange={handleInputChange}
+                    className="md:col-span-2 bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Sekali">Sekali</option>
+                    <option value="2x Sehari">2x Sehari</option>
+                    <option value="3x Sehari">3x Sehari</option>
+                    <option value="Sesuai Kebutuhan">Sesuai Kebutuhan</option>
+                  </select>
+                  <div className="relative md:col-span-2">
+                    <label className="text-xs text-gray-500 dark:text-gray-400 absolute top-2 left-4">
+                      Tanggal Kedaluwarsa
+                    </label>
+                    <input
+                      name="expiryDate"
+                      type="date"
+                      value={newMed.expiryDate}
+                      onChange={handleInputChange}
+                      className="w-full pt-6 bg-white dark:bg-gray-700 rounded-lg px-4 pb-2 border-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <input
+                    name="sideEffects"
+                    value={newMed.sideEffects.join(", ")}
+                    onChange={handleSideEffectsChange}
+                    placeholder="Efek samping (pisah dengan koma)"
+                    className="md:col-span-2 bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <textarea
+                    name="notes"
+                    value={newMed.notes}
+                    onChange={handleInputChange}
+                    placeholder="Catatan tambahan"
+                    className="md:col-span-2 bg-white dark:bg-gray-700 rounded-lg px-4 py-2 border-none h-24 focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div className="md:col-span-2 flex items-center gap-2 text-gray-800 dark:text-gray-200">
+                    <input
+                      type="checkbox"
+                      id={`reminderEnabled-${time}`} // Use unique id
+                      name="reminderEnabled"
+                      checked={newMed.reminderEnabled}
+                      onChange={handleInputChange}
+                      className="h-4 w-4 rounded text-blue-600 focus:ring-blue-500"
+                    />
+                    <label htmlFor={`reminderEnabled-${time}`}>
+                      Aktifkan Pengingat
+                    </label>
+                  </div>
 
-                <div className="flex gap-3 pt-4">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white p-3 rounded-lg font-semibold hover:shadow-lg transition-all"
-                  >
-                    Simpan Perubahan
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button"
-                    onClick={() => setEditingMedicine(null)}
-                    className="px-6 bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg font-semibold transition-all"
-                  >
-                    Batal
-                  </motion.button>
-                </div>
-              </form>
+                  <div className="md:col-span-2 flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddForm(false)}
+                      className="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                    >
+                      {editingMedicine ? "Update Obat" : "Simpan Obat"}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+      {/* --- FIX ENDS HERE --- */}
     </div>
   );
 };
 
 // Main Component
 const AdvancedMedicineReminderSystem = () => {
-  const { isDark, setIsDark } = useTheme();
+  const reminderConfig = useMemo(
+    () => [
+      {
+        time: "Pagi",
+        icon: <Sunrise className="h-6 w-6 text-white" />,
+        bgColor: "from-amber-400 to-orange-500",
+        schedule: 8,
+      },
+      {
+        time: "Siang",
+        icon: <Sun className="h-6 w-6 text-white" />,
+        bgColor: "from-blue-400 to-indigo-500",
+        schedule: 13,
+      },
+      {
+        time: "Malam",
+        icon: <MoonStar className="h-6 w-6 text-white" />,
+        bgColor: "from-purple-600 to-indigo-900",
+        schedule: 20,
+      },
+    ],
+    []
+  );
+
   const [globalStats, setGlobalStats] = useState<Statistics>({
     totalMedicines: 0,
     takenToday: 0,
@@ -1360,34 +1192,6 @@ const AdvancedMedicineReminderSystem = () => {
     upcomingReminders: 0,
   });
 
-  const reminderConfig = useMemo(
-    () => [
-      {
-        time: "Pagi",
-        icon: <Sunrise className="h-8 w-8 text-yellow-500" />,
-        bgColor:
-          "from-yellow-100 to-amber-200 dark:from-yellow-900/50 dark:to-amber-800/50",
-        schedule: 11,
-      },
-      {
-        time: "Siang",
-        icon: <Sunset className="h-8 w-8 text-orange-500" />,
-        bgColor:
-          "from-orange-100 to-red-200 dark:from-orange-900/50 dark:to-red-800/50",
-        schedule: 17,
-      },
-      {
-        time: "Malam",
-        icon: <MoonStar className="h-8 w-8 text-indigo-500" />,
-        bgColor:
-          "from-indigo-100 to-purple-200 dark:from-indigo-900/50 dark:to-purple-800/50",
-        schedule: 23,
-      },
-    ],
-    [] // Empty dependency array karena config statis
-  );
-
-  // Update global stats
   useEffect(() => {
     const updateGlobalStats = () => {
       let totalMedicines = 0;
@@ -1440,14 +1244,10 @@ const AdvancedMedicineReminderSystem = () => {
   }, [reminderConfig]);
 
   return (
-    <div
-      className={`min-h-screen transition-colors duration-300 ${
-        isDark ? "dark" : ""
-      }`}
-    >
-      <section className="py-16 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen transition-colors duration-300">
+      <section className="py-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header with Theme Toggle */}
+          {/* Header without Theme Toggle */}
           <div className="flex items-center justify-between mb-12">
             <motion.div
               className="text-center flex-1"
@@ -1493,19 +1293,6 @@ const AdvancedMedicineReminderSystem = () => {
                 pengingat pintar untuk gaya hidup yang lebih sehat.
               </motion.p>
             </motion.div>
-
-            <motion.button
-              onClick={() => setIsDark(!isDark)}
-              className="p-4 bg-white/80 dark:bg-black/40 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
-              whileHover={{ scale: 1.05, rotate: 10 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {isDark ? (
-                <Sun className="h-6 w-6 text-yellow-500" />
-              ) : (
-                <Moon className="h-6 w-6 text-indigo-600" />
-              )}
-            </motion.button>
           </div>
 
           {/* Global Statistics Dashboard */}
@@ -1515,7 +1302,7 @@ const AdvancedMedicineReminderSystem = () => {
             transition={{ delay: 0.6 }}
             className="mb-12"
           >
-            <div className="bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50">
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50">
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
                   Dashboard Statistik Global
@@ -1738,7 +1525,7 @@ const AdvancedMedicineReminderSystem = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4 }}
-            className="mt-16 bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50"
+            className="mt-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50"
           >
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
