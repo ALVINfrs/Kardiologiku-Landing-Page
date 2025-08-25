@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -46,7 +46,7 @@ import {
   Eye,
   ThumbsUp,
   Share2,
-  Bookmark
+  Bookmark,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -143,31 +143,57 @@ const dokters: Dokter[] = [
         patientName: "Budi S.",
         date: "20 Jul 2025",
         rating: 5,
-        comment: "Penjelasan Dr. Sarah sangat detail dan menenangkan. Prosedur ablasi saya berjalan lancar. Terima kasih, Dok!",
+        comment:
+          "Penjelasan Dr. Sarah sangat detail dan menenangkan. Prosedur ablasi saya berjalan lancar. Terima kasih, Dok!",
         verified: true,
         helpful: 24,
-        condition: "Fibrilasi Atrium"
+        condition: "Fibrilasi Atrium",
       },
       {
         id: 2,
         patientName: "Retno W.",
         date: "15 Jun 2025",
         rating: 5,
-        comment: "Sangat profesional dan sabar menjawab semua pertanyaan saya. Sangat direkomendasikan.",
+        comment:
+          "Sangat profesional dan sabar menjawab semua pertanyaan saya. Sangat direkomendasikan.",
         verified: true,
         helpful: 18,
-        condition: "Aritmia"
+        condition: "Aritmia",
       },
     ],
     languages: ["Indonesia", "English", "Mandarin"],
-    certifications: ["Board Certified Cardiologist", "Fellowship Electrophysiology", "ACLS Certified"],
+    certifications: [
+      "Board Certified Cardiologist",
+      "Fellowship Electrophysiology",
+      "ACLS Certified",
+    ],
     achievements: [
-      { title: "Best Cardiologist Award", year: "2024", organization: "Indonesian Heart Association", icon: "🏆" },
-      { title: "Research Excellence", year: "2023", organization: "Medical Society", icon: "🔬" }
+      {
+        title: "Best Cardiologist Award",
+        year: "2024",
+        organization: "Indonesian Heart Association",
+        icon: "🏆",
+      },
+      {
+        title: "Research Excellence",
+        year: "2023",
+        organization: "Medical Society",
+        icon: "🔬",
+      },
     ],
     publications: [
-      { title: "Advanced Electrophysiology Techniques", journal: "Cardiology Today", year: "2024", citations: 45 },
-      { title: "Atrial Fibrillation Management", journal: "Heart Journal", year: "2023", citations: 32 }
+      {
+        title: "Advanced Electrophysiology Techniques",
+        journal: "Cardiology Today",
+        year: "2024",
+        citations: 45,
+      },
+      {
+        title: "Atrial Fibrillation Management",
+        journal: "Heart Journal",
+        year: "2023",
+        citations: 32,
+      },
     ],
     consultationFee: "Rp 500.000",
     responseTime: "< 2 jam",
@@ -179,8 +205,8 @@ const dokters: Dokter[] = [
     yearsActive: 15,
     socialMedia: {
       linkedin: "linkedin.com/in/sarahwijaya",
-      website: "drsarahwijaya.com"
-    }
+      website: "drsarahwijaya.com",
+    },
   },
   {
     name: "Dr. Budi Hartono, Sp.JP(K)",
@@ -210,31 +236,57 @@ const dokters: Dokter[] = [
         patientName: "Ahmad R.",
         date: "18 Jul 2025",
         rating: 5,
-        comment: "Tangan dingin dan sangat berpengalaman. Pemasangan stent ayah saya berhasil tanpa kendala. Dokter terbaik!",
+        comment:
+          "Tangan dingin dan sangat berpengalaman. Pemasangan stent ayah saya berhasil tanpa kendala. Dokter terbaik!",
         verified: true,
         helpful: 31,
-        condition: "Stenosis Koroner"
+        condition: "Stenosis Koroner",
       },
       {
         id: 2,
         patientName: "Siti A.",
         date: "02 Jul 2025",
         rating: 4,
-        comment: "Komunikasinya baik, meskipun kadang harus menunggu cukup lama saat jadwal praktek.",
+        comment:
+          "Komunikasinya baik, meskipun kadang harus menunggu cukup lama saat jadwal praktek.",
         verified: true,
         helpful: 12,
-        condition: "PCI"
+        condition: "PCI",
       },
     ],
     languages: ["Indonesia", "English"],
-    certifications: ["Interventional Cardiology", "SCAI Certified", "Emergency Medicine"],
+    certifications: [
+      "Interventional Cardiology",
+      "SCAI Certified",
+      "Emergency Medicine",
+    ],
     achievements: [
-      { title: "Outstanding Physician", year: "2024", organization: "Medical Board", icon: "🎖️" },
-      { title: "Innovation in Cardiology", year: "2022", organization: "Heart Foundation", icon: "💡" }
+      {
+        title: "Outstanding Physician",
+        year: "2024",
+        organization: "Medical Board",
+        icon: "🎖️",
+      },
+      {
+        title: "Innovation in Cardiology",
+        year: "2022",
+        organization: "Heart Foundation",
+        icon: "💡",
+      },
     ],
     publications: [
-      { title: "Complex PCI Procedures", journal: "Interventional Cardiology", year: "2024", citations: 52 },
-      { title: "STEMI Management Guidelines", journal: "Emergency Cardiology", year: "2023", citations: 38 }
+      {
+        title: "Complex PCI Procedures",
+        journal: "Interventional Cardiology",
+        year: "2024",
+        citations: 52,
+      },
+      {
+        title: "STEMI Management Guidelines",
+        journal: "Emergency Cardiology",
+        year: "2023",
+        citations: 38,
+      },
     ],
     consultationFee: "Rp 650.000",
     responseTime: "< 3 jam",
@@ -245,8 +297,8 @@ const dokters: Dokter[] = [
     successRate: 94,
     yearsActive: 18,
     socialMedia: {
-      website: "budihartono-cardio.com"
-    }
+      website: "budihartono-cardio.com",
+    },
   },
   {
     name: "Dr. Maya Sari, Sp.A, Sp.JP",
@@ -276,31 +328,57 @@ const dokters: Dokter[] = [
         patientName: "Ibu Wati",
         date: "25 Jun 2025",
         rating: 5,
-        comment: "Dr. Maya sangat telaten dan baik dengan anak saya. Penjelasannya mudah dipahami orang tua. Kami merasa sangat terbantu.",
+        comment:
+          "Dr. Maya sangat telaten dan baik dengan anak saya. Penjelasannya mudah dipahami orang tua. Kami merasa sangat terbantu.",
         verified: true,
         helpful: 27,
-        condition: "VSD"
+        condition: "VSD",
       },
       {
         id: 2,
         patientName: "Bapak Eko",
         date: "11 Mei 2025",
         rating: 5,
-        comment: "Luar biasa sabar dan teliti. Sangat ahli di bidang jantung anak.",
+        comment:
+          "Luar biasa sabar dan teliti. Sangat ahli di bidang jantung anak.",
         verified: true,
         helpful: 22,
-        condition: "ASD"
+        condition: "ASD",
       },
     ],
     languages: ["Indonesia", "English", "Jawa"],
-    certifications: ["Pediatric Cardiology", "Congenital Heart Disease", "Echo Certified"],
+    certifications: [
+      "Pediatric Cardiology",
+      "Congenital Heart Disease",
+      "Echo Certified",
+    ],
     achievements: [
-      { title: "Pediatric Excellence Award", year: "2024", organization: "Children's Heart Foundation", icon: "👶" },
-      { title: "Community Service Award", year: "2023", organization: "Medical Association", icon: "🤝" }
+      {
+        title: "Pediatric Excellence Award",
+        year: "2024",
+        organization: "Children's Heart Foundation",
+        icon: "👶",
+      },
+      {
+        title: "Community Service Award",
+        year: "2023",
+        organization: "Medical Association",
+        icon: "🤝",
+      },
     ],
     publications: [
-      { title: "Congenital Heart Disease in Indonesia", journal: "Pediatric Cardiology", year: "2024", citations: 28 },
-      { title: "Early Detection Guidelines", journal: "Child Health", year: "2023", citations: 19 }
+      {
+        title: "Congenital Heart Disease in Indonesia",
+        journal: "Pediatric Cardiology",
+        year: "2024",
+        citations: 28,
+      },
+      {
+        title: "Early Detection Guidelines",
+        journal: "Child Health",
+        year: "2023",
+        citations: 19,
+      },
     ],
     consultationFee: "Rp 450.000",
     responseTime: "< 1 jam",
@@ -311,8 +389,8 @@ const dokters: Dokter[] = [
     successRate: 98,
     yearsActive: 10,
     socialMedia: {
-      website: "mayasari-pediatriccardio.com"
-    }
+      website: "mayasari-pediatriccardio.com",
+    },
   },
   {
     name: "Dr. Rian Sutanto, Sp.JP",
@@ -341,31 +419,57 @@ const dokters: Dokter[] = [
         patientName: "Dian P.",
         date: "12 Jul 2025",
         rating: 5,
-        comment: "Program rehabilitasi dari Dr. Rian sangat membantu saya kembali percaya diri setelah serangan jantung. Pendekatannya sangat holistik.",
+        comment:
+          "Program rehabilitasi dari Dr. Rian sangat membantu saya kembali percaya diri setelah serangan jantung. Pendekatannya sangat holistik.",
         verified: true,
         helpful: 35,
-        condition: "Post-MI Rehabilitation"
+        condition: "Post-MI Rehabilitation",
       },
       {
         id: 2,
         patientName: "Agus H.",
         date: "28 Jun 2025",
         rating: 5,
-        comment: "Sangat informatif dalam menjelaskan pencegahan. Saya jadi lebih paham cara menjaga kesehatan jantung.",
+        comment:
+          "Sangat informatif dalam menjelaskan pencegahan. Saya jadi lebih paham cara menjaga kesehatan jantung.",
         verified: true,
         helpful: 29,
-        condition: "Preventive Care"
+        condition: "Preventive Care",
       },
     ],
     languages: ["Indonesia", "English"],
-    certifications: ["Cardiac Rehabilitation", "Sports Medicine", "Preventive Cardiology"],
+    certifications: [
+      "Cardiac Rehabilitation",
+      "Sports Medicine",
+      "Preventive Cardiology",
+    ],
     achievements: [
-      { title: "Prevention Excellence", year: "2024", organization: "Heart Health Society", icon: "🛡️" },
-      { title: "Patient Care Award", year: "2023", organization: "Rehabilitation Center", icon: "❤️" }
+      {
+        title: "Prevention Excellence",
+        year: "2024",
+        organization: "Heart Health Society",
+        icon: "🛡️",
+      },
+      {
+        title: "Patient Care Award",
+        year: "2023",
+        organization: "Rehabilitation Center",
+        icon: "❤️",
+      },
     ],
     publications: [
-      { title: "Cardiac Rehabilitation Protocols", journal: "Rehabilitation Medicine", year: "2024", citations: 22 },
-      { title: "Prevention Strategies", journal: "Preventive Cardiology", year: "2023", citations: 18 }
+      {
+        title: "Cardiac Rehabilitation Protocols",
+        journal: "Rehabilitation Medicine",
+        year: "2024",
+        citations: 22,
+      },
+      {
+        title: "Prevention Strategies",
+        journal: "Preventive Cardiology",
+        year: "2023",
+        citations: 18,
+      },
     ],
     consultationFee: "Rp 400.000",
     responseTime: "< 1 jam",
@@ -376,8 +480,8 @@ const dokters: Dokter[] = [
     successRate: 92,
     yearsActive: 11,
     socialMedia: {
-      linkedin: "linkedin.com/in/riansutanto"
-    }
+      linkedin: "linkedin.com/in/riansutanto",
+    },
   },
   {
     name: "Dr. Linda Halim, Sp.JP(K)",
@@ -406,31 +510,57 @@ const dokters: Dokter[] = [
         patientName: "Kevin T.",
         date: "05 Jul 2025",
         rating: 5,
-        comment: "Dr. Linda berhasil menyembuhkan SVT saya dengan ablasi. Prosesnya cepat dan pemulihannya juga. Sangat berterima kasih.",
+        comment:
+          "Dr. Linda berhasil menyembuhkan SVT saya dengan ablasi. Prosesnya cepat dan pemulihannya juga. Sangat berterima kasih.",
         verified: true,
         helpful: 19,
-        condition: "SVT Ablation"
+        condition: "SVT Ablation",
       },
       {
         id: 2,
         patientName: "Maria F.",
         date: "20 Mei 2025",
         rating: 5,
-        comment: "Dokter yang sangat up-to-date dengan teknologi terbaru. Merasa aman ditangani oleh beliau.",
+        comment:
+          "Dokter yang sangat up-to-date dengan teknologi terbaru. Merasa aman ditangani oleh beliau.",
         verified: true,
         helpful: 16,
-        condition: "Arrhythmia"
+        condition: "Arrhythmia",
       },
     ],
     languages: ["Indonesia", "English", "Makassar"],
-    certifications: ["Advanced EP", "3D Mapping Systems", "Cryoablation Certified"],
+    certifications: [
+      "Advanced EP",
+      "3D Mapping Systems",
+      "Cryoablation Certified",
+    ],
     achievements: [
-      { title: "Young Physician Award", year: "2024", organization: "EP Society", icon: "🌟" },
-      { title: "Technology Innovation", year: "2023", organization: "Medical Tech", icon: "💻" }
+      {
+        title: "Young Physician Award",
+        year: "2024",
+        organization: "EP Society",
+        icon: "🌟",
+      },
+      {
+        title: "Technology Innovation",
+        year: "2023",
+        organization: "Medical Tech",
+        icon: "💻",
+      },
     ],
     publications: [
-      { title: "3D Mapping in EP", journal: "Electrophysiology Review", year: "2024", citations: 15 },
-      { title: "SVT Management", journal: "Arrhythmia Today", year: "2023", citations: 12 }
+      {
+        title: "3D Mapping in EP",
+        journal: "Electrophysiology Review",
+        year: "2024",
+        citations: 15,
+      },
+      {
+        title: "SVT Management",
+        journal: "Arrhythmia Today",
+        year: "2023",
+        citations: 12,
+      },
     ],
     consultationFee: "Rp 550.000",
     responseTime: "< 2 jam",
@@ -441,8 +571,8 @@ const dokters: Dokter[] = [
     successRate: 97,
     yearsActive: 10,
     socialMedia: {
-      website: "lindahalim-ep.com"
-    }
+      website: "lindahalim-ep.com",
+    },
   },
   {
     name: "Dr. Agus Setiawan, Sp.JP(K)",
@@ -472,31 +602,57 @@ const dokters: Dokter[] = [
         patientName: "Hendra K.",
         date: "19 Jul 2025",
         rating: 5,
-        comment: "Hanya Dr. Agus yang berani dan berhasil membuka sumbatan jantung saya yang sudah divonis tidak bisa diapa-apakan. Beliau adalah pahlawan.",
+        comment:
+          "Hanya Dr. Agus yang berani dan berhasil membuka sumbatan jantung saya yang sudah divonis tidak bisa diapa-apakan. Beliau adalah pahlawan.",
         verified: true,
         helpful: 47,
-        condition: "CTO PCI"
+        condition: "CTO PCI",
       },
       {
         id: 2,
         patientName: "Keluarga Tan",
         date: "22 Jun 2025",
         rating: 5,
-        comment: "Sangat senior, tenang, dan meyakinkan. Hasil kerjanya tidak perlu diragukan lagi. Sangat direkomendasikan untuk kasus sulit.",
+        comment:
+          "Sangat senior, tenang, dan meyakinkan. Hasil kerjanya tidak perlu diragukan lagi. Sangat direkomendasikan untuk kasus sulit.",
         verified: true,
         helpful: 41,
-        condition: "Complex PCI"
+        condition: "Complex PCI",
       },
     ],
     languages: ["Indonesia", "English", "Jawa"],
-    certifications: ["Master Interventionalist", "CTO Expert", "IVUS/OCT Certified"],
+    certifications: [
+      "Master Interventionalist",
+      "CTO Expert",
+      "IVUS/OCT Certified",
+    ],
     achievements: [
-      { title: "Lifetime Achievement", year: "2024", organization: "Cardiology Society", icon: "🏅" },
-      { title: "Master Physician", year: "2020", organization: "Medical Board", icon: "👨‍⚕️" }
+      {
+        title: "Lifetime Achievement",
+        year: "2024",
+        organization: "Cardiology Society",
+        icon: "🏅",
+      },
+      {
+        title: "Master Physician",
+        year: "2020",
+        organization: "Medical Board",
+        icon: "👨‍⚕️",
+      },
     ],
     publications: [
-      { title: "CTO Intervention Mastery", journal: "Advanced Cardiology", year: "2024", citations: 68 },
-      { title: "Complex Lesion Management", journal: "Interventional Review", year: "2023", citations: 54 }
+      {
+        title: "CTO Intervention Mastery",
+        journal: "Advanced Cardiology",
+        year: "2024",
+        citations: 68,
+      },
+      {
+        title: "Complex Lesion Management",
+        journal: "Interventional Review",
+        year: "2023",
+        citations: 54,
+      },
     ],
     consultationFee: "Rp 750.000",
     responseTime: "< 4 jam",
@@ -508,8 +664,8 @@ const dokters: Dokter[] = [
     yearsActive: 20,
     socialMedia: {
       website: "agussetiawan-cto.com",
-      linkedin: "linkedin.com/in/agussetiawan"
-    }
+      linkedin: "linkedin.com/in/agussetiawan",
+    },
   },
 ];
 
@@ -529,11 +685,11 @@ const sortOptions = [
 ];
 
 // --- Enhanced Components ---
-const StarRating: React.FC<{ rating: number; className?: string; showNumber?: boolean }> = ({
-  rating,
-  className,
-  showNumber = false,
-}) => (
+const StarRating: React.FC<{
+  rating: number;
+  className?: string;
+  showNumber?: boolean;
+}> = ({ rating, className, showNumber = false }) => (
   <div className={cn("flex items-center gap-1", className)}>
     <div className="flex items-center gap-0.5">
       {[...Array(5)].map((_, i) => (
@@ -552,31 +708,46 @@ const StarRating: React.FC<{ rating: number; className?: string; showNumber?: bo
   </div>
 );
 
-const StatCard: React.FC<{ 
-  icon: React.ReactNode; 
-  value: string | number; 
-  label: string; 
-  trend?: 'up' | 'down' | 'stable';
+const StatCard: React.FC<{
+  icon: React.ReactNode;
+  value: string | number;
+  label: string;
+  trend?: "up" | "down" | "stable";
   className?: string;
 }> = ({ icon, value, label, trend, className }) => (
   <motion.div
     whileHover={{ scale: 1.05 }}
-    className={cn("bg-white dark:bg-gray-800 rounded-lg p-3 border shadow-sm", className)}
+    className={cn(
+      "bg-white dark:bg-gray-800 rounded-lg p-3 border shadow-sm",
+      className
+    )}
   >
     <div className="flex items-center justify-between mb-1">
       <div className="p-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600">
         {icon}
       </div>
       {trend && (
-        <div className={cn("flex items-center text-xs", 
-          trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-600'
-        )}>
-          {trend === 'up' ? <ArrowUp className="h-3 w-3" /> : 
-           trend === 'down' ? <ArrowDown className="h-3 w-3" /> : null}
+        <div
+          className={cn(
+            "flex items-center text-xs",
+            trend === "up"
+              ? "text-green-600"
+              : trend === "down"
+              ? "text-red-600"
+              : "text-gray-600"
+          )}
+        >
+          {trend === "up" ? (
+            <ArrowUp className="h-3 w-3" />
+          ) : trend === "down" ? (
+            <ArrowDown className="h-3 w-3" />
+          ) : null}
         </div>
       )}
     </div>
-    <div className="text-2xl font-bold text-gray-900 dark:text-white">{value}</div>
+    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+      {value}
+    </div>
     <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
   </motion.div>
 );
@@ -601,11 +772,15 @@ const DokterCard: React.FC<{
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <Card className={cn(
-        "flex flex-col w-full transition-all duration-300 border-2", 
-        isHovered ? "shadow-xl border-red-200 dark:border-red-800" : "hover:shadow-lg border-gray-200 dark:border-gray-700",
-        "dark:bg-gray-800"
-      )}>
+      <Card
+        className={cn(
+          "flex flex-col w-full transition-all duration-300 border-2",
+          isHovered
+            ? "shadow-xl border-red-200 dark:border-red-800"
+            : "hover:shadow-lg border-gray-200 dark:border-gray-700",
+          "dark:bg-gray-800"
+        )}
+      >
         <CardHeader className="text-center pb-4 relative">
           {/* Status Badges */}
           <div className="absolute top-4 right-4 flex flex-col gap-1">
@@ -634,7 +809,12 @@ const DokterCard: React.FC<{
             onClick={() => setIsBookmarked(!isBookmarked)}
             className="absolute top-4 left-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <Bookmark className={cn("h-4 w-4", isBookmarked ? "fill-red-500 text-red-500" : "text-gray-400")} />
+            <Bookmark
+              className={cn(
+                "h-4 w-4",
+                isBookmarked ? "fill-red-500 text-red-500" : "text-gray-400"
+              )}
+            />
           </motion.button>
 
           <Avatar className="w-24 h-24 mx-auto mb-4 ring-4 ring-red-100 dark:ring-red-900/50">
@@ -659,7 +839,7 @@ const DokterCard: React.FC<{
             </span>
           </div>
         </CardHeader>
-        
+
         <CardContent className="space-y-4 flex flex-col flex-grow">
           {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-2">
@@ -694,7 +874,9 @@ const DokterCard: React.FC<{
             </div>
             <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-400">
               <Heart className="h-4 w-4" />
-              <span className="text-sm font-medium text-green-600">{dokter.consultationFee}</span>
+              <span className="text-sm font-medium text-green-600">
+                {dokter.consultationFee}
+              </span>
             </div>
           </div>
 
@@ -725,7 +907,10 @@ const DokterCard: React.FC<{
                   </h4>
                   <div className="flex flex-wrap gap-1">
                     {dokter.expertise.slice(0, 2).map((skill) => (
-                      <Badge key={skill} className="text-xs bg-red-50 text-red-700 hover:bg-red-100">
+                      <Badge
+                        key={skill}
+                        className="text-xs bg-red-50 text-red-700 hover:bg-red-100"
+                      >
                         {skill}
                       </Badge>
                     ))}
@@ -746,13 +931,16 @@ const DokterCard: React.FC<{
                     </h4>
                     <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">{dokter.achievements[0].icon}</span>
+                        <span className="text-lg">
+                          {dokter.achievements[0].icon}
+                        </span>
                         <div>
                           <p className="text-xs font-medium text-gray-800 dark:text-gray-200">
                             {dokter.achievements[0].title}
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {dokter.achievements[0].organization} • {dokter.achievements[0].year}
+                            {dokter.achievements[0].organization} •{" "}
+                            {dokter.achievements[0].year}
                           </p>
                         </div>
                       </div>
@@ -771,7 +959,7 @@ const DokterCard: React.FC<{
                       <div className="flex justify-between">
                         <span>{Object.entries(dokter.schedule)[0][0]}</span>
                         <span className="font-medium">
-                          {Object.entries(dokter.schedule)[0][1].split(' (')[0]}
+                          {Object.entries(dokter.schedule)[0][1].split(" (")[0]}
                         </span>
                       </div>
                     )}
@@ -798,10 +986,14 @@ const DokterCard: React.FC<{
                 onClick={onToggleExpand}
                 className="px-3"
               >
-                {isExpanded ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                {isExpanded ? (
+                  <Minus className="h-4 w-4" />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
               </Button>
             </div>
-            
+
             <div className="flex gap-1">
               <Button variant="outline" size="sm" className="flex-1 text-xs">
                 <Calendar className="h-3 w-3 mr-1" />
@@ -843,13 +1035,13 @@ const DokterCard: React.FC<{
   );
 };
 
-const ReviewCard: React.FC<{ 
-  review: Review; 
+const ReviewCard: React.FC<{
+  review: Review;
   onHelpful?: (reviewId: number) => void;
   helpfulCount?: number;
-}> = ({ review, onHelpful, helpfulCount }) => {
+}> = ({ review, onHelpful }) => {
   const [isHelpful, setIsHelpful] = useState(false);
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -899,8 +1091,8 @@ const ReviewCard: React.FC<{
           }}
           className={cn(
             "flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-colors",
-            isHelpful 
-              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400" 
+            isHelpful
+              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
           )}
         >
@@ -923,30 +1115,35 @@ const ReviewCard: React.FC<{
 const DokterKamiSection = () => {
   const [activeSpecialty, setActiveSpecialty] = useState("Semua");
   const [selectedDokter, setSelectedDokter] = useState<Dokter | null>(null);
-  const [activeModalTab, setActiveModalTab] = useState<"profil" | "ulasan" | "publikasi">("profil");
+  const [activeModalTab, setActiveModalTab] = useState<
+    "profil" | "ulasan" | "publikasi"
+  >("profil");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("rating");
   const [expandedCards, setExpandedCards] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode] = useState<"grid" | "list">("grid");
 
   const filteredAndSortedDokters = useMemo(() => {
     let filtered = dokters;
-    
+
     // Filter by specialty
     if (activeSpecialty !== "Semua") {
       filtered = filtered.filter((d) => d.subSpecialty === activeSpecialty);
     }
-    
+
     // Filter by search query
     if (searchQuery) {
-      filtered = filtered.filter((d) => 
-        d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.expertise.some(e => e.toLowerCase().includes(searchQuery.toLowerCase()))
+      filtered = filtered.filter(
+        (d) =>
+          d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          d.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          d.expertise.some((e) =>
+            e.toLowerCase().includes(searchQuery.toLowerCase())
+          )
       );
     }
-    
+
     // Sort
     filtered = [...filtered].sort((a, b) => {
       switch (sortBy) {
@@ -962,7 +1159,7 @@ const DokterKamiSection = () => {
           return 0;
       }
     });
-    
+
     return filtered;
   }, [activeSpecialty, searchQuery, sortBy]);
 
@@ -972,16 +1169,16 @@ const DokterKamiSection = () => {
   };
 
   const toggleCardExpansion = (dokterName: string) => {
-    setExpandedCards(prev => 
-      prev.includes(dokterName) 
-        ? prev.filter(name => name !== dokterName)
+    setExpandedCards((prev) =>
+      prev.includes(dokterName)
+        ? prev.filter((name) => name !== dokterName)
         : [...prev, dokterName]
     );
   };
 
   const handleReviewHelpful = (reviewId: number) => {
     // Handle helpful review logic
-    console.log('Helpful review:', reviewId);
+    console.log("Helpful review:", reviewId);
   };
 
   return (
@@ -989,24 +1186,25 @@ const DokterKamiSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Enhanced Header */}
         <div className="text-center mb-12">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl font-bold text-gray-900 dark:text-white mb-4"
           >
             Tim Dokter Spesialis Kami
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-6"
           >
-            Konsultasi dengan para ahli jantung berpengalaman yang siap membantu Anda.
+            Konsultasi dengan para ahli jantung berpengalaman yang siap membantu
+            Anda.
           </motion.p>
-          
+
           {/* Stats Overview */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -1019,7 +1217,9 @@ const DokterKamiSection = () => {
             />
             <StatCard
               icon={<Users className="h-5 w-5" />}
-              value={dokters.reduce((sum, d) => sum + d.totalPatients, 0).toLocaleString()}
+              value={dokters
+                .reduce((sum, d) => sum + d.totalPatients, 0)
+                .toLocaleString()}
               label="Total Pasien"
             />
             <StatCard
@@ -1029,14 +1229,14 @@ const DokterKamiSection = () => {
             />
             <StatCard
               icon={<Activity className="h-5 w-5" />}
-              value={dokters.filter(d => d.availableToday).length}
+              value={dokters.filter((d) => d.availableToday).length}
               label="Tersedia Hari Ini"
             />
           </motion.div>
         </div>
 
         {/* Enhanced Search and Filters */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -1053,7 +1253,7 @@ const DokterKamiSection = () => {
                 className="pl-10"
               />
             </div>
-            
+
             {/* Sort Dropdown */}
             <select
               value={sortBy}
@@ -1066,7 +1266,7 @@ const DokterKamiSection = () => {
                 </option>
               ))}
             </select>
-            
+
             {/* Filter Toggle */}
             <Button
               variant="outline"
@@ -1077,7 +1277,7 @@ const DokterKamiSection = () => {
               Filter
             </Button>
           </div>
-          
+
           {/* Specialty Filter Pills */}
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             {specialties.map((spec) => (
@@ -1092,21 +1292,22 @@ const DokterKamiSection = () => {
                 >
                   {spec}
                   {spec !== "Semua" && (
-                    <Badge 
-                      variant="secondary" 
+                    <Badge
+                      variant="secondary"
                       className="ml-2 bg-white/20 text-xs"
                     >
-                      {dokters.filter(d => d.subSpecialty === spec).length}
+                      {dokters.filter((d) => d.subSpecialty === spec).length}
                     </Badge>
                   )}
                 </Button>
               </motion.div>
             ))}
           </div>
-          
+
           {/* Results Count */}
           <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-            Menampilkan {filteredAndSortedDokters.length} dari {dokters.length} dokter
+            Menampilkan {filteredAndSortedDokters.length} dari {dokters.length}{" "}
+            dokter
             {searchQuery && ` untuk "${searchQuery}"`}
           </div>
         </motion.div>
@@ -1116,8 +1317,8 @@ const DokterKamiSection = () => {
           layout
           className={cn(
             "grid gap-8",
-            viewMode === "grid" 
-              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" 
+            viewMode === "grid"
+              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               : "grid-cols-1 max-w-4xl mx-auto"
           )}
         >
@@ -1150,7 +1351,7 @@ const DokterKamiSection = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Coba ubah kriteria pencarian atau filter Anda
             </p>
-            <Button 
+            <Button
               onClick={() => {
                 setSearchQuery("");
                 setActiveSpecialty("Semua");
@@ -1187,7 +1388,7 @@ const DokterKamiSection = () => {
                     <Share2 className="h-4 w-4" />
                   </motion.button>
                 </div>
-                
+
                 <Avatar className="w-32 h-32 mx-auto ring-4 ring-offset-4 dark:ring-offset-gray-900 ring-red-500 shadow-lg">
                   <AvatarImage
                     src={selectedDokter.avatar}
@@ -1200,7 +1401,7 @@ const DokterKamiSection = () => {
                       .join("")}
                   </AvatarFallback>
                 </Avatar>
-                
+
                 <div>
                   <DialogTitle className="text-3xl font-bold text-gray-900 dark:text-white">
                     {selectedDokter.name}
@@ -1253,14 +1454,30 @@ const DokterKamiSection = () => {
                 {/* Enhanced Tab Navigation */}
                 <div className="border-b dark:border-gray-700 mb-6 flex justify-center">
                   {[
-                    { id: "profil", label: "Profil & Jadwal", icon: <Users className="h-4 w-4" /> },
-                    { id: "ulasan", label: `Ulasan (${selectedDokter.reviewsCount})`, icon: <Star className="h-4 w-4" /> },
-                    { id: "publikasi", label: "Publikasi & Pencapaian", icon: <BookOpen className="h-4 w-4" /> }
+                    {
+                      id: "profil",
+                      label: "Profil & Jadwal",
+                      icon: <Users className="h-4 w-4" />,
+                    },
+                    {
+                      id: "ulasan",
+                      label: `Ulasan (${selectedDokter.reviewsCount})`,
+                      icon: <Star className="h-4 w-4" />,
+                    },
+                    {
+                      id: "publikasi",
+                      label: "Publikasi & Pencapaian",
+                      icon: <BookOpen className="h-4 w-4" />,
+                    },
                   ].map((tab) => (
                     <motion.button
                       key={tab.id}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setActiveModalTab(tab.id as any)}
+                      onClick={() =>
+                        setActiveModalTab(
+                          tab.id as "profil" | "ulasan" | "publikasi"
+                        )
+                      }
                       className={cn(
                         "flex items-center gap-2 px-6 py-3 font-medium transition-colors relative",
                         activeModalTab === tab.id
@@ -1296,7 +1513,7 @@ const DokterKamiSection = () => {
                           {/* Expertise Section */}
                           <div className="space-y-4">
                             <h4 className="font-bold flex items-center gap-2 text-gray-800 dark:text-gray-200 text-lg">
-                              <Sparkles className="text-yellow-500 h-5 w-5" /> 
+                              <Sparkles className="text-yellow-500 h-5 w-5" />
                               Keahlian Utama
                             </h4>
                             <div className="space-y-2">
@@ -1317,7 +1534,7 @@ const DokterKamiSection = () => {
                           {/* Hospital Affiliations */}
                           <div className="space-y-4">
                             <h4 className="font-bold flex items-center gap-2 text-gray-800 dark:text-gray-200 text-lg">
-                              <Hospital className="text-blue-500 h-5 w-5" /> 
+                              <Hospital className="text-blue-500 h-5 w-5" />
                               Afiliasi Rumah Sakit
                             </h4>
                             <div className="space-y-2">
@@ -1344,7 +1561,10 @@ const DokterKamiSection = () => {
                           </h4>
                           <div className="flex flex-wrap gap-2">
                             {selectedDokter.certifications.map((cert) => (
-                              <Badge key={cert} className="bg-purple-100 text-purple-700 hover:bg-purple-200">
+                              <Badge
+                                key={cert}
+                                className="bg-purple-100 text-purple-700 hover:bg-purple-200"
+                              >
                                 {cert}
                               </Badge>
                             ))}
@@ -1359,7 +1579,10 @@ const DokterKamiSection = () => {
                           </h4>
                           <div className="flex flex-wrap gap-2">
                             {selectedDokter.languages.map((lang) => (
-                              <Badge key={lang} className="bg-green-100 text-green-700 hover:bg-green-200">
+                              <Badge
+                                key={lang}
+                                className="bg-green-100 text-green-700 hover:bg-green-200"
+                              >
                                 {lang}
                               </Badge>
                             ))}
@@ -1369,28 +1592,34 @@ const DokterKamiSection = () => {
                         {/* Schedule */}
                         <div>
                           <h4 className="font-bold flex items-center gap-2 mb-4 text-gray-800 dark:text-gray-200 text-lg">
-                            <CalendarDays className="text-green-500 h-5 w-5" /> 
+                            <CalendarDays className="text-green-500 h-5 w-5" />
                             Jadwal Praktik
                           </h4>
                           <div className="grid gap-3 border dark:border-gray-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-900/50">
-                            {Object.entries(selectedDokter.schedule).map(([day, time]) => (
-                              <motion.div 
-                                key={day} 
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className="flex justify-between items-center p-2 rounded bg-white dark:bg-gray-800 shadow-sm"
-                              >
-                                <span className="font-medium text-gray-800 dark:text-gray-200">{day}</span>
-                                <div className="text-right">
-                                  <span className="font-semibold text-gray-900 dark:text-white text-sm">
-                                    {time.split(' (')[0]}
+                            {Object.entries(selectedDokter.schedule).map(
+                              ([day, time]) => (
+                                <motion.div
+                                  key={day}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  className="flex justify-between items-center p-2 rounded bg-white dark:bg-gray-800 shadow-sm"
+                                >
+                                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                                    {day}
                                   </span>
-                                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {time.includes('(') ? time.split('(')[1].replace(')', '') : ''}
-                                  </p>
-                                </div>
-                              </motion.div>
-                            ))}
+                                  <div className="text-right">
+                                    <span className="font-semibold text-gray-900 dark:text-white text-sm">
+                                      {time.split(" (")[0]}
+                                    </span>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                      {time.includes("(")
+                                        ? time.split("(")[1].replace(")", "")
+                                        : ""}
+                                    </p>
+                                  </div>
+                                </motion.div>
+                              )
+                            )}
                           </div>
                         </div>
 
@@ -1441,24 +1670,38 @@ const DokterKamiSection = () => {
                               <div className="text-3xl font-bold text-gray-900 dark:text-white">
                                 {selectedDokter.rating.toFixed(1)}
                               </div>
-                              <StarRating rating={selectedDokter.rating} className="justify-center mb-2" />
+                              <StarRating
+                                rating={selectedDokter.rating}
+                                className="justify-center mb-2"
+                              />
                               <div className="text-sm text-gray-600 dark:text-gray-400">
                                 Dari {selectedDokter.reviewsCount} ulasan
                               </div>
                             </div>
-                            
+
                             <div className="text-center">
                               <div className="text-3xl font-bold text-green-600">
-                                {Math.round((selectedDokter.patientReviews.filter(r => r.rating >= 4).length / selectedDokter.patientReviews.length) * 100)}%
+                                {Math.round(
+                                  (selectedDokter.patientReviews.filter(
+                                    (r) => r.rating >= 4
+                                  ).length /
+                                    selectedDokter.patientReviews.length) *
+                                    100
+                                )}
+                                %
                               </div>
                               <div className="text-sm text-gray-600 dark:text-gray-400">
                                 Merekomendasikan
                               </div>
                             </div>
-                            
+
                             <div className="text-center">
                               <div className="text-3xl font-bold text-blue-600">
-                                {selectedDokter.patientReviews.filter(r => r.verified).length}
+                                {
+                                  selectedDokter.patientReviews.filter(
+                                    (r) => r.verified
+                                  ).length
+                                }
                               </div>
                               <div className="text-sm text-gray-600 dark:text-gray-400">
                                 Ulasan Terverifikasi
@@ -1472,12 +1715,19 @@ const DokterKamiSection = () => {
                           <h5 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">
                             Distribusi Rating
                           </h5>
-                          {[5, 4, 3, 2, 1].map(rating => {
-                            const count = selectedDokter.patientReviews.filter(r => r.rating === rating).length;
-                            const percentage = (count / selectedDokter.patientReviews.length) * 100;
-                            
+                          {[5, 4, 3, 2, 1].map((rating) => {
+                            const count = selectedDokter.patientReviews.filter(
+                              (r) => r.rating === rating
+                            ).length;
+                            const percentage =
+                              (count / selectedDokter.patientReviews.length) *
+                              100;
+
                             return (
-                              <div key={rating} className="flex items-center gap-3 mb-2">
+                              <div
+                                key={rating}
+                                className="flex items-center gap-3 mb-2"
+                              >
                                 <div className="flex items-center gap-1 w-12">
                                   <span className="text-sm">{rating}</span>
                                   <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
@@ -1531,25 +1781,30 @@ const DokterKamiSection = () => {
                             Pencapaian & Penghargaan
                           </h4>
                           <div className="grid gap-4">
-                            {selectedDokter.achievements.map((achievement, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border-l-4 border-yellow-400"
-                              >
-                                <div className="text-3xl">{achievement.icon}</div>
-                                <div className="flex-1">
-                                  <h6 className="font-semibold text-gray-900 dark:text-white">
-                                    {achievement.title}
-                                  </h6>
-                                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    {achievement.organization} • {achievement.year}
-                                  </p>
-                                </div>
-                              </motion.div>
-                            ))}
+                            {selectedDokter.achievements.map(
+                              (achievement, index) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  className="flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border-l-4 border-yellow-400"
+                                >
+                                  <div className="text-3xl">
+                                    {achievement.icon}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h6 className="font-semibold text-gray-900 dark:text-white">
+                                      {achievement.title}
+                                    </h6>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                                      {achievement.organization} •{" "}
+                                      {achievement.year}
+                                    </p>
+                                  </div>
+                                </motion.div>
+                              )
+                            )}
                           </div>
                         </div>
 
@@ -1560,32 +1815,34 @@ const DokterKamiSection = () => {
                             Publikasi Ilmiah
                           </h4>
                           <div className="space-y-4">
-                            {selectedDokter.publications.map((publication, index) => (
-                              <motion.div
-                                key={index}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="p-4 border dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
-                              >
-                                <h6 className="font-semibold text-gray-900 dark:text-white mb-2">
-                                  {publication.title}
-                                </h6>
-                                <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                                  <span className="flex items-center gap-1">
-                                    <BookOpen className="h-3 w-3" />
-                                    {publication.journal}
-                                  </span>
-                                  <span>{publication.year}</span>
-                                  {publication.citations && (
-                                    <span className="flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                                      <TrendingUp className="h-3 w-3" />
-                                      {publication.citations} sitasi
+                            {selectedDokter.publications.map(
+                              (publication, index) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  className="p-4 border dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
+                                >
+                                  <h6 className="font-semibold text-gray-900 dark:text-white mb-2">
+                                    {publication.title}
+                                  </h6>
+                                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                    <span className="flex items-center gap-1">
+                                      <BookOpen className="h-3 w-3" />
+                                      {publication.journal}
                                     </span>
-                                  )}
-                                </div>
-                              </motion.div>
-                            ))}
+                                    <span>{publication.year}</span>
+                                    {publication.citations && (
+                                      <span className="flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                                        <TrendingUp className="h-3 w-3" />
+                                        {publication.citations} sitasi
+                                      </span>
+                                    )}
+                                  </div>
+                                </motion.div>
+                              )
+                            )}
                           </div>
                         </div>
 
@@ -1627,17 +1884,17 @@ const DokterKamiSection = () => {
               {/* Enhanced Modal Footer */}
               <div className="border-t dark:border-gray-700 p-6 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20">
                 <div className="flex flex-col md:flex-row gap-4 justify-center">
-                  <Button 
-                    size="lg" 
+                  <Button
+                    size="lg"
                     className="bg-red-600 hover:bg-red-700 flex items-center gap-2"
                   >
                     <Calendar className="h-5 w-5" />
                     Buat Janji Temu dengan {selectedDokter.name.split(",")[0]}
                   </Button>
-                  
+
                   {selectedDokter.onlineConsultation && (
-                    <Button 
-                      size="lg" 
+                    <Button
+                      size="lg"
                       variant="outline"
                       className="flex items-center gap-2"
                     >
@@ -1645,9 +1902,9 @@ const DokterKamiSection = () => {
                       Konsultasi Online
                     </Button>
                   )}
-                  
-                  <Button 
-                    size="lg" 
+
+                  <Button
+                    size="lg"
                     variant="outline"
                     className="flex items-center gap-2"
                   >
@@ -1655,7 +1912,7 @@ const DokterKamiSection = () => {
                     Hubungi Langsung
                   </Button>
                 </div>
-                
+
                 {/* Emergency Contact */}
                 {selectedDokter.emergencyAvailable && (
                   <div className="text-center mt-4 p-3 bg-red-100 dark:bg-red-900/20 rounded-lg">
