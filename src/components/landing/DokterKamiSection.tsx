@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -1023,7 +1023,8 @@ const DokterDetailView = ({
   selectedDokter: Dokter;
   onBack: () => void;
 }) => {
-  const [setActiveTab] = useState("profil");
+  const [activeTab, setActiveTab] = useState("profil");
+  const detailRef = useRef<HTMLDivElement>(null);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -1035,7 +1036,7 @@ const DokterDetailView = ({
   );
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div ref={detailRef} className="space-y-8 animate-fade-in">
       {/* Header */}
       <div className="relative">
         <button
@@ -1109,8 +1110,9 @@ const DokterDetailView = ({
       {/* Tabs */}
       <Tabs
         defaultValue="profil"
+        value={activeTab}
+        onValueChange={(val) => setActiveTab(val)}
         className="space-y-6"
-        onValueChange={setActiveTab}
       >
         <TabsList className="justify-center bg-transparent border-b dark:border-gray-700">
           <TabsTrigger
@@ -1484,13 +1486,14 @@ const DokterDetailView = ({
                   fill="#8884d8"
                   dataKey="value"
                   label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
+                    `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
                   }
                 >
                   {pieData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
+                      name={entry.name} // contoh penggunaan biar gak warning
                     />
                   ))}
                 </Pie>
@@ -1640,9 +1643,13 @@ const DokterKamiSection = () => {
     );
   };
 
+  const detailRef = useRef<HTMLDivElement>(null);
+
   const handleSelectDokter = (dokter: Dokter) => {
     setSelectedDokter(dokter);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      detailRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const handleBack = () => {
