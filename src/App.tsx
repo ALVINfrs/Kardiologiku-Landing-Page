@@ -20,7 +20,7 @@ import ArrhythmiaClinicalCommand from "./components/landing/ArhytmiaClinicalComa
 import LifestyleImpactSimulator from "./components/landing/LifestyleImpactSimulator";
 import PersonalizedActionPlanner from "./components/landing/PersonalizedActionPlanner";
 import ECG12LeadSimulatorSuite from "./components/landing/ECG12LeadSimulatorSuite";
-
+import HeartQuiz from "./components/landing/HeartQuiz";
 const KardiologikuLandingPage = () => {
   const [isLoading, setIsLoading] = useState(true); // <-- TAMBAHKAN STATE LOADING
 
@@ -50,6 +50,7 @@ const KardiologikuLandingPage = () => {
         <LifestyleImpactSimulator />
         <PersonalizedActionPlanner />
         <InteractiveEducationSection />
+        <HeartQuiz />
         <AritmiaComandCenter />
         <FoodJournalSection />
         <HeartRiskCalculator />
