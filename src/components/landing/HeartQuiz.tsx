@@ -223,19 +223,19 @@ const heartRateRanges = {
     min: 40,
     max: 59,
     label: "Bradikardia",
-    color: "text-blue-600 dark:text-blue-400",
+    color: "text-blue-500 dark:text-blue-400", // Sesuaikan warna untuk dark mode
   },
   normal: {
     min: 60,
     max: 100,
     label: "Normal",
-    color: "text-green-600 dark:text-green-400",
+    color: "text-green-500 dark:text-green-400", // Sesuaikan warna untuk dark mode
   },
   tachycardia: {
     min: 101,
     max: 180,
     label: "Takikardia",
-    color: "text-red-600 dark:text-red-400",
+    color: "text-red-500 dark:text-red-400", // Sesuaikan warna untuk dark mode
   },
 };
 
@@ -404,7 +404,7 @@ export default function HeartQuiz() {
     }));
 
     return (
-      <Card>
+      <Card className="bg-background dark:bg-slate-900">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-6 w-6 text-red-500" />
@@ -418,7 +418,7 @@ export default function HeartQuiz() {
                 scale: isBeating ? [1, 1.3, 1] : 1,
               }}
               transition={{ duration: 0.6, repeat: Infinity }}
-              className="text-red-500 text-8xl mb-4 cursor-pointer select-none"
+              className="text-red-500 dark:text-red-400 text-8xl mb-4 cursor-pointer select-none" // Tambahkan dark mode
               onClick={toggleHeartbeat}
             >
               <Heart className="w-20 h-20 mx-auto" fill="currentColor" />
@@ -437,15 +437,32 @@ export default function HeartQuiz() {
 
           <Separator />
 
-          <div className="h-[200px]">
+          <div className="h-[200px] mt-4 overflow-hidden">
             <ChartContainer
-              config={{ bpm: { label: "BPM", color: "hsl(var(--primary))" } }}
+              config={{
+                bpm: { label: "BPM", color: "hsl(var(--primary))" },
+              }}
+              className="dark:bg-slate-900 h-full"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <RechartsBarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                <RechartsBarChart
+                  data={chartData}
+                  margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="dark:stroke-slate-700"
+                  />
+                  <XAxis
+                    dataKey="name"
+                    className="dark:text-slate-400"
+                    fontSize={12}
+                  />
+                  <YAxis
+                    className="dark:text-slate-400"
+                    fontSize={12}
+                    domain={[0, 200]}
+                  />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Bar dataKey="bpm" fill="hsl(var(--primary))" />
                 </RechartsBarChart>
@@ -528,8 +545,8 @@ export default function HeartQuiz() {
                           <div
                             className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${
                               isChecked
-                                ? "bg-destructive/10 border-destructive"
-                                : "bg-muted/50 hover:bg-muted"
+                                ? "bg-destructive/10 border-destructive dark:bg-destructive/20" // Tambahkan dark mode
+                                : "bg-muted/50 hover:bg-muted dark:bg-muted/10 dark:hover:bg-muted/20" // Tambahkan dark mode
                             }`}
                             onClick={() => handleSymptomCheck(item.id)}
                           >
@@ -582,11 +599,9 @@ export default function HeartQuiz() {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-4"
               >
-                // ...existing code...
                 <Alert
-                  variant={
-                    riskScore > 60 ? "destructive" : "default" // Ubah semua variant menjadi "default" atau "destructive" saja
-                  }
+                  variant={riskScore > 60 ? "destructive" : "default"}
+                  className="dark:bg-background" // Tambahkan background untuk dark mode
                 >
                   <TrendingUp className="h-4 w-4" />
                   <AlertTitle>Tingkat Risiko: {riskScore}%</AlertTitle>
@@ -781,7 +796,7 @@ export default function HeartQuiz() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-full bg-background mx-auto p-6">
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as typeof activeTab)}
