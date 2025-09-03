@@ -145,6 +145,104 @@ const aritmiaQuestions = [
       "Elektrokardiogram (EKG) adalah metode utama untuk mendeteksi aritmia dengan merekam aktivitas listrik jantung.",
     difficulty: "medium",
   },
+  {
+    id: 9,
+    question: "Apa dampak jangka panjang dari aritmia yang tidak diobati?",
+    options: [
+      "Stroke",
+      "Gagal jantung",
+      "Pembekuan darah",
+      "Semua jawaban benar",
+    ],
+    correct: 3,
+    explanation:
+      "Aritmia yang tidak diobati dapat menyebabkan komplikasi serius seperti stroke, gagal jantung, dan pembentukan bekuan darah.",
+    difficulty: "hard",
+  },
+  {
+    id: 10,
+    question: "Faktor gaya hidup apa yang dapat memicu aritmia?",
+    options: [
+      "Konsumsi alkohol berlebihan",
+      "Kurang tidur",
+      "Stres berkepanjangan",
+      "Semua jawaban benar",
+    ],
+    correct: 3,
+    explanation:
+      "Gaya hidup tidak sehat seperti konsumsi alkohol berlebihan, kurang tidur, dan stres dapat memicu episode aritmia.",
+    difficulty: "medium",
+  },
+  {
+    id: 11,
+    question: "Bagaimana cara mencegah aritmia?",
+    options: [
+      "Olahraga teratur",
+      "Diet seimbang",
+      "Manajemen stres",
+      "Semua jawaban benar",
+    ],
+    correct: 3,
+    explanation:
+      "Pencegahan aritmia melibatkan gaya hidup sehat termasuk olahraga teratur, diet seimbang, dan manajemen stres yang baik.",
+    difficulty: "easy",
+  },
+  {
+    id: 12,
+    question: "Apa hubungan antara kafein dan aritmia?",
+    options: [
+      "Kafein selalu menyebabkan aritmia",
+      "Kafein berlebih dapat memicu aritmia pada orang yang sensitif",
+      "Kafein tidak ada hubungannya dengan aritmia",
+      "Kafein menyembuhkan aritmia",
+    ],
+    correct: 1,
+    explanation:
+      "Konsumsi kafein berlebihan dapat memicu episode aritmia pada orang yang sensitif, tetapi tidak selalu menyebabkan aritmia pada semua orang.",
+    difficulty: "medium",
+  },
+  {
+    id: 13,
+    question: "Kapan waktu terbaik untuk melakukan screening aritmia?",
+    options: [
+      "Hanya saat ada gejala",
+      "Setelah usia 40 tahun",
+      "Saat check-up rutin tahunan",
+      "Saat merasa stress",
+    ],
+    correct: 2,
+    explanation:
+      "Screening aritmia sebaiknya dilakukan saat check-up rutin tahunan, terutama bagi mereka dengan faktor risiko atau riwayat keluarga.",
+    difficulty: "medium",
+  },
+  {
+    id: 14,
+    question: "Apa peran genetik dalam aritmia?",
+    options: [
+      "Tidak ada hubungan genetik",
+      "Aritmia selalu diturunkan",
+      "Beberapa jenis aritmia memiliki komponen genetik",
+      "Genetik hanya berperan pada anak-anak",
+    ],
+    correct: 2,
+    explanation:
+      "Beberapa jenis aritmia memiliki komponen genetik, yang berarti dapat diturunkan dalam keluarga, namun tidak semua aritmia bersifat genetik.",
+    difficulty: "hard",
+  },
+  {
+    id: 15,
+    question: "Bagaimana olahraga mempengaruhi aritmia?",
+    options: [
+      "Olahraga selalu berbahaya untuk penderita aritmia",
+      "Olahraga teratur dapat membantu mengelola aritmia",
+      "Olahraga tidak mempengaruhi aritmia",
+      "Hanya olahraga berat yang aman",
+    ],
+    correct: 1,
+    explanation:
+      "Olahraga teratur dengan intensitas yang sesuai dapat membantu mengelola aritmia dan memperkuat jantung, namun harus dikonsultasikan dengan dokter terlebih dahulu.",
+    difficulty: "medium",
+  },
 ];
 
 const symptomsChecklist = [
