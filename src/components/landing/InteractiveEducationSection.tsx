@@ -700,6 +700,169 @@ const articlesData: Article[] = [
     publishDate: "2024-02-10",
     image: "/images/pengobatan.png",
   },
+  {
+    id: "6",
+    title: "Teknologi Wearable untuk Deteksi Aritmia",
+    category: "Teknologi",
+    difficulty: "Menengah",
+    duration: 14,
+    readCount: 1750,
+    rating: 4.9,
+    tags: ["Wearable", "Monitoring", "Teknologi Medis"],
+    excerpt:
+      "Bagaimana smartwatch dan perangkat wearable membantu mendeteksi aritmia lebih awal.",
+    content: `Perangkat wearable seperti smartwatch kini mampu mendeteksi tanda awal aritmia melalui sensor detak jantung optik dan EKG mini. 
+
+**Fitur Utama Wearable:**
+1. **Monitoring Detak Jantung**: Memantau detak jantung 24/7.
+2. **Deteksi Fibrilasi Atrium**: Algoritma pintar dapat memberi peringatan dini.
+3. **Integrasi dengan Dokter**: Data dapat dibagikan secara real-time ke tenaga medis.
+4. **Pencegahan Komplikasi**: Deteksi lebih cepat berarti intervensi lebih dini.
+
+**Keterbatasan:**
+- Akurasi bervariasi.
+- Tidak menggantikan diagnosis medis.
+- Membutuhkan kalibrasi dan pemakaian konsisten.`,
+
+    interactiveElements: [
+      {
+        id: "quiz-4",
+        type: "quiz",
+        title: "Kuis: Teknologi Wearable",
+        data: {
+          questions: [
+            {
+              question: "Apa fungsi utama wearable dalam kesehatan jantung?",
+              options: [
+                "Mengukur kadar gula darah",
+                "Memantau detak jantung",
+                "Mendiagnosis pasti aritmia",
+                "Memberikan obat otomatis",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "Wearable memantau detak jantung secara berkelanjutan untuk mendeteksi kelainan.",
+            },
+            {
+              question: "Apakah wearable dapat menggantikan dokter?",
+              options: ["Ya", "Tidak"],
+              correctAnswer: 1,
+              explanation:
+                "Wearable hanya alat bantu, diagnosis medis tetap harus dilakukan oleh dokter.",
+            },
+          ],
+        },
+      },
+      {
+        id: "simulator-2",
+        type: "simulator",
+        title: "Simulasi Data Wearable",
+        data: {
+          scenarios: [
+            {
+              name: "Detak Normal",
+              heartRate: 72,
+              rhythm: "Teratur",
+              symptoms: ["Tidak ada gejala"],
+              ekgPath: "M0 50 l10 0 l5 -15 l5 15 l10 0 l5 -35 l5 35 l10 0",
+              pWave: true,
+              qrsWidth: "Normal",
+              prInterval: "Normal",
+            },
+            {
+              name: "Deteksi AFib",
+              heartRate: 130,
+              rhythm: "Tidak teratur",
+              symptoms: ["Palpitasi", "Sesak napas"],
+              ekgPath: "M0 50 q5 5 10 0 t10 -3 t10 4 t10 -2 l5 -25 l5 25",
+              pWave: false,
+              qrsWidth: "Normal",
+              prInterval: "Tidak terlihat",
+            },
+          ],
+        },
+      },
+    ],
+    author: "Tim Kardiologiku",
+    publishDate: "2024-02-18",
+    image: "/images/wearable.png",
+  },
+  {
+    id: "7",
+    title: "Kasus Nyata: Manajemen Aritmia pada Lansia",
+    category: "Kasus Klinis",
+    difficulty: "Lanjut",
+    duration: 18,
+    readCount: 980,
+    rating: 4.95,
+    tags: ["Kasus Klinis", "Lansia", "Pengobatan"],
+    excerpt:
+      "Belajar dari studi kasus nyata tentang bagaimana aritmia ditangani pada pasien lansia dengan penyakit penyerta.",
+    content: `Studi kasus ini menggambarkan seorang pasien berusia 72 tahun dengan fibrilasi atrium dan hipertensi.
+
+**Profil Pasien:**
+- Usia: 72 tahun
+- Riwayat: Hipertensi, Diabetes tipe 2
+- Gejala: Palpitasi, mudah lelah, pusing
+
+**Pendekatan Pengobatan:**
+1. **Antikoagulan**: Untuk mencegah stroke.
+2. **Beta-blocker**: Mengontrol detak jantung.
+3. **Manajemen Komorbiditas**: Kontrol gula darah & tekanan darah.
+4. **Edukasi Pasien**: Diet sehat, olahraga ringan.
+
+**Hasil:** 
+Setelah 6 bulan pengobatan, gejala berkurang, risiko stroke terkendali, dan kualitas hidup meningkat.`,
+
+    interactiveElements: [
+      {
+        id: "quiz-5",
+        type: "quiz",
+        title: "Kuis: Kasus Klinis Lansia",
+        data: {
+          questions: [
+            {
+              question: "Apa risiko utama AFib pada pasien lansia?",
+              options: ["Stroke", "Asma", "Hipotiroid", "Infeksi"],
+              correctAnswer: 0,
+              explanation:
+                "AFib meningkatkan risiko stroke terutama pada pasien lansia dengan komorbiditas.",
+            },
+            {
+              question:
+                "Apa yang sebaiknya dilakukan selain pengobatan untuk pasien ini?",
+              options: [
+                "Tidur cukup dan diet sehat",
+                "Hentikan semua obat",
+                "Olahraga berat",
+                "Mengurangi tidur",
+              ],
+              correctAnswer: 0,
+              explanation:
+                "Perubahan gaya hidup sehat mendukung keberhasilan pengobatan.",
+            },
+          ],
+        },
+      },
+      {
+        id: "checklist-3",
+        type: "checklist",
+        title: "Checklist Perawatan Pasien Lansia",
+        data: {
+          items: [
+            { text: "Minum obat sesuai resep", category: "Pengobatan" },
+            { text: "Cek tekanan darah harian", category: "Pemantauan" },
+            { text: "Diet rendah garam", category: "Diet" },
+            { text: "Olahraga ringan jalan kaki", category: "Olahraga" },
+            { text: "Kunjungan dokter rutin", category: "Pemantauan" },
+          ],
+        },
+      },
+    ],
+    author: "Tim Kardiologiku",
+    publishDate: "2024-02-25",
+    image: "/images/kasus_lansia.png",
+  },
 ];
 
 const categories: string[] = [
