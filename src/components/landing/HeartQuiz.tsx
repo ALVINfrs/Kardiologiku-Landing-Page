@@ -535,17 +535,17 @@ export default function HeartQuiz() {
 
           <Separator />
 
-          <div className="h-[200px] mt-4 overflow-hidden">
+          <div className="w-full h-[350px] mt-4 overflow-x-hidden">
             <ChartContainer
               config={{
                 bpm: { label: "BPM", color: "hsl(var(--primary))" },
               }}
-              className="dark:bg-slate-900 h-full"
+              className="dark:bg-slate-900 h-full w-full"
             >
               <ResponsiveContainer width="100%" height="100%">
                 <RechartsBarChart
                   data={chartData}
-                  margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                  margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
                 >
                   <CartesianGrid
                     strokeDasharray="3 3"
@@ -553,12 +553,12 @@ export default function HeartQuiz() {
                   />
                   <XAxis
                     dataKey="name"
-                    className="dark:text-slate-400"
                     fontSize={12}
+                    className="dark:text-slate-400"
                   />
                   <YAxis
-                    className="dark:text-slate-400"
                     fontSize={12}
+                    className="dark:text-slate-400"
                     domain={[0, 200]}
                   />
                   <ChartTooltip content={<ChartTooltipContent />} />
@@ -894,7 +894,7 @@ export default function HeartQuiz() {
   };
 
   return (
-    <div className="max-w-full bg-background mx-auto p-6">
+    <div className="max-w-full overflow-x-hidden bg-background mx-auto p-6">
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as typeof activeTab)}
