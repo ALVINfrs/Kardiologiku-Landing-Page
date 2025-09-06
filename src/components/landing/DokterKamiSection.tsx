@@ -1036,7 +1036,10 @@ const DokterDetailView = ({
   );
 
   return (
-    <div ref={detailRef} className="space-y-8 animate-fade-in">
+    <div
+      ref={detailRef}
+      className="space-y-8 animate-fade-in pb-28 md:pb-0 px-4 sm:px-6 lg:px-8"
+    >
       {/* Header */}
       <div className="relative">
         <button
@@ -1114,43 +1117,37 @@ const DokterDetailView = ({
         onValueChange={(val) => setActiveTab(val)}
         className="space-y-6"
       >
-        <TabsList className="justify-center bg-transparent border-b dark:border-gray-700">
-          <TabsTrigger
-            value="profil"
-            className="flex items-center gap-2 px-6 py-3"
-          >
-            <Users className="h-4 w-4" />
-            Profil & Jadwal
-          </TabsTrigger>
-          <TabsTrigger
-            value="ulasan"
-            className="flex items-center gap-2 px-6 py-3"
-          >
-            <Star className="h-4 w-4" />
-            Ulasan ({selectedDokter.reviewsCount})
-          </TabsTrigger>
-          <TabsTrigger
-            value="publikasi"
-            className="flex items-center gap-2 px-6 py-3"
-          >
-            <BookOpen className="h-4 w-4" />
-            Publikasi & Pencapaian
-          </TabsTrigger>
-          <TabsTrigger
-            value="kasus"
-            className="flex items-center gap-2 px-6 py-3"
-          >
-            <Activity className="h-4 w-4" />
-            Studi Kasus
-          </TabsTrigger>
-          <TabsTrigger
-            value="statistik"
-            className="flex items-center gap-2 px-6 py-3"
-          >
-            <BarChart className="h-4 w-4" />
-            Statistik
-          </TabsTrigger>
-        </TabsList>
+        <div className="grid grid-cols-2 gap-2 px-2 mb-6">
+          <TabsList className="contents bg-transparent border-b dark:border-gray-700">
+            <TabsTrigger className="justify-center px-4 py-3" value="profil">
+              <Users className="h-4 w-4" />
+              Profil & Jadwal
+            </TabsTrigger>
+
+            <TabsTrigger className="justify-center px-4 py-3" value="ulasan">
+              <Star className="h-4 w-4" />
+              Ulasan ({selectedDokter.reviewsCount})
+            </TabsTrigger>
+
+            <TabsTrigger
+              className="justify-center px-4 py-3 col-span-2"
+              value="publikasi"
+            >
+              <BookOpen className="h-4 w-4" />
+              Publikasi & Pencapaian
+            </TabsTrigger>
+
+            <TabsTrigger className="justify-center px-4 py-3" value="kasus">
+              <Activity className="h-4 w-4" />
+              Studi Kasus
+            </TabsTrigger>
+
+            <TabsTrigger className="justify-center px-4 py-3" value="statistik">
+              <BarChart className="h-4 w-4" />
+              Statistik
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="profil" className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1287,7 +1284,6 @@ const DokterDetailView = ({
             </div>
           </div>
         </TabsContent>
-
         <TabsContent value="ulasan" className="space-y-8">
           {/* Review Summary */}
           <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl p-8 shadow-md">
@@ -1345,7 +1341,6 @@ const DokterDetailView = ({
             )}
           </div>
         </TabsContent>
-
         <TabsContent value="publikasi" className="space-y-8">
           {/* Achievements */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
@@ -1416,7 +1411,6 @@ const DokterDetailView = ({
             </div>
           </div>
         </TabsContent>
-
         <TabsContent value="kasus" className="space-y-8">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
             <h4 className="font-bold flex items-center gap-2 mb-6 text-gray-800 dark:text-gray-200 text-xl">
@@ -1450,7 +1444,6 @@ const DokterDetailView = ({
             )}
           </div>
         </TabsContent>
-
         <TabsContent value="statistik" className="space-y-8">
           {/* Monthly Patients Chart */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
@@ -1506,8 +1499,8 @@ const DokterDetailView = ({
       </Tabs>
 
       {/* Footer Actions */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t dark:border-gray-700 p-6 shadow-lg z-50 md:static md:shadow-none md:border-0 md:p-0">
-        <div className="flex flex-col md:flex-row gap-4 justify-center max-w-4xl mx-auto">
+      <div className="bg-white dark:bg-gray-900 border-t dark:border-gray-700 p-3 shadow-lg z-50 md:static md:shadow-none md:border-0 md:p-0">
+        <div className="flex flex-col md:flex-row gap-2 justify-center max-w-4xl mx-auto">
           <Button
             size="lg"
             className="bg-red-600 hover:bg-red-700 flex items-center gap-2 flex-1"
