@@ -1693,66 +1693,77 @@ const InteractiveEducationSection: React.FC = () => {
           <AnimatePresence>
             {selectedArticle && (
               <DialogContent className="max-w-full sm:max-w-8xl h-[100vh] flex flex-col p-0">
-                <motion.div
-                  initial={{ y: -50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                >
-                  <div className="relative h-64 sm:h-72 w-full">
-                    <img
-                      src={selectedArticle.image}
-                      alt={selectedArticle.title}
-                      className="absolute inset-0 w-full h-full object-cover z-0"
-                    />
-                    {/* Tombol Close di sudut kanan atas */}
-                    <Button
-                      onClick={() => setSelectedArticle(null)}
-                      className="absolute top-4 right-4 bg-white/80 dark:bg-gray-800/80 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-2 h-10 w-10 z-10"
-                      aria-label="Close"
-                    >
-                      <XCircle className="h-6 w-6 text-gray-800 dark:text-gray-200" />
-                    </Button>
-                  </div>
-                  <DialogHeader className="p-4 sm:p-6 text-left">
-                    <DialogTitle className="text-2xl sm:text-3xl">
-                      {selectedArticle.title}
-                    </DialogTitle>
-                    <div className="text-sm text-gray-500 dark:text-gray-400 flex flex-col sm:flex-row gap-2 sm:gap-4 pt-2">
-                      <span>Oleh: {selectedArticle.author}</span>
-                      <span>
-                        <Calendar className="inline h-4 w-4 mr-1" />
-                        {selectedArticle.publishDate}
-                      </span>
-                    </div>
-                  </DialogHeader>
-                </motion.div>
-
-                <div className="flex-grow overflow-y-auto px-4 sm:px-6 pb-6 custom-scrollbar">
-                  <div
-                    className="prose dark:prose-invert max-w-none mb-8"
-                    dangerouslySetInnerHTML={{
-                      __html: selectedArticle.content.replace(/\n/g, "<br />"),
-                    }}
-                  />
-
-                  <Separator className="my-8" />
-
-                  <div className="space-y-6">
-                    {selectedArticle.interactiveElements.map((el) => (
-                      <Card
-                        key={el.id}
-                        className="mb-6 bg-gray-50 dark:bg-gray-900/50"
+                {/* Bikin semua isi bisa discroll */}
+                <div className="flex-grow overflow-y-auto custom-scrollbar">
+                  <motion.div
+                    initial={{ y: -50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                  >
+                    {/* Header Image */}
+                    <div className="w-full h-64 sm:h-72 relative">
+                      <img
+                        src={selectedArticle.image}
+                        alt={selectedArticle.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Close Button absolute */}
+                      <Button
+                        onClick={() => setSelectedArticle(null)}
+                        className="absolute top-4 right-4 bg-white/80 dark:bg-gray-800/80 
+                     hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full 
+                     p-2 h-10 w-10 z-10"
+                        aria-label="Close"
                       >
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2">
-                            <Zap size={20} className="text-yellow-500" />
-                            {el.title}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          {renderInteractiveElement(el)}
-                        </CardContent>
-                      </Card>
-                    ))}
+                        <XCircle className="h-6 w-6 text-gray-800 dark:text-gray-200" />
+                      </Button>
+                    </div>
+
+                    <DialogHeader className="p-4 sm:p-6 text-left">
+                      <DialogTitle className="text-2xl sm:text-3xl">
+                        {selectedArticle.title}
+                      </DialogTitle>
+                      <div className="text-sm text-gray-500 dark:text-gray-400 flex flex-col sm:flex-row gap-2 sm:gap-4 pt-2">
+                        <span>Oleh: {selectedArticle.author}</span>
+                        <span>
+                          <Calendar className="inline h-4 w-4 mr-1" />
+                          {selectedArticle.publishDate}
+                        </span>
+                      </div>
+                    </DialogHeader>
+                  </motion.div>
+
+                  {/* Konten Artikel */}
+                  <div className="px-4 sm:px-6 pb-6">
+                    <div
+                      className="prose dark:prose-invert max-w-none mb-8"
+                      dangerouslySetInnerHTML={{
+                        __html: selectedArticle.content.replace(
+                          /\n/g,
+                          "<br />"
+                        ),
+                      }}
+                    />
+
+                    <Separator className="my-8" />
+
+                    <div className="space-y-6">
+                      {selectedArticle.interactiveElements.map((el) => (
+                        <Card
+                          key={el.id}
+                          className="mb-6 bg-gray-50 dark:bg-gray-900/50"
+                        >
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <Zap size={20} className="text-yellow-500" />
+                              {el.title}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            {renderInteractiveElement(el)}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </DialogContent>
