@@ -21,6 +21,7 @@ import LifestyleImpactSimulator from "./components/landing/LifestyleImpactSimula
 import PersonalizedActionPlanner from "./components/landing/PersonalizedActionPlanner";
 import ECG12LeadSimulatorSuite from "./components/landing/ECG12LeadSimulatorSuite";
 import HeartQuiz from "./components/landing/HeartQuiz";
+import ApotekDigitalSection from "./components/landing/ApotekDigitalSection";
 const KardiologikuLandingPage = () => {
   const [isLoading, setIsLoading] = useState(true); // <-- TAMBAHKAN STATE LOADING
 
@@ -59,6 +60,7 @@ const KardiologikuLandingPage = () => {
         <FiturSection />
         <AritmiaMythBuster />
         <PengingatObatSection />
+        <ApotekDigitalSection />
         <WebAppShowcaseSection />
         <TestimoniSection />
         <Faq />
