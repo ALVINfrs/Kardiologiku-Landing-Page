@@ -22,6 +22,7 @@ import PersonalizedActionPlanner from "./components/landing/PersonalizedActionPl
 import ECG12LeadSimulatorSuite from "./components/landing/ECG12LeadSimulatorSuite";
 import HeartQuiz from "./components/landing/HeartQuiz";
 import ApotekDigitalSection from "./components/landing/ApotekDigitalSection";
+import { Toaster } from "sonner";
 const KardiologikuLandingPage = () => {
   const [isLoading, setIsLoading] = useState(true); // <-- TAMBAHKAN STATE LOADING
 
@@ -41,32 +42,35 @@ const KardiologikuLandingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      <main>
-        <HeroSection />
-        <TentangAritmiaSection />
-        <ECG12LeadSimulatorSuite />
-        <ArrhythmiaClinicalCommand />
-        <LifestyleImpactSimulator />
-        <PersonalizedActionPlanner />
-        <InteractiveEducationSection />
-        <HeartQuiz />
-        <AritmiaComandCenter />
-        <FoodJournalSection />
-        <HeartRiskCalculator />
-        <DokterKamiSection />
-        <ObatTerapiSection />
-        <FiturSection />
-        <AritmiaMythBuster />
-        <PengingatObatSection />
-        <ApotekDigitalSection />
-        <WebAppShowcaseSection />
-        <TestimoniSection />
-        <Faq />
-        <KontakFooterSection />
-      </main>
-    </div>
+    <>
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <main>
+          <HeroSection />
+          <TentangAritmiaSection />
+          <ECG12LeadSimulatorSuite />
+          <ArrhythmiaClinicalCommand />
+          <LifestyleImpactSimulator />
+          <PersonalizedActionPlanner />
+          <InteractiveEducationSection />
+          <HeartQuiz />
+          <AritmiaComandCenter />
+          <FoodJournalSection />
+          <HeartRiskCalculator />
+          <DokterKamiSection />
+          <ObatTerapiSection />
+          <FiturSection />
+          <AritmiaMythBuster />
+          <PengingatObatSection />
+          <ApotekDigitalSection />
+          <WebAppShowcaseSection />
+          <TestimoniSection />
+          <Faq />
+          <KontakFooterSection />
+        </main>
+      </div>
+      <Toaster richColors position="top-right" />
+    </>
   );
 };
 
