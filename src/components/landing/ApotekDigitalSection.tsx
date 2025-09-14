@@ -37,7 +37,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/lib/CartContext";
+import { useCart } from "@/hooks/useCart";
 
 // --- TIPE DATA YANG LEBIH KOMPLEKS ---
 type ProductCategory =
@@ -276,7 +276,9 @@ const CartPanel = () => {
                         className="w-16 h-16 rounded-md object-cover"
                       />
                       <div className="flex-grow">
-                        <p className="font-semibold leading-tight">{item.name}</p>
+                        <p className="font-semibold leading-tight">
+                          {item.name}
+                        </p>
                         <p className="text-sm text-gray-500">
                           Rp{item.price.toLocaleString("id-ID")}
                         </p>
@@ -291,7 +293,9 @@ const CartPanel = () => {
                           >
                             <Minus className="h-4 w-4" />
                           </Button>
-                          <span className="w-4 text-center">{item.quantity}</span>
+                          <span className="w-4 text-center">
+                            {item.quantity}
+                          </span>
                           <Button
                             size="icon"
                             variant="outline"
@@ -659,8 +663,7 @@ const ApotekDigitalSection = () => {
                         <Card
                           className={cn(
                             "h-full flex flex-col group overflow-hidden transition-all duration-300 hover:shadow-xl dark:hover:shadow-gray-800/60",
-                            product.isFeatured &&
-                              "border-blue-500 border-2"
+                            product.isFeatured && "border-blue-500 border-2"
                           )}
                         >
                           <div className="relative">
@@ -813,7 +816,8 @@ const ApotekDigitalSection = () => {
                       <div className="flex items-center">
                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
                         <span className="text-sm ml-1">
-                          {selectedProduct.rating} ({selectedProduct.reviews} ulasan)
+                          {selectedProduct.rating} ({selectedProduct.reviews}{" "}
+                          ulasan)
                         </span>
                       </div>
                     </DialogDescription>
@@ -991,7 +995,9 @@ const ApotekDigitalSection = () => {
                     </div>
                   )}
                   <DialogFooter>
-                    <Button onClick={() => setIsAiModalOpen(false)}>Tutup</Button>
+                    <Button onClick={() => setIsAiModalOpen(false)}>
+                      Tutup
+                    </Button>
                   </DialogFooter>
                 </motion.div>
               </DialogContent>
