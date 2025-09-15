@@ -204,11 +204,17 @@ const Navbar = () => {
           <AnimatedLogo />
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4">
             {navLinks.map((link) => (
               <NavLink key={link.href} {...link} />
             ))}
-            <Button className="bg-red-600 hover:bg-red-700">Konsultasi</Button>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline">Login</Button>
+              <Button variant="secondary">Register</Button>
+              <Button className="bg-red-600 hover:bg-red-700">
+                Konsultasi
+              </Button>
+            </div>
             <CartButton />
             <Button
               variant="ghost"
@@ -267,9 +273,15 @@ const Navbar = () => {
                 {navLinks.map((link) => (
                   <MobileNavLink key={link.href} {...link} />
                 ))}
-                <div className="px-3 py-2">
+                <div className="px-3 pt-4 pb-2 space-y-2 border-t">
                   <Button className="w-full bg-red-600 hover:bg-red-700">
                     Konsultasi Sekarang
+                  </Button>
+                  <Button variant="outline" className="w-full">
+                    Login
+                  </Button>
+                  <Button variant="secondary" className="w-full">
+                    Register
                   </Button>
                 </div>
               </div>
