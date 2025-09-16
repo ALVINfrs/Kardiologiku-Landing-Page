@@ -61,41 +61,42 @@ type Thread = {
 
 // --- 2. DATA DUMMY AWAL (SEED DATA) ---
 const seedData: Thread[] = [
+  // Utas 1: Diagnosis Baru (dari sebelumnya, sedikit diperkaya)
   {
     id: "thread-01",
-    title: "Baru didiagnosis dengan Aritmia, harus mulai dari mana?",
+    title: "Baru didiagnosis dengan Fibrilasi Atrium, harus mulai dari mana?",
     author: {
       name: "CemasTapiSemangat",
       avatarUrl: "https://github.com/shadcn.png",
       initials: "CS",
     },
     content:
-      "Halo semua, saya baru saja keluar dari RS dan dokter bilang saya punya Fibrilasi Atrium. Rasanya sedikit takut dan bingung harus berbuat apa sekarang. Apakah ada saran untuk langkah pertama?",
+      "Halo semua, saya baru saja keluar dari RS dan dokter bilang saya punya Fibrilasi Atrium. Rasanya sedikit takut dan bingung harus berbuat apa sekarang. Apakah ada saran untuk langkah pertama? Jujur, saya sangat khawatir.",
     createdAt: "2 hari yang lalu",
-    tags: ["Aritmia", "Pemula", "Dukungan"],
-    likes: 42,
+    tags: ["Aritmia", "Fibrilasi Atrium", "Pemula", "Dukungan"],
+    likes: 48,
     replies: [
       {
         id: "reply-001",
         parentId: null,
         author: {
           name: "SeniorUser",
-          avatarUrl: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+          avatarUrl: "https://i.pravatar.cc/150?u=SeniorUser",
           initials: "SU",
         },
         createdAt: "2 hari yang lalu",
-        likes: 18,
+        likes: 22,
         content:
-          "Jangan panik, perasaanmu sangat wajar. Coba deh baca bagian **AritmiaMythBuster** di aplikasi ini, sangat membantu!",
+          "Jangan panik, perasaanmu sangat wajar. Hampir semua dari kita pernah di posisi itu. Coba deh baca bagian **AritmiaMythBuster** di aplikasi ini, sangat membantu menenangkan pikiran dari mitos-mitos yang salah. Tetap semangat ya!",
       },
       {
         id: "reply-002",
         parentId: null,
         author: { name: "DokterBot", avatarUrl: "/Logo.png", initials: "DB" },
         createdAt: "2 hari yang lalu",
-        likes: 25,
+        likes: 35,
         content:
-          "Selamat datang! Langkah pertama yang baik adalah memahami kondisi Anda. Coba mulai dengan **Modul Edukasi Interaktif**.",
+          "Selamat datang! Memahami kondisi Anda adalah langkah pertama yang krusial. Kami sarankan untuk memulai dengan **Modul Edukasi Interaktif** dan mencatat gejala harian Anda di **AritmiaCommandCenter**.",
       },
       {
         id: "reply-003",
@@ -106,25 +107,394 @@ const seedData: Thread[] = [
           initials: "CS",
         },
         createdAt: "1 hari yang lalu",
-        likes: 5,
-        content: "Terima kasih sarannya @SeniorUser, saya akan coba lihat.",
+        likes: 9,
+        content:
+          "Terima kasih banyak sarannya @SeniorUser, saya akan coba lihat. Senang rasanya tahu saya tidak sendirian di sini.",
+      },
+      {
+        id: "reply-004",
+        parentId: "reply-001",
+        author: {
+          name: "PejuangJantungLain",
+          avatarUrl: "https://i.pravatar.cc/150?u=Pejuang",
+          initials: "PJ",
+        },
+        createdAt: "1 hari yang lalu",
+        likes: 15,
+        content:
+          "Setuju dengan @SeniorUser. Dulu saya takut sekali, tapi setelah belajar lebih banyak, jadi lebih bisa mengontrol kondisi. Kamu juga pasti bisa!",
       },
     ],
   },
+
+  // Utas 2: Gaya Hidup & Olahraga
+  {
+    id: "thread-03",
+    title: "Olahraga yang Aman untuk Penderita Aritmia?",
+    author: {
+      name: "FitHeart",
+      avatarUrl: "https://i.pravatar.cc/150?u=FitHeart",
+      initials: "FH",
+    },
+    content:
+      "Dokter menyarankan untuk tetap aktif, tapi saya takut olahraga malah memicu aritmia saya (SVT). Ada yang punya pengalaman olahraga apa yang aman tapi tetap efektif? Saya rindu jogging, tapi khawatir.",
+    createdAt: "8 hari yang lalu",
+    tags: ["Olahraga", "Gaya Hidup", "SVT", "Tips"],
+    likes: 112,
+    replies: [
+      {
+        id: "reply-005",
+        parentId: null,
+        author: {
+          name: "YogaJoy",
+          avatarUrl: "https://i.pravatar.cc/150?u=YogaJoy",
+          initials: "YJ",
+        },
+        createdAt: "8 hari yang lalu",
+        likes: 45,
+        content:
+          "Saya sangat merekomendasikan yoga dan tai chi. Intensitasnya rendah tapi sangat bagus untuk melatih pernapasan dan menenangkan sistem saraf. Benar-benar mengubah hidup saya.",
+      },
+      {
+        id: "reply-006",
+        parentId: null,
+        author: { name: "DokterBot", avatarUrl: "/Logo.png", initials: "DB" },
+        createdAt: "7 hari yang lalu",
+        likes: 50,
+        content:
+          "Penting untuk selalu berkonsultasi dengan dokter Anda sebelum memulai program olahraga baru. Umumnya, jalan cepat, berenang, dan bersepeda dengan intensitas sedang dianggap aman. Gunakan fitur **LifestyleImpactSimulator** untuk melihat potensi efek aktivitas pada EKG Anda.",
+      },
+      {
+        id: "reply-007",
+        parentId: "reply-005",
+        author: {
+          name: "FitHeart",
+          avatarUrl: "https://i.pravatar.cc/150?u=FitHeart",
+          initials: "FH",
+        },
+        createdAt: "6 hari yang lalu",
+        likes: 12,
+        content:
+          "Terima kasih @YogaJoy, saya belum pernah mencoba yoga. Mungkin ini saat yang tepat untuk mulai. Apakah ada kelas khusus untuk pemula?",
+      },
+    ],
+  },
+
+  // Utas 3: Obat-obatan
+  {
+    id: "thread-04",
+    title: "Efek Samping Obat Beta Blocker, Ada yang Sama?",
+    author: {
+      name: "TanyaObat",
+      avatarUrl: "https://i.pravatar.cc/150?u=TanyaObat",
+      initials: "TO",
+    },
+    content:
+      "Saya baru mulai minum Bisoprolol seminggu ini. Detak jantung memang lebih teratur, tapi badan rasanya lemas dan gampang capek. Apakah ini normal di awal-awal? Kapan biasanya efek ini berkurang?",
+    createdAt: "12 hari yang lalu",
+    tags: ["Obat", "Beta Blocker", "Efek Samping"],
+    likes: 95,
+    replies: [
+      {
+        id: "reply-008",
+        parentId: null,
+        author: {
+          name: "PenggunaLama",
+          avatarUrl: "https://i.pravatar.cc/150?u=PenggunaLama",
+          initials: "PL",
+        },
+        createdAt: "12 hari yang lalu",
+        likes: 33,
+        content:
+          "Sama banget! Saya juga begitu di 2-3 minggu pertama. Rasanya seperti zombi. Tapi setelah itu tubuh mulai beradaptasi kok. Coba sabar sedikit lagi, tapi kalau parah banget, lapor ke dokter ya.",
+      },
+      {
+        id: "reply-009",
+        parentId: "reply-008",
+        author: {
+          name: "TanyaObat",
+          avatarUrl: "https://i.pravatar.cc/150?u=TanyaObat",
+          initials: "TO",
+        },
+        createdAt: "11 hari yang lalu",
+        likes: 8,
+        content:
+          "Wah, syukurlah kalau ini umum terjadi. Terima kasih infonya, jadi sedikit lebih tenang.",
+      },
+    ],
+  },
+
+  // Utas 4: Prosedur Medis
+  {
+    id: "thread-05",
+    title: "Pengalaman Ablasi Kateter - Bagikan Ceritamu!",
+    author: {
+      name: "CalonAblasi",
+      avatarUrl: "https://i.pravatar.cc/150?u=CalonAblasi",
+      initials: "CA",
+    },
+    content:
+      "Halo teman-teman, dokter merekomendasikan saya untuk menjalani prosedur ablasi kateter bulan depan. Jujur saya sangat gugup. Ada yang bisa berbagi pengalaman dari sebelum, saat, dan sesudah prosedur? Apa saja yang perlu saya siapkan?",
+    createdAt: "1 bulan yang lalu",
+    tags: ["Ablasi", "Prosedur", "Berbagi"],
+    likes: 250,
+    replies: [
+      {
+        id: "reply-010",
+        parentId: null,
+        author: {
+          name: "SudahLewat",
+          avatarUrl: "https://i.pravatar.cc/150?u=SudahLewat",
+          initials: "SL",
+        },
+        createdAt: "1 bulan yang lalu",
+        likes: 88,
+        content:
+          "Saya ablasi 6 bulan lalu. Gugup itu pasti! Prosedurnya sendiri tidak sakit karena dibius. Bagian paling tidak nyaman mungkin saat harus berbaring diam selama beberapa jam setelahnya. Tapi hasilnya sepadan, kualitas hidup saya meningkat drastis! Siapkan saja mental dan bawa buku atau musik untuk hiburan pasca-tindakan.",
+      },
+      {
+        id: "reply-011",
+        parentId: "reply-010",
+        author: {
+          name: "CalonAblasi",
+          avatarUrl: "https://i.pravatar.cc/150?u=CalonAblasi",
+          initials: "CA",
+        },
+        createdAt: "28 hari yang lalu",
+        likes: 20,
+        content:
+          "Terima kasih banyak sudah berbagi @SudahLewat! Ceritamu sangat memotivasi. Tips bawa hiburan sangat berguna!",
+      },
+    ],
+  },
+
+  // Utas 5: Diet (dari sebelumnya)
   {
     id: "thread-02",
     title: "Tips Diet Rendah Garam yang Enak?",
     author: {
       name: "JuruMasakJantung",
-      avatarUrl: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+      avatarUrl: "https://i.pravatar.cc/150?u=JuruMasakJantung",
       initials: "JM",
     },
     content:
-      "Ada yang punya resep atau tips supaya makanan rendah garam tetap terasa lezat? Sudah coba beberapa resep tapi rasanya hambar sekali.",
-    createdAt: "5 hari yang lalu",
+      "Ada yang punya resep atau tips supaya makanan rendah garam tetap terasa lezat? Sudah coba beberapa resep tapi rasanya hambar sekali. Butuh inspirasi!",
+    createdAt: "1 bulan yang lalu",
     tags: ["Diet", "Nutrisi", "Resep"],
     likes: 78,
-    replies: [],
+    replies: [
+      {
+        id: "reply-012",
+        parentId: null,
+        author: {
+          name: "RajaRempah",
+          avatarUrl: "https://i.pravatar.cc/150?u=RajaRempah",
+          initials: "RR",
+        },
+        createdAt: "25 hari yang lalu",
+        likes: 40,
+        content:
+          "Kuncinya ada di rempah-rempah! Bawang putih, bawang bombay, lada hitam, jintan, ketumbar, dan perasan lemon/jeruk nipis bisa jadi pengganti rasa asin. Coba deh tumis sayuran pakai banyak bawang putih dan sedikit lada.",
+      },
+    ],
+  },
+  {
+    id: "thread-06",
+    title: "Butuh Semangat Saat Down dengan Kondisi Jantung",
+    author: {
+      name: "HatiRapuh",
+      avatarUrl: "https://i.pravatar.cc/150?u=HatiRapuh",
+      initials: "HR",
+    },
+    content:
+      "Kadang saya merasa minder karena kondisi ini. Apalagi kalau lihat teman sebaya masih bebas olahraga ekstrem. Ada yang pernah merasa seperti ini? Bagaimana cara kalian bangkit?",
+    createdAt: "3 minggu yang lalu",
+    tags: ["Motivasi", "Mental Health", "Dukungan"],
+    likes: 130,
+    replies: [
+      {
+        id: "reply-013",
+        parentId: null,
+        author: {
+          name: "SupportiveSoul",
+          avatarUrl: "https://i.pravatar.cc/150?u=SupportiveSoul",
+          initials: "SS",
+        },
+        createdAt: "3 minggu yang lalu",
+        likes: 60,
+        content:
+          "Saya pernah banget. Yang membantu saya adalah bergabung di komunitas seperti forum ini. Jangan lupa, kekuatan mental sama pentingnya dengan fisik!",
+      },
+      {
+        id: "reply-014",
+        parentId: null,
+        author: { name: "DokterBot", avatarUrl: "/Logo.png", initials: "DB" },
+        createdAt: "3 minggu yang lalu",
+        likes: 75,
+        content:
+          "Cobalah latihan mindfulness atau journaling. Studi menunjukkan teknik ini bisa menurunkan kecemasan pada pasien dengan aritmia.",
+      },
+    ],
+  },
+
+  // Utas 7: Teknologi & Gadget
+  {
+    id: "thread-07",
+    title: "Smartwatch untuk Monitoring Detak Jantung?",
+    author: {
+      name: "GadgetLover",
+      avatarUrl: "https://i.pravatar.cc/150?u=GadgetLover",
+      initials: "GL",
+    },
+    content:
+      "Ada rekomendasi smartwatch yang akurat buat monitor aritmia? Saya lihat ada fitur ECG di beberapa merk. Apa benar-benar berguna?",
+    createdAt: "10 hari yang lalu",
+    tags: ["Teknologi", "Wearable", "EKG"],
+    likes: 85,
+    replies: [
+      {
+        id: "reply-015",
+        parentId: null,
+        author: {
+          name: "TechieHeart",
+          avatarUrl: "https://i.pravatar.cc/150?u=TechieHeart",
+          initials: "TH",
+        },
+        createdAt: "9 hari yang lalu",
+        likes: 30,
+        content:
+          "Saya pakai Apple Watch. Fiturnya bagus untuk deteksi AFib, walau tetap harus konfirmasi ke dokter.",
+      },
+      {
+        id: "reply-016",
+        parentId: null,
+        author: { name: "DokterBot", avatarUrl: "/Logo.png", initials: "DB" },
+        createdAt: "9 hari yang lalu",
+        likes: 55,
+        content:
+          "Benar, smartwatch bisa membantu pemantauan, tapi jangan dijadikan satu-satunya alat diagnosis. Gunakan bersama catatan gejala harian.",
+      },
+    ],
+  },
+
+  // Utas 8: Tips Tidur
+  {
+    id: "thread-08",
+    title: "Sulit Tidur karena Jantung Berdebar",
+    author: {
+      name: "InsomniaJantung",
+      avatarUrl: "https://i.pravatar.cc/150?u=InsomniaJantung",
+      initials: "IJ",
+    },
+    content:
+      "Setiap malam saya sering merasa jantung berdebar kencang. Akibatnya sulit tidur. Ada tips supaya bisa tidur lebih nyenyak?",
+    createdAt: "5 hari yang lalu",
+    tags: ["Tidur", "Kesehatan Mental", "Tips"],
+    likes: 102,
+    replies: [
+      {
+        id: "reply-017",
+        parentId: null,
+        author: {
+          name: "CalmMind",
+          avatarUrl: "https://i.pravatar.cc/150?u=CalmMind",
+          initials: "CM",
+        },
+        createdAt: "5 hari yang lalu",
+        likes: 41,
+        content:
+          "Coba ritual tidur: matikan gadget 1 jam sebelum tidur, lakukan pernapasan 4-7-8, dan dengarkan musik tenang. Lumayan efektif buat saya.",
+      },
+      {
+        id: "reply-018",
+        parentId: null,
+        author: { name: "DokterBot", avatarUrl: "/Logo.png", initials: "DB" },
+        createdAt: "5 hari yang lalu",
+        likes: 50,
+        content:
+          "Bila gejala berdebar sangat sering muncul malam hari, sebaiknya diskusikan dengan dokter karena bisa terkait pola aritmia tertentu.",
+      },
+    ],
+  },
+
+  // Utas 9: Pengalaman dengan Caffeine
+  {
+    id: "thread-09",
+    title: "Apakah Kopi Masih Aman untuk Penderita Aritmia?",
+    author: {
+      name: "CoffeeAddict",
+      avatarUrl: "https://i.pravatar.cc/150?u=CoffeeAddict",
+      initials: "CA",
+    },
+    content:
+      "Saya pecinta kopi. Tapi sejak didiagnosis aritmia, saya ragu apakah masih boleh minum kopi. Ada yang punya pengalaman?",
+    createdAt: "20 hari yang lalu",
+    tags: ["Kopi", "Diet", "Gaya Hidup"],
+    likes: 190,
+    replies: [
+      {
+        id: "reply-019",
+        parentId: null,
+        author: {
+          name: "CoffeeSafe",
+          avatarUrl: "https://i.pravatar.cc/150?u=CoffeeSafe",
+          initials: "CS",
+        },
+        createdAt: "20 hari yang lalu",
+        likes: 60,
+        content:
+          "Saya masih minum 1 cangkir per hari, aman. Tapi kalau lebih dari itu, biasanya jantung saya berdebar.",
+      },
+      {
+        id: "reply-020",
+        parentId: null,
+        author: { name: "DokterBot", avatarUrl: "/Logo.png", initials: "DB" },
+        createdAt: "19 hari yang lalu",
+        likes: 80,
+        content:
+          "Konsumsi kafein berbeda efeknya tiap orang. Rata-rata aman bila <200mg/hari, tapi pantau reaksi tubuh Anda.",
+      },
+    ],
+  },
+
+  // Utas 10: Aktivitas Sehari-hari
+  {
+    id: "thread-10",
+    title: "Apakah Bisa Bekerja Normal dengan Aritmia?",
+    author: {
+      name: "WorkerBee",
+      avatarUrl: "https://i.pravatar.cc/150?u=WorkerBee",
+      initials: "WB",
+    },
+    content:
+      "Saya baru mulai kerja kantoran lagi setelah didiagnosis. Kadang takut kalau stress kerja bikin kambuh. Ada yang punya tips biar tetap produktif?",
+    createdAt: "2 bulan yang lalu",
+    tags: ["Pekerjaan", "Stress", "Produktivitas"],
+    likes: 75,
+    replies: [
+      {
+        id: "reply-021",
+        parentId: null,
+        author: {
+          name: "OfficeSurvivor",
+          avatarUrl: "https://i.pravatar.cc/150?u=OfficeSurvivor",
+          initials: "OS",
+        },
+        createdAt: "2 bulan yang lalu",
+        likes: 25,
+        content:
+          "Saya tetap kerja normal. Yang penting rajin istirahat sejenak, jangan duduk seharian, dan gunakan teknik manajemen stress.",
+      },
+      {
+        id: "reply-022",
+        parentId: null,
+        author: { name: "DokterBot", avatarUrl: "/Logo.png", initials: "DB" },
+        createdAt: "2 bulan yang lalu",
+        likes: 40,
+        content:
+          "Stres memang bisa memicu aritmia. Cobalah atur pola kerja seimbang, gunakan teknik relaksasi, dan komunikasikan kondisi Anda pada atasan bila perlu.",
+      },
+    ],
   },
 ];
 
