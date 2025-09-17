@@ -63,7 +63,7 @@ interface UserProgress {
   completionPercentage: number;
 }
 
-// Expanded and More Complex Data
+// Data arrhythmiaMyths tetap sama (tidak ditampilkan di sini agar ringkas)
 const arrhythmiaMyths: MythFactItem[] = [
   {
     id: 1,
@@ -530,9 +530,71 @@ const AritmiaMythBuster: FC = () => {
   return (
     <section
       id="myth-buster"
-      className="py-24 sm:py-32 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-black dark:via-blue-950 dark:to-purple-950"
+      className="py-24 sm:py-32 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-black dark:via-blue-950 dark:to-purple-950 relative overflow-hidden" // Tambahkan relative dan overflow-hidden
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* === START PERUBAHAN === */}
+        {/* Floating Progress Widget dipindahkan ke sini */}
+        <motion.div
+          className="absolute top-6 right-6 z-30" // Ganti class menjadi absolute
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="bg-white dark:bg-gray-800 rounded-full shadow-2xl p-4 border border-gray-200 dark:border-gray-700"
+          >
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <svg className="w-8 h-8 transform -rotate-90">
+                  <circle
+                    cx="16"
+                    cy="16"
+                    r="14"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    fill="none"
+                    className="text-gray-200 dark:text-gray-700"
+                  />
+                  <motion.circle
+                    cx="16"
+                    cy="16"
+                    r="14"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    fill="none"
+                    strokeLinecap="round"
+                    className="text-blue-500"
+                    strokeDasharray={`${2 * Math.PI * 14}`}
+                    strokeDashoffset={`${
+                      2 *
+                      Math.PI *
+                      14 *
+                      (1 - userProgress.completionPercentage / 100)
+                    }`}
+                    transition={{ duration: 0.5 }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+                    {Math.round(userProgress.completionPercentage)}%
+                  </span>
+                </div>
+              </div>
+              <div className="text-xs">
+                <div className="font-medium text-gray-700 dark:text-gray-300">
+                  Progress
+                </div>
+                <div className="text-gray-500 dark:text-gray-400">
+                  {userProgress.readMyths.size}/{arrhythmiaMyths.length}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+        {/* === AKHIR PERUBAHAN === */}
+
         {/* Enhanced Header with Progress */}
         <motion.div
           className="text-center mb-16"
@@ -585,6 +647,7 @@ const AritmiaMythBuster: FC = () => {
           </div>
         </motion.div>
 
+        {/* Sisa kode lainnya tetap sama... */}
         {/* Enhanced Search and Filter Section */}
         <motion.div
           className="mb-12"
@@ -916,8 +979,8 @@ const AritmiaMythBuster: FC = () => {
           {selectedItem && (
             <DialogContent
               className="max-w-4xl w-full sm:w-[95vw] h-[90vh] 
-             p-0 sm:rounded-2xl rounded-none 
-             flex flex-col safe-area-inset"
+           p-0 sm:rounded-2xl rounded-none 
+           flex flex-col safe-area-inset"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, rotateX: -10 }}
@@ -1189,10 +1252,10 @@ const AritmiaMythBuster: FC = () => {
                 {/* Enhanced Footer */}
                 <div
                   className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-800 
-                  border-t border-gray-200 dark:border-gray-700 
-                  flex flex-col sm:flex-row gap-3 sm:gap-6 
-                  justify-between items-center 
-                  sticky bottom-0"
+                border-t border-gray-200 dark:border-gray-700 
+                flex flex-col sm:flex-row gap-3 sm:gap-6 
+                justify-between items-center 
+                sticky bottom-0"
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -1249,66 +1312,6 @@ const AritmiaMythBuster: FC = () => {
           )}
         </AnimatePresence>
       </Dialog>
-
-      {/* Floating Progress Widget */}
-      <motion.div
-        className="fixed bottom-6 right-6 z-50"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1 }}
-      >
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="bg-white dark:bg-gray-800 rounded-full shadow-2xl p-4 border border-gray-200 dark:border-gray-700"
-        >
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <svg className="w-8 h-8 transform -rotate-90">
-                <circle
-                  cx="16"
-                  cy="16"
-                  r="14"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  fill="none"
-                  className="text-gray-200 dark:text-gray-700"
-                />
-                <motion.circle
-                  cx="16"
-                  cy="16"
-                  r="14"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                  className="text-blue-500"
-                  strokeDasharray={`${2 * Math.PI * 14}`}
-                  strokeDashoffset={`${
-                    2 *
-                    Math.PI *
-                    14 *
-                    (1 - userProgress.completionPercentage / 100)
-                  }`}
-                  transition={{ duration: 0.5 }}
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
-                  {Math.round(userProgress.completionPercentage)}%
-                </span>
-              </div>
-            </div>
-            <div className="text-xs">
-              <div className="font-medium text-gray-700 dark:text-gray-300">
-                Progress
-              </div>
-              <div className="text-gray-500 dark:text-gray-400">
-                {userProgress.readMyths.size}/{arrhythmiaMyths.length}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
 
       {/* Achievement Popup */}
       <AnimatePresence>
