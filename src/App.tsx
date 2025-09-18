@@ -23,6 +23,7 @@ import ECG12LeadSimulatorSuite from "./components/landing/ECG12LeadSimulatorSuit
 import HeartQuiz from "./components/landing/HeartQuiz";
 import ApotekDigitalSection from "./components/landing/ApotekDigitalSection";
 import SimulasiForumInteraktif from "./components/landing/SimulasiForumInteraktif";
+import InteractiveHealthPlanner from "./components/landing/InteractiveHealthPlanner";
 import { Toaster } from "sonner";
 const KardiologikuLandingPage = () => {
   const [isLoading, setIsLoading] = useState(true); // <-- TAMBAHKAN STATE LOADING
@@ -61,6 +62,7 @@ const KardiologikuLandingPage = () => {
           <DokterKamiSection />
           <ObatTerapiSection />
           <FiturSection />
+          <InteractiveHealthPlanner />
           <AritmiaMythBuster />
           <PengingatObatSection />
           <ApotekDigitalSection />
