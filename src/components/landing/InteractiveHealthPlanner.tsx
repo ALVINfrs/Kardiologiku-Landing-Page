@@ -1,4 +1,4 @@
-// Ganti nama file menjadi -> src/components/landing/InteractiveHealthPlanner.tsx
+// Nama file yang disarankan: src/components/landing/InteractiveHealthPlanner.tsx
 
 import React, { useReducer, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,14 +54,14 @@ type Mission = {
   xp: number;
   durationDays: number;
   tasks: Task[];
-  badgeIcon: React.ElementType; // Menggunakan ElementType agar bisa dilewatkan sebagai komponen
+  badgeIcon: React.ElementType; // PERBAIKAN: Menggunakan ElementType
   category: "Diet" | "Aktivitas" | "Edukasi";
 };
 
 type UserMission = {
   missionId: string;
   startDate: string;
-  tasks: Record<string, boolean>; // { taskId: isCompleted }
+  tasks: Record<string, boolean>;
   isCompleted: boolean;
 };
 
@@ -70,7 +70,7 @@ type TimelineEvent = {
   date: string;
   title: string;
   description: string;
-  icon: React.ElementType;
+  icon: React.ElementType; // PERBAIKAN: Menggunakan ElementType
   isMilestone?: boolean;
 };
 
@@ -136,7 +136,7 @@ const availableMissions: Mission[] = [
   },
 ];
 
-const LOCAL_STORAGE_KEY = "interactiveHealthPlannerState_v2";
+const LOCAL_STORAGE_KEY = "interactiveHealthPlannerState_v3";
 
 // Reducer untuk State Management
 const plannerReducer = (
@@ -337,7 +337,7 @@ const Dashboard = ({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="p-1 border rounded-full bg-gray-100 dark:bg-gray-700">
-                          <BadgeIcon className="h-6 w-6" />
+                          <BadgeIcon className="h-6 w-6 text-gray-700 dark:text-gray-300" />
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
