@@ -1,4 +1,4 @@
-// Nama file yang disarankan: src/components/landing/InteractiveHealthPlanner.tsx
+// Nama file: src/components/landing/InteractiveHealthPlanner.tsx
 
 import React, { useReducer, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -41,7 +41,6 @@ import {
 
 // --- 1. DEFINISI TIPE, DATA & LOGIKA UTAMA (STATE MANAGEMENT) ---
 
-// Tipe Data
 type Task = {
   id: string;
   description: string;
@@ -54,7 +53,7 @@ type Mission = {
   xp: number;
   durationDays: number;
   tasks: Task[];
-  badgeIcon: React.ElementType; // PERBAIKAN: Menggunakan ElementType
+  badgeIcon: React.ElementType;
   category: "Diet" | "Aktivitas" | "Edukasi";
 };
 
@@ -70,7 +69,7 @@ type TimelineEvent = {
   date: string;
   title: string;
   description: string;
-  icon: React.ElementType; // PERBAIKAN: Menggunakan ElementType
+  icon: React.ElementType;
   isMilestone?: boolean;
 };
 
@@ -87,7 +86,7 @@ type Action =
   | { type: "TOGGLE_TASK"; payload: { missionId: string; taskId: string } }
   | { type: "RESET_PROGRESS" };
 
-// Data Misi yang Tersedia
+// Data Misi
 const availableMissions: Mission[] = [
   {
     id: "m1",
@@ -138,7 +137,7 @@ const availableMissions: Mission[] = [
 
 const LOCAL_STORAGE_KEY = "interactiveHealthPlannerState_v3";
 
-// Reducer untuk State Management
+// Reducer
 const plannerReducer = (
   state: HealthPlannerState,
   action: Action
@@ -267,6 +266,7 @@ const Dashboard = ({
         </Button>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Progress Lingkaran */}
         <div className="flex flex-col items-center justify-center">
           <div className="relative h-24 w-24">
             <svg
@@ -318,11 +318,15 @@ const Dashboard = ({
             {xpInLevel} / {xpForNextLevel} XP
           </p>
         </div>
+
+        {/* Total XP */}
         <div className="flex flex-col items-center justify-center">
           <HeartPulse className="h-10 w-10 text-red-500 mb-2" />
           <p className="text-3xl font-bold">{xp}</p>
           <p className="text-sm text-gray-500">Total Poin Kesehatan (XP)</p>
         </div>
+
+        {/* Badge */}
         <div className="flex flex-col items-center justify-center">
           <Award className="h-10 w-10 text-yellow-500 mb-2" />
           <p className="text-3xl font-bold">{completedMissions.length}</p>
@@ -331,7 +335,7 @@ const Dashboard = ({
             {availableMissions
               .filter((m) => completedMissions.includes(m.id))
               .map((mission) => {
-                const BadgeIcon = mission.badgeIcon;
+                const BadgeIcon = mission.badgeIcon ?? ShieldCheck;
                 return (
                   <TooltipProvider key={mission.id}>
                     <Tooltip>
@@ -384,7 +388,7 @@ const MissionControl = ({
                 Boolean
               ).length;
               const progress = (completedTasks / mission.tasks.length) * 100;
-              const BadgeIcon = mission.badgeIcon;
+              const BadgeIcon = mission.badgeIcon ?? ShieldCheck;
 
               return (
                 <motion.div
@@ -477,7 +481,7 @@ const MissionControl = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 max-h-[70vh] overflow-y-auto">
             {missionsToDisplay.length > 0 ? (
               missionsToDisplay.map((mission) => {
-                const BadgeIcon = mission.badgeIcon;
+                const BadgeIcon = mission.badgeIcon ?? ShieldCheck;
                 return (
                   <Card key={mission.id} className="flex flex-col">
                     <CardHeader>
@@ -529,10 +533,10 @@ const Timeline = ({ events }: { events: TimelineEvent[] }) => {
         <div className="space-y-8">
           <AnimatePresence initial={false}>
             {events.map((event) => {
-              const Icon = event.icon; // **FIX DI SINI**
+              const Icon = typeof event.icon === "function" ? event.icon : Flag; // FIX
               return (
                 <motion.div
-                  key={event.id}
+                  key={`${event.id}-${event.date}`} // FIX key unik
                   layout
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
