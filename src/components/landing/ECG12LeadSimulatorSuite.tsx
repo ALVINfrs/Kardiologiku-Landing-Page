@@ -45,6 +45,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 
 // --- STRUKTUR DATA YANG LEBIH KOMPLEKS & DETAIL (DENGAN TAMBAHAN SYMPTOMS, CAUSES, LONG-TERM MANAGEMENT) ---
 interface ECGPoint {
@@ -77,13 +78,10 @@ interface RhythmInfo {
   differentialDiagnosis: string[];
   longTermManagement: string[]; // Tambahan: Manajemen jangka panjang
   references?: string[]; // Tambahan: Referensi medis
+  transitionTo?: string[]; // New: Possible next rhythms for scenarios
 }
 
 // --- DATABASE RITME JANTUNG YANG LEBIH DETAIL & AKURAT (MEDICAL-GRADE, DIPERBAIKI & DITAMBAH) ---
-// Saya telah memperbaiki dan menambahkan detail medis yang lebih akurat berdasarkan standar seperti AHA/ACLS, UpToDate, dan buku EKG seperti Dubin/Marriott.
-// Total ritme tetap 17, tapi diperbaiki waveform generation nanti, ditambah detail edukatif seperti symptoms, causes, long-term, references.
-// Tambah 3 ritme baru untuk kompleksitas: Asystole, Idioventricular Rhythm, Long QT Syndrome.
-
 const rhythms: RhythmInfo[] = [
   {
     id: "normal",
@@ -124,6 +122,7 @@ const rhythms: RhythmInfo[] = [
       "AHA Guidelines 2020",
       "Marriott's Practical Electrocardiography",
     ],
+    transitionTo: [],
   },
   {
     id: "atrial_fib",
@@ -169,6 +168,7 @@ const rhythms: RhythmInfo[] = [
       "Ablasi kateter jika paroksismal, obat antiaritmia jangka panjang, manajemen faktor risiko (kontrol BP, berat badan).",
     ],
     references: ["ESC AF Guidelines 2020", "UpToDate: Atrial Fibrillation"],
+    transitionTo: ["vtach", "vfib"],
   },
   {
     id: "tachycardia",
@@ -208,6 +208,7 @@ const rhythms: RhythmInfo[] = [
       "Ablasi kateter sebagai kuratif, Beta-blocker profilaksis.",
     ],
     references: ["ACLS Provider Manual", "Litfl.com: SVT"],
+    transitionTo: [],
   },
   {
     id: "vtach",
@@ -248,6 +249,7 @@ const rhythms: RhythmInfo[] = [
       "ICD implantasi, ablasi VT, optimalisasi terapi gagal jantung.",
     ],
     references: ["AHA VT Guidelines", "ECG Library: Ventricular Tachycardia"],
+    transitionTo: ["vfib"],
   },
   {
     id: "vfib",
@@ -285,6 +287,7 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["ICD sekunder prevensi, manajemen penyakit dasar."],
     references: ["ACLS Algorithm: VF/Pulseless VT"],
+    transitionTo: [],
   },
   {
     id: "pvc",
@@ -321,6 +324,7 @@ const rhythms: RhythmInfo[] = [
       "Holter monitor, ablasi jika frequent dan simptomatik.",
     ],
     references: ["ACC/AHA PVC Guidelines"],
+    transitionTo: ["vtach"],
   },
   {
     id: "brugada",
@@ -359,6 +363,7 @@ const rhythms: RhythmInfo[] = [
       "ICD untuk prevensi sekunder, Quinidine jika ICD tidak memungkinkan.",
     ],
     references: ["EHRA Brugada Consensus", "Brugada.org"],
+    transitionTo: ["vfib"],
   },
   {
     id: "bradycardia",
@@ -395,6 +400,7 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["Pacemaker jika simptomatik kronis."],
     references: ["AHA Bradycardia Algorithm"],
+    transitionTo: ["heart_block"],
   },
   {
     id: "heart_block",
@@ -434,6 +440,7 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["Permanent pacemaker implantasi."],
     references: ["ACC/AHA Pacemaker Guidelines"],
+    transitionTo: ["asystole"],
   },
   {
     id: "ist",
@@ -469,6 +476,7 @@ const rhythms: RhythmInfo[] = [
       "Ivabradine (If channel blocker), Beta-blocker, sinus node ablation sebagai last resort.",
     ],
     references: ["HRS IST Consensus"],
+    transitionTo: [],
   },
   {
     id: "atrial_flutter",
@@ -500,6 +508,7 @@ const rhythms: RhythmInfo[] = [
     differentialDiagnosis: ["SVT (AVNRT)", "Atrial Tachycardia", "AFib coarse"],
     longTermManagement: ["Cavotricuspid isthmus ablasi sebagai kuratif."],
     references: ["ESC Atrial Flutter Guidelines"],
+    transitionTo: ["atrial_fib"],
   },
   {
     id: "torsades",
@@ -532,6 +541,7 @@ const rhythms: RhythmInfo[] = [
     differentialDiagnosis: ["Polymorphic VT non-TdP", "VFib", "Artifact"],
     longTermManagement: ["Beta-blocker untuk congenital, ICD, avoid triggers."],
     references: ["AHA TdP Management"],
+    transitionTo: [],
   },
   {
     id: "first_degree_av",
@@ -560,6 +570,7 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["Observasi, pacemaker jika simptomatik (jarang)."],
     references: ["ECG Interpretation: AV Blocks"],
+    transitionTo: [],
   },
   {
     id: "mobitz_i",
@@ -588,6 +599,7 @@ const rhythms: RhythmInfo[] = [
     differentialDiagnosis: ["Mobitz Type II (no progressive PR)", "SA Block"],
     longTermManagement: ["Pacemaker jika simptomatik kronis."],
     references: ["Litfl: Mobitz I"],
+    transitionTo: [],
   },
   {
     id: "mobitz_ii",
@@ -620,6 +632,7 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["Permanent pacemaker."],
     references: ["Litfl: Mobitz II"],
+    transitionTo: ["heart_block"],
   },
   {
     id: "junctional",
@@ -651,6 +664,7 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["Pacemaker jika kronis."],
     references: ["ECG Waves: Junctional Rhythms"],
+    transitionTo: [],
   },
   {
     id: "wpw",
@@ -681,8 +695,8 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["Ablasi accessory pathway sebagai kuratif."],
     references: ["AHA WPW Guidelines"],
+    transitionTo: ["tachycardia", "atrial_fib", "vfib"],
   },
-  // Tambahan ritme baru untuk kompleksitas & edukasi
   {
     id: "asystole",
     label: "Asystole",
@@ -712,6 +726,7 @@ const rhythms: RhythmInfo[] = [
     ],
     longTermManagement: ["N/A, survival low."],
     references: ["ACLS Asystole/PEA"],
+    transitionTo: [],
   },
   {
     id: "idioventricular",
@@ -735,6 +750,7 @@ const rhythms: RhythmInfo[] = [
     differentialDiagnosis: ["VT slow", "Junctional dengan aberrancy"],
     longTermManagement: ["Tidak diperlukan."],
     references: ["ECG Library: AIVR"],
+    transitionTo: [],
   },
   {
     id: "long_qt",
@@ -756,6 +772,7 @@ const rhythms: RhythmInfo[] = [
     differentialDiagnosis: ["Hypokalemia", "Drug-induced"],
     longTermManagement: ["Beta-blocker, ICD."],
     references: ["EHRA LQTS"],
+    transitionTo: ["torsades"],
   },
 ];
 
@@ -780,8 +797,10 @@ const ECG12LeadSimulatorSuite = () => {
   const [currentRhythm, setCurrentRhythm] = useState("normal");
   const [heartRate, setHeartRate] = useState(75);
   const [leadsData, setLeadsData] = useState<LeadData[]>([]);
-  const [zoomLevel, setZoomLevel] = useState(1); // Tambahan: Zoom untuk EKG lebih detail
-  const [showAnnotations, setShowAnnotations] = useState(false); // Tambahan: Anotasi interval PR/QRS/QT
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [showAnnotations, setShowAnnotations] = useState(false);
+  const [scenarioMode, setScenarioMode] = useState(false);
+  const [currentScenario, setCurrentScenario] = useState<string | null>(null);
 
   const selectedRhythmInfo = useMemo(() => {
     return rhythms.find((r) => r.id === currentRhythm) || rhythms[0];
@@ -791,18 +810,11 @@ const ECG12LeadSimulatorSuite = () => {
     setHeartRate(selectedRhythmInfo.defaultBPM);
   }, [selectedRhythmInfo.defaultBPM]);
 
-  // --- FUNGSI GENERATE ECG YANG DIPERBAIKI & LEBIH AKURAT (STANDAR MEDIS) ---
-  // Sekarang switch case mencakup SEMUA ritme dengan waveform spesifik.
-  // Ditambahkan noise, variasi, multipliers lead-specific lebih realistis.
-  // Menggunakan fungsi matematis untuk simulasi P, QRS, T lebih akurat (Gaussian untuk P/T, biphasic untuk QRS).
-  // Tambah anotasi kalkulasi interval.
-
   const generateECGData = useCallback(() => {
     const duration = 10; // seconds
     const samplingRate = 500; // Hz
     const totalPoints = duration * samplingRate;
     const beatsPerMinute = heartRate === 0 ? 1 : heartRate;
-    const beatInterval = (60 / beatsPerMinute) * samplingRate;
     const rrInterval = 60 / beatsPerMinute; // in seconds
 
     const newLeadsData: LeadData[] = leads.map((lead) => ({
@@ -907,11 +919,28 @@ const ECG12LeadSimulatorSuite = () => {
     };
 
     // Generate data points
+    let effectiveRhythm = currentRhythm;
     for (let i = 0; i < totalPoints; i++) {
       const time = i / samplingRate;
-      const beatNumber = Math.floor(i / beatInterval);
+      const beatNumber = Math.floor(time / rrInterval);
       const beatStart = beatNumber * rrInterval;
       const timeInBeat = time - beatStart;
+
+      // Transition logic if scenarioMode
+      if (
+        scenarioMode &&
+        selectedRhythmInfo.transitionTo &&
+        selectedRhythmInfo.transitionTo.length > 0
+      ) {
+        const transitionIndex = Math.floor(
+          time / (duration / (selectedRhythmInfo.transitionTo.length + 1))
+        );
+        effectiveRhythm =
+          transitionIndex === 0
+            ? currentRhythm
+            : selectedRhythmInfo.transitionTo[transitionIndex - 1] ||
+              effectiveRhythm;
+      }
 
       leads.forEach((lead, leadIndex) => {
         const mult = leadMultipliers[lead.name];
@@ -920,7 +949,7 @@ const ECG12LeadSimulatorSuite = () => {
         // Add baseline noise (realistic ECG noise)
         const baselineNoise = (Math.random() - 0.5) * 0.5;
 
-        switch (currentRhythm) {
+        switch (effectiveRhythm) {
           case "normal":
           case "ist":
           case "bradycardia": {
@@ -939,74 +968,100 @@ const ECG12LeadSimulatorSuite = () => {
 
             const t = generateTWave(time, beatStart, 5 * mult.t);
 
-            amplitude = p + qrs + t;
+            amplitude = p + qrs + t + baselineNoise;
             break;
           }
 
           case "tachycardia": // SVT - buried P waves, narrow QRS
             amplitude =
               generateQRSComplex(time, beatStart, 1, 12, 3) * mult.qrs +
-              generateTWave(time, beatStart, 4 * mult.t);
+              generateTWave(time, beatStart, 4 * mult.t) +
+              baselineNoise;
             // Occasional retrograde P wave
             if (timeInBeat > 0.15 && timeInBeat < 0.2) {
               amplitude += generatePWave(time, beatStart + 0.12, -1 * mult.p);
             }
             break;
-
           case "atrial_fib": {
-            // Irregular f-waves (350-600 bpm)
-            const fWaveFreq = 8 + Math.sin(time * 3) * 2; // Variable frequency
-            amplitude =
-              Math.sin(time * fWaveFreq * Math.PI * 2) * 1.5 * mult.p +
-              Math.sin(time * (fWaveFreq + 1.5) * Math.PI * 2) * 1 * mult.p;
+            const transitionTime = 2; // detik pertama masih sinus
+            if (time < transitionTime) {
+              // Irama sinus normal
+              const p = generatePWave(time, beatStart, 2 * mult.p);
+              const qrs =
+                generateQRSComplex(time, beatStart, 2, 15, 4, 0.08) * mult.qrs;
+              const t = generateTWave(time, beatStart, 5 * mult.t);
+              amplitude = p + qrs + t + baselineNoise;
+            } else {
+              // Masuk AFib
+              const afBaseFreq = 400 + Math.random() * 150;
+              const fibrillation =
+                1.2 * Math.sin(2 * Math.PI * afBaseFreq * time) +
+                0.6 * Math.sin(2 * Math.PI * (afBaseFreq * 1.8) * time + 0.3);
 
-            // Irregular QRS responses
-            const irregularInterval = rrInterval * (0.6 + Math.random() * 0.8);
-            if (time % irregularInterval < 0.08) {
-              amplitude +=
-                generateQRSComplex(
-                  time,
-                  time - (time % irregularInterval),
-                  2,
-                  12,
-                  4
-                ) *
-                  mult.qrs +
-                generateTWave(
-                  time,
-                  time - (time % irregularInterval),
-                  4 * mult.t
-                );
+              const noise = (Math.random() - 0.5) * 0.9;
+
+              const avgRate = heartRate;
+              const baseInterval = 60 / avgRate;
+              const irregularInterval =
+                baseInterval *
+                (1 + Math.sin(time * 1.3) * 0.2 + (Math.random() - 0.5) * 0.25);
+
+              const beatNum = Math.floor(time / irregularInterval);
+              const beatStart = beatNum * irregularInterval;
+
+              if (time >= beatStart && time < beatStart + 0.1) {
+                amplitude +=
+                  generateQRSComplex(time, beatStart, 3, 12, 4, 0.08) *
+                  mult.qrs;
+              }
+              if (time >= beatStart + 0.1 && time < beatStart + 0.3) {
+                amplitude += generateTWave(time, beatStart, 3.5 * mult.t);
+              }
+
+              amplitude += fibrillation + noise;
             }
             break;
           }
 
           case "atrial_flutter": {
-            // Sawtooth flutter waves at ~300 bpm
-            const flutterFreq = 5; // 300 bpm = 5 Hz
-            amplitude =
-              -Math.abs(Math.sin(time * flutterFreq * Math.PI)) * 4 * mult.p;
+            const transitionTime = 2; // detik pertama sinus
+            if (time < transitionTime) {
+              const p = generatePWave(time, beatStart, 2 * mult.p);
+              const qrs =
+                generateQRSComplex(time, beatStart, 2, 15, 4, 0.08) * mult.qrs;
+              const t = generateTWave(time, beatStart, 5 * mult.t);
+              amplitude = p + qrs + t + baselineNoise;
+            } else {
+              const flutterHz = 5;
+              const phase = (time * flutterHz) % 1;
+              const rawTriangle = 2 * (phase < 0.5 ? phase : 1 - phase);
+              const sawtooth = 1.6 * (rawTriangle - 0.5) * 2;
 
-            // 2:1 or 3:1 AV block
-            const blockRatio = 2;
-            if (Math.floor(time * flutterFreq) % blockRatio === 0) {
-              const flutterBeat = Math.floor((time * flutterFreq) / blockRatio);
-              const flutterBeatStart =
-                (flutterBeat * (60 / (300 / blockRatio))) / 60;
-              if (Math.abs(time - flutterBeatStart) < 0.08) {
+              const flutterBaseline = sawtooth + (Math.random() - 0.5) * 0.4;
+              amplitude += flutterBaseline;
+
+              const ventRate = 300 / 2; // 2:1 conduction
+              const ventInterval = 60 / ventRate;
+              const vBeatNum = Math.floor(time / ventInterval);
+              const vBeatStart = vBeatNum * ventInterval;
+
+              if (time >= vBeatStart && time < vBeatStart + 0.1) {
                 amplitude +=
-                  generateQRSComplex(time, flutterBeatStart, 2, 12, 4) *
-                    mult.qrs +
-                  generateTWave(time, flutterBeatStart, 4 * mult.t);
+                  generateQRSComplex(time, vBeatStart, 3.5, 14, 5, 0.08) *
+                  mult.qrs;
+              }
+              if (time >= vBeatStart + 0.1 && time < vBeatStart + 0.3) {
+                amplitude += generateTWave(time, vBeatStart, 4.5 * mult.t);
               }
             }
             break;
           }
+
           case "vtach": {
             // Wide QRS (>120ms), regular, fast rate
             const vtQRS = generateQRSComplex(time, beatStart, 8, 25, 10, 0.14); // Wide QRS 140ms
             const vtT = generateTWave(time, beatStart + 0.14, -8 * mult.t, 0.5); // Discordant T wave
-            amplitude = vtQRS * mult.qrs + vtT;
+            amplitude = vtQRS * mult.qrs + vtT + baselineNoise;
 
             // No P waves or AV dissociated P waves
             if (Math.random() < 0.1) {
@@ -1025,7 +1080,8 @@ const ECG12LeadSimulatorSuite = () => {
               Math.sin(time * 15 * Math.PI) * (10 + Math.sin(time * 3) * 5) +
               Math.sin(time * 23 * Math.PI) * (8 + Math.cos(time * 2) * 4) +
               Math.sin(time * 31 * Math.PI) * (6 + Math.sin(time * 5) * 3) +
-              (Math.random() - 0.5) * 10;
+              (Math.random() - 0.5) * 10 +
+              baselineNoise;
             break;
 
           case "pvc":
@@ -1033,7 +1089,8 @@ const ECG12LeadSimulatorSuite = () => {
             amplitude =
               generatePWave(time, beatStart, 2 * mult.p) +
               generateQRSComplex(time, beatStart, 2, 15, 4) * mult.qrs +
-              generateTWave(time, beatStart, 5 * mult.t);
+              generateTWave(time, beatStart, 5 * mult.t) +
+              baselineNoise;
 
             // Add PVC every 4-6 beats
             if (beatNumber % 5 === 3 && timeInBeat < 0.2) {
@@ -1051,7 +1108,8 @@ const ECG12LeadSimulatorSuite = () => {
             amplitude =
               generatePWave(time, beatStart, 2 * mult.p) +
               generateQRSComplex(time, beatStart, 2, 15, 4, 0.1) * mult.qrs +
-              generateTWave(time, beatStart, -8 * mult.t);
+              generateTWave(time, beatStart, -8 * mult.t) +
+              baselineNoise;
 
             // Characteristic coved ST elevation in V1-V2
             if (lead.name === "V1" || lead.name === "V2") {
@@ -1094,6 +1152,7 @@ const ECG12LeadSimulatorSuite = () => {
                 6 * mult.t
               );
             }
+            amplitude += baselineNoise;
 
             break;
           }
@@ -1104,7 +1163,8 @@ const ECG12LeadSimulatorSuite = () => {
               amplitude =
                 generatePWave(time, beatStart, 2 * mult.p) +
                 generateQRSComplex(time, beatStart, 2, 15, 4) * mult.qrs +
-                generateTWave(time, beatStart, 10 * mult.t, 0.6); // Prolonged QT
+                generateTWave(time, beatStart, 10 * mult.t, 0.6) +
+                baselineNoise; // Prolonged QT
             } else {
               // Polymorphic VT with twisting axis
               const torsadePhase = (time - duration * 0.6) * 10;
@@ -1114,7 +1174,8 @@ const ECG12LeadSimulatorSuite = () => {
                   Math.sin(torsadePhase * 0.3) +
                 Math.cos(torsadePhase * 1.3 * Math.PI) *
                   15 *
-                  Math.cos(torsadePhase * 0.2);
+                  Math.cos(torsadePhase * 0.2) +
+                baselineNoise;
             }
             break;
 
@@ -1134,6 +1195,7 @@ const ECG12LeadSimulatorSuite = () => {
                 5 * mult.t
               );
             }
+            amplitude += baselineNoise;
             break;
           }
           case "mobitz_i": {
@@ -1176,6 +1238,7 @@ const ECG12LeadSimulatorSuite = () => {
                   ? triangularPulse(time, beatStart, 0.02, 0.5)
                   : 0;
             }
+            amplitude += baselineNoise;
             break;
           }
 
@@ -1189,13 +1252,15 @@ const ECG12LeadSimulatorSuite = () => {
                 generateTWave(time, beatStart, 5 * mult.t);
               amplitude += conductedAmplitude;
             }
+            amplitude += baselineNoise;
             break;
 
           case "junctional": {
             // QRS without preceding P wave, or retrograde P wave
             amplitude =
               generateQRSComplex(time, beatStart, 2, 12, 3) * mult.qrs +
-              generateTWave(time, beatStart, 5 * mult.t);
+              generateTWave(time, beatStart, 5 * mult.t) +
+              baselineNoise;
 
             // Occasional retrograde P wave (negative in inferior leads)
             if (Math.random() > 0.7 && timeInBeat > 0.1 && timeInBeat < 0.15) {
@@ -1240,6 +1305,7 @@ const ECG12LeadSimulatorSuite = () => {
                 -6 * mult.t
               ); // Secondary T wave changes
             }
+            amplitude += baselineNoise;
             break;
           }
 
@@ -1251,7 +1317,8 @@ const ECG12LeadSimulatorSuite = () => {
             // Slow, wide QRS rhythm
             amplitude =
               generateQRSComplex(time, beatStart, 6, 20, 8, 0.14) * mult.qrs +
-              generateTWave(time, beatStart, 8 * mult.t);
+              generateTWave(time, beatStart, 8 * mult.t) +
+              baselineNoise;
             // No P waves
             break;
 
@@ -1259,14 +1326,13 @@ const ECG12LeadSimulatorSuite = () => {
             amplitude =
               generatePWave(time, beatStart, 2 * mult.p) +
               generateQRSComplex(time, beatStart, 2, 15, 4) * mult.qrs +
-              generateTWave(time, beatStart, 8 * mult.t, 0.55); // Prolonged QT >500ms
+              generateTWave(time, beatStart, 8 * mult.t, 0.55) +
+              baselineNoise; // Prolonged QT >500ms
             break;
 
           default:
-            amplitude = 0;
+            amplitude = 0 + baselineNoise;
         }
-
-        amplitude += baselineNoise;
 
         newLeadsData[leadIndex].data.push({
           x: time,
@@ -1276,7 +1342,7 @@ const ECG12LeadSimulatorSuite = () => {
     }
 
     setLeadsData(newLeadsData);
-  }, [currentRhythm, heartRate]);
+  }, [currentRhythm, heartRate, scenarioMode, selectedRhythmInfo]);
 
   useEffect(() => {
     generateECGData();
@@ -1300,11 +1366,17 @@ const ECG12LeadSimulatorSuite = () => {
     const visibleData = lead.data.filter(
       (p) => p.x >= startTime && p.x < endTime
     );
-
     const pathD = visibleData
       .map((point, idx) => {
         const x = ((point.x - startTime) / viewWidth) * 300 * zoomLevel;
-        return `${idx === 0 ? "M" : "L"} ${x} ${50 - point.y * zoomLevel}`;
+
+        // Per-plot Y-scaling factor: default 10 (naikkan visibility baseline)
+        // Clamp supaya QRS tidak keluar area (pad top/bottom)
+        const Y_SCALE = 10 * zoomLevel; // tweakable
+        const yRaw = 50 - point.y * Y_SCALE;
+        // clamp between 5 and 95 to avoid clipping outside SVG (height 100)
+        const y = Math.max(5, Math.min(95, yRaw));
+        return `${idx === 0 ? "M" : "L"} ${x} ${y}`;
       })
       .join(" ");
 
@@ -1325,7 +1397,22 @@ const ECG12LeadSimulatorSuite = () => {
           <rect width={300 * zoomLevel} height="100" fill="url(#grid)" />
           <path d={pathD} fill="none" stroke={lead.color} strokeWidth="1" />
           {showAnnotations && (
-            <g>{/* Tambah line/text untuk PR, QRS, QT anotasi */}</g>
+            <g>
+              {/* Example annotations; adjust based on rhythm */}
+              <line
+                x1="50"
+                y1="50"
+                x2="100"
+                y2="50"
+                stroke="red"
+                strokeWidth="1"
+              />{" "}
+              {/* PR interval example */}
+              <text x="75" y="45" fill="red" fontSize="10">
+                PR
+              </text>
+              {/* Add more for QRS, QT */}
+            </g>
           )}
         </svg>
       </div>
@@ -1441,6 +1528,39 @@ const ECG12LeadSimulatorSuite = () => {
                     {showAnnotations ? "Sembunyikan" : "Tampilkan"} Anotasi
                     Interval
                   </Button>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={scenarioMode}
+                      onCheckedChange={setScenarioMode}
+                    />
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Mode Skenario (Transisi Irama)
+                    </label>
+                  </div>
+                  {scenarioMode && (
+                    <Select onValueChange={setCurrentScenario}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Pilih Skenario" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="wpw-svt-afib-vf">
+                          WPW → SVT → AFib → VF (Atlet dengan Sinkop)
+                        </SelectItem>
+                        <SelectItem value="normal-pvc-vt">
+                          Normal → PVC → VT (Iskemia)
+                        </SelectItem>
+                        <SelectItem value="bradycardia-heart_block-asystole">
+                          Bradycardia → Complete Block → Asystole (Toksik Obat)
+                        </SelectItem>
+                        <SelectItem value="atrial_flutter-atrial_fib">
+                          Flutter → AFib (Post-Ablasi)
+                        </SelectItem>
+                        <SelectItem value="long_qt-torsades">
+                          Long QT → Torsades (Imbalance Elektrolit)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </CardContent>
               </Card>
 
@@ -1452,10 +1572,11 @@ const ECG12LeadSimulatorSuite = () => {
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="details" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                       <TabsTrigger value="details">Detail Klinis</TabsTrigger>
                       <TabsTrigger value="protocol">Protokol IGD</TabsTrigger>
                       <TabsTrigger value="advanced">Advanced Info</TabsTrigger>
+                      <TabsTrigger value="scenarios">Skenario</TabsTrigger>
                     </TabsList>
                     <TabsContent
                       value="details"
@@ -1615,6 +1736,18 @@ const ECG12LeadSimulatorSuite = () => {
                           {/* Tambah lebih banyak konten kasus edukatif di sini */}
                         </DialogContent>
                       </Dialog>
+                    </TabsContent>
+                    <TabsContent
+                      value="scenarios"
+                      className="mt-4 text-sm space-y-4 max-h-96 overflow-y-auto"
+                    >
+                      <p>
+                        Aktifkan mode skenario untuk melihat transisi irama
+                        secara dinamis, simulasi kasus nyata.
+                      </p>
+                      {currentScenario && (
+                        <p>Skenario saat ini: {currentScenario}</p>
+                      )}
                     </TabsContent>
                   </Tabs>
                 </CardContent>
