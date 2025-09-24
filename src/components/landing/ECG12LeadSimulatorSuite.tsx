@@ -1369,14 +1369,7 @@ const ECG12LeadSimulatorSuite = () => {
     const pathD = visibleData
       .map((point, idx) => {
         const x = ((point.x - startTime) / viewWidth) * 300 * zoomLevel;
-
-        // Per-plot Y-scaling factor: default 10 (naikkan visibility baseline)
-        // Clamp supaya QRS tidak keluar area (pad top/bottom)
-        const Y_SCALE = 10 * zoomLevel; // tweakable
-        const yRaw = 50 - point.y * Y_SCALE;
-        // clamp between 5 and 95 to avoid clipping outside SVG (height 100)
-        const y = Math.max(5, Math.min(95, yRaw));
-        return `${idx === 0 ? "M" : "L"} ${x} ${y}`;
+        return `${idx === 0 ? "M" : "L"} ${x} ${50 - point.y * zoomLevel}`;
       })
       .join(" ");
 
