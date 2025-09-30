@@ -727,6 +727,9 @@ function getEKGPoint(type: string, i: number, height: number): number {
     case "third_degree_av_block":
       y = third_degree_av_block(i, beatLength);
       break;
+    case "asystole":
+      y = asystole(x);
+      break;
     default:
       y = normalSinus(x);
   }
@@ -907,6 +910,10 @@ function third_degree_av_block(i: number, beatLength: number): number {
     y += junctional(qrs_x);
   }
   return y;
+}
+
+function asystole(x: number): number {
+  return (Math.random() - 0.5) * 0.05 + 0 * x;
 }
 
 // --- SUB-KOMPONEN BARU DAN DIPERLUAS ---
@@ -1724,6 +1731,7 @@ const EKGInterpreterTab: React.FC = () => {
           </div>
           <Alert>
             <Stethoscope className="h-4 w-4" />
+
             <AlertTitle>Interpretasi</AlertTitle>
             <AlertDescription>
               {rhythms[selectedRhythm as keyof typeof rhythms].description}
@@ -1814,9 +1822,7 @@ const ResourcesTab: React.FC = () => (
               </p>
               <p>
                 <strong>Lesson:</strong> Prioritas pada A-Fib dengan RVR (Rapid
-                Ventricular Response) yang stabil adalah rate control (misal,
-                diltiazem atau metoprolol) dan antikoagulasi untuk pencegahan
-                stroke.
+                Ventricular Response) yang stabil adalah rate control{" "}
               </p>
             </AccordionContent>
           </AccordionItem>
@@ -1967,7 +1973,8 @@ const ResourcesTab: React.FC = () => (
 const clinicalScenarios = {
   vf_arrest: {
     name: "Henti Jantung: VF",
-    description: "Pasien kolaps, tidak ada nadi, monitor menunjukkan Ventricular Fibrillation (VF).",
+    description:
+      "Pasien kolaps, tidak ada nadi, monitor menunjukkan Ventricular Fibrillation (VF).",
     initialState: {
       rhythm: "vf",
       vitals: { hr: "---", bp: "--/--", spo2: "--", resp: "0" },
@@ -1979,11 +1986,13 @@ const clinicalScenarios = {
       feedback: "Pasien dalam VF. Apa tindakan prioritas Anda?",
       cprCycleTime: 120,
       time: 0,
+      cprQuality: 0, // Add this to all scenarios
     },
   },
   asystole_arrest: {
     name: "Henti Jantung: Asistol",
-    description: "Pasien ditemukan tidak sadar, tidak ada nadi, monitor menunjukkan garis lurus.",
+    description:
+      "Pasien ditemukan tidak sadar, tidak ada nadi, monitor menunjukkan garis lurus.",
     initialState: {
       rhythm: "asystole",
       vitals: { hr: "---", bp: "--/--", spo2: "--", resp: "0" },
@@ -1995,11 +2004,13 @@ const clinicalScenarios = {
       feedback: "Ritme Asistol. Apa tindakan prioritas Anda?",
       cprCycleTime: 120,
       time: 0,
+      cprQuality: 0, // Add this
     },
   },
   unstable_brady: {
     name: "Bradikardia Tidak Stabil",
-    description: "Pasien pusing, kulit pucat dan dingin, dengan bradikardia berat.",
+    description:
+      "Pasien pusing, kulit pucat dan dingin, dengan bradikardia berat.",
     initialState: {
       rhythm: "bradycardia",
       vitals: { hr: "35", bp: "70/40", spo2: "92", resp: "16" },
@@ -2011,11 +2022,13 @@ const clinicalScenarios = {
       feedback: "Pasien tidak stabil. Apa intervensi pertama Anda?",
       cprCycleTime: 0,
       time: 0,
+      cprQuality: 0, // Add this
     },
   },
-   pea_arrest: {
+  pea_arrest: {
     name: "Henti Jantung: PEA",
-    description: "Pasien henti jantung, monitor menunjukkan ritme sinus, tapi nadi tidak teraba.",
+    description:
+      "Pasien henti jantung, monitor menunjukkan ritme sinus, tapi nadi tidak teraba.",
     initialState: {
       rhythm: "sinus",
       vitals: { hr: "---", bp: "--/--", spo2: "--", resp: "0" },
@@ -2024,9 +2037,11 @@ const clinicalScenarios = {
       medsGiven: { epi: 0, amio: 0, lido: 0, atropine: 0 },
       gameStatus: "running",
       scenarioLog: ["Skenario dimulai: Ritme terorganisir, tidak ada nadi."],
-      feedback: "Ini adalah Pulseless Electrical Activity (PEA). Mulai CPR dan berikan Epinephrine.",
+      feedback:
+        "Ini adalah Pulseless Electrical Activity (PEA). Mulai CPR dan berikan Epinephrine.",
       cprCycleTime: 120,
       time: 0,
+      cprQuality: 0, // Add this
     },
   },
 };
@@ -2040,120 +2055,236 @@ type SimulatorAction =
   | { type: "PACE" }
   | { type: "RESET"; scenario: keyof typeof clinicalScenarios };
 
-const simulatorReducer = (state: SimulatorState, action: SimulatorAction): SimulatorState => {
+const simulatorReducer = (
+  state: SimulatorState,
+  action: SimulatorAction
+): SimulatorState => {
   if (action.type === "RESET") {
     return clinicalScenarios[action.scenario].initialState;
   }
   if (state.gameStatus !== "running") return state;
 
-  const log = (message: string) => [...state.scenarioLog, `[${state.time}s] ${message}`];
+  const log = (message: string) => [
+    ...state.scenarioLog,
+    `[${state.time}s] ${message}`,
+  ];
+
+  // Helper function to update vitals during CPR
+  const getCPRVitals = (baseState: SimulatorState) => {
+    if (!baseState.cprActive) return baseState.vitals;
+
+    // Simulate ETCO2 and other vital improvements with good CPR
+    return {
+      hr: "---",
+      bp: baseState.cprQuality > 70 ? "40/20" : "30/15",
+      spo2: baseState.cprQuality > 70 ? "85" : "75",
+      resp: "0",
+    };
+  };
+
+  // Helper function for rhythm transitions
+  const getNextRhythm = (currentState: SimulatorState): string => {
+    const { rhythm, medsGiven, shockCount, cprQuality } = currentState;
+
+    if (rhythm === "vf") {
+      if (shockCount >= 2 && medsGiven.amio > 0 && cprQuality > 70) {
+        return Math.random() > 0.6 ? "sinus" : "vf_persistent";
+      }
+      if (medsGiven.epi > 2 && cprQuality < 50) {
+        return "asystole";
+      }
+    }
+
+    if (rhythm === "asystole") {
+      if (medsGiven.epi > 0 && cprQuality > 70) {
+        return Math.random() > 0.7 ? "pea" : "asystole";
+      }
+    }
+
+    if (rhythm === "pea") {
+      if (medsGiven.epi > 1 && cprQuality > 80) {
+        return Math.random() > 0.8 ? "sinus" : "pea";
+      }
+    }
+
+    return rhythm;
+  };
 
   switch (action.type) {
     case "TICK": {
-      let cprCycleTime = state.cprCycleTime;
-      let cprActive = state.cprActive;
-      let feedback = state.feedback;
+      const newState = { ...state };
 
-      if (cprActive) {
-        cprCycleTime -= 1;
-        if (cprCycleTime <= 0) {
-          cprActive = false;
-          feedback = "Siklus CPR 2 menit selesai. Hentikan CPR & analisis ritme.";
+      if (state.cprActive) {
+        newState.cprCycleTime -= 1;
+        newState.cprQuality = Math.min(100, state.cprQuality + 1);
+        newState.vitals = getCPRVitals(newState);
+
+        if (newState.cprCycleTime <= 0) {
+          newState.cprActive = false;
+          newState.feedback = "Siklus CPR 2 menit selesai. Cek ritme.";
+          newState.rhythm = getNextRhythm(newState);
+        }
+      } else {
+        newState.cprQuality = Math.max(0, state.cprQuality - 2);
+      }
+
+      // Deteriorate if no interventions
+      if (!state.cprActive && state.time > 30) {
+        if (state.rhythm === "bradycardia") {
+          newState.vitals.hr = (parseInt(state.vitals.hr) - 1).toString();
+          const bp = parseInt(state.vitals.bp.split("/")[0]);
+          newState.vitals.bp = `${bp - 1}/${Math.floor((bp - 1) * 0.7)}`;
         }
       }
-      return { ...state, time: state.time + 1, cprCycleTime, cprActive, feedback };
+
+      return newState;
+    }
+
+    case "GIVE_DRUG": {
+      const isArrest = ["vf", "vt", "asystole", "pea"].includes(state.rhythm);
+
+      switch (action.drug) {
+        case "epinephrine": {
+          if (!isArrest)
+            return {
+              ...state,
+              feedback: "Epinephrine 1mg hanya untuk henti jantung.",
+            };
+
+          const newState = {
+            ...state,
+            medsGiven: { ...state.medsGiven, epi: state.medsGiven.epi + 1 },
+            scenarioLog: log("Epinephrine 1mg IV diberikan."),
+          };
+
+          // Effect of Epinephrine
+          if (state.cprQuality > 60) {
+            if (state.rhythm === "asystole") {
+              newState.rhythm = Math.random() > 0.7 ? "pea" : "asystole";
+            } else if (state.rhythm === "pea") {
+              newState.rhythm = Math.random() > 0.8 ? "vf" : "pea";
+            }
+          }
+
+          return newState;
+        }
+
+        case "amiodarone": {
+          if (!["vf", "vt"].includes(state.rhythm)) {
+            return { ...state, feedback: "Amiodarone hanya untuk VF/pVT." };
+          }
+
+          return {
+            ...state,
+            medsGiven: { ...state.medsGiven, amio: state.medsGiven.amio + 1 },
+            scenarioLog: log("Amiodarone 300mg IV diberikan."),
+            rhythm: Math.random() > 0.7 ? "vf_persistent" : state.rhythm,
+          };
+        }
+
+        case "atropine": {
+          if (state.rhythm !== "bradycardia")
+            return {
+              ...state,
+              feedback: "Atropine tidak diindikasikan untuk ritme ini.",
+            };
+          if (state.medsGiven.atropine >= 3)
+            return {
+              ...state,
+              feedback: "Dosis maksimal Atropine (3mg) telah tercapai.",
+            };
+
+          const newAtropineCount = state.medsGiven.atropine + 1;
+          if (newAtropineCount >= 2) {
+            // Success on 2nd dose
+            return {
+              ...state,
+              medsGiven: { ...state.medsGiven, atropine: newAtropineCount },
+              rhythm: "sinus",
+              vitals: { hr: "65", bp: "100/60", spo2: "96", resp: "16" },
+              feedback:
+                "Atropine berhasil. Bradikardia teratasi. Monitor pasien.",
+              scenarioLog: log(
+                `Atropine 1mg IV diberikan (Total: ${newAtropineCount}mg). Respons baik.`
+              ),
+              gameStatus: "rosc",
+            };
+          }
+          return {
+            ...state,
+            medsGiven: { ...state.medsGiven, atropine: newAtropineCount },
+            vitals: { ...state.vitals, hr: "45" },
+            feedback:
+              "Atropine 1mg diberikan, respons minimal. Pertimbangkan dosis ulang atau pacing.",
+            scenarioLog: log(
+              `Atropine 1mg IV diberikan (Total: ${newAtropineCount}mg).`
+            ),
+          };
+        }
+      }
+      return state;
+    }
+
+    case "DEFIBRILLATE": {
+      if (state.cprActive) {
+        return { ...state, feedback: "Hentikan CPR sebelum defibrilasi!" };
+      }
+
+      if (!["vf", "vt", "vf_persistent"].includes(state.rhythm)) {
+        return {
+          ...state,
+          feedback: "Ritme tidak shockable! Defibrilasi kontraindikasi.",
+          scenarioLog: log("Defibrilasi diberikan pada ritme non-shockable!"),
+        };
+      }
+
+      const shockCount = state.shockCount + 1;
+      const successChance = state.medsGiven.amio > 0 ? 0.4 : 0.2;
+
+      let newRhythm = state.rhythm;
+      if (Math.random() < successChance && state.cprQuality > 60) {
+        newRhythm = "sinus";
+      } else if (Math.random() < 0.3) {
+        newRhythm = "asystole";
+      } else {
+        newRhythm = "vf_persistent";
+      }
+
+      return {
+        ...state,
+        shockCount,
+        rhythm: newRhythm,
+        vitals:
+          newRhythm === "sinus"
+            ? { hr: "90", bp: "110/70", spo2: "95", resp: "16" }
+            : state.vitals,
+        gameStatus: newRhythm === "sinus" ? "rosc" : "running",
+        scenarioLog: log(
+          `Defibrilasi ke-${shockCount} diberikan. Ritme: ${newRhythm}`
+        ),
+        feedback:
+          newRhythm === "sinus"
+            ? "ROSC! Pasien kembali ke ritme sinus."
+            : "Lanjutkan CPR dan protokol VF refrakter.",
+      };
     }
 
     case "TOGGLE_CPR": {
-      if (state.rhythm === 'bradycardia') return { ...state, feedback: "CPR tidak diindikasikan untuk bradikardia dengan nadi." };
+      if (state.rhythm === "bradycardia")
+        return {
+          ...state,
+          feedback: "CPR tidak diindikasikan untuk bradikardia dengan nadi.",
+        };
       const cprActive = !state.cprActive;
       return {
         ...state,
         cprActive,
         cprCycleTime: cprActive ? 120 : state.cprCycleTime,
         scenarioLog: log(`CPR ${cprActive ? "dimulai" : "dihentikan"}.`),
-        feedback: cprActive ? "Lakukan kompresi berkualitas tinggi." : "CPR dihentikan. Analisis ritme.",
+        feedback: cprActive
+          ? "Lakukan kompresi berkualitas tinggi."
+          : "CPR dihentikan. Analisis ritme.",
       };
-    }
-
-    case "DEFIBRILLATE": {
-      if (state.cprActive) return { ...state, feedback: "Hentikan CPR sebelum defibrilasi!" };
-      if (!["vf", "vt", "vf_persistent"].includes(state.rhythm)) return { ...state, feedback: "Ritme tidak shockable. Defibrilasi tidak diindikasikan." };
-
-      const shockCount = state.shockCount + 1;
-      const newLog = log(`Defibrilasi ke-${shockCount} (200J) diberikan.`);
-      
-      if (shockCount >= 2 && state.medsGiven.amio > 0 && Math.random() > 0.5) {
-        return {
-          ...state,
-          rhythm: "sinus",
-          vitals: { hr: "75", bp: "110/70", spo2: "95", resp: "12" },
-          gameStatus: "rosc",
-          cprActive: false,
-          feedback: "ROSC! Ritme kembali ke sinus. Lakukan perawatan pasca henti jantung.",
-          scenarioLog: log("ROSC tercapai!"),
-        };
-      }
-      if (Math.random() > 0.7) {
-        return { ...state, shockCount, rhythm: "asystole", feedback: "Shock diberikan. Ritme berubah menjadi Asistol. Lanjutkan CPR.", scenarioLog: newLog };
-      }
-      return { ...state, shockCount, rhythm: "vf_persistent", feedback: "Shock diberikan. VF persisten. Lanjutkan CPR segera.", scenarioLog: newLog };
-    }
-
-    case "GIVE_DRUG": {
-      const isArrest = ["vf", "vt", "asystole", "pea_arrest", "vf_persistent"].includes(state.rhythm);
-      if (isArrest && !state.cprActive) return { ...state, feedback: "Berikan obat hanya selama CPR aktif pada kasus henti jantung." };
-      
-      switch(action.drug) {
-        case "epinephrine": {
-          if (!isArrest) return { ...state, feedback: "Epinephrine 1mg hanya untuk henti jantung." };
-          return { ...state, medsGiven: {...state.medsGiven, epi: state.medsGiven.epi + 1}, scenarioLog: log("Epinephrine 1mg IV diberikan."), feedback: "Epinephrine 1mg diberikan." };
-        }
-        case "amiodarone": {
-          if (!["vf", "vt", "vf_persistent"].includes(state.rhythm)) return { ...state, feedback: "Amiodarone hanya untuk VF/pVT." };
-          if (state.shockCount < 2) return { ...state, feedback: "Amiodarone diindikasikan untuk VF/pVT refrakter setelah shock ke-2." };
-          if (state.medsGiven.amio > 0) return { ...state, feedback: "Dosis kedua Amiodarone (150mg) bisa dipertimbangkan." };
-          return { ...state, medsGiven: {...state.medsGiven, amio: state.medsGiven.amio + 1}, scenarioLog: log("Amiodarone 300mg IV diberikan."), feedback: "Amiodarone 300mg diberikan." };
-        }
-        case "atropine": {
-            if (state.rhythm !== 'bradycardia') return { ...state, feedback: "Atropine tidak diindikasikan untuk ritme ini." };
-            if (state.medsGiven.atropine >= 3) return { ...state, feedback: "Dosis maksimal Atropine (3mg) telah tercapai." };
-            
-            const newAtropineCount = state.medsGiven.atropine + 1;
-            if (newAtropineCount >= 2) { // Success on 2nd dose
-                 return {
-                    ...state,
-                    medsGiven: { ...state.medsGiven, atropine: newAtropineCount },
-                    rhythm: 'sinus',
-                    vitals: { hr: "65", bp: "100/60", spo2: "96", resp: "16" },
-                    feedback: "Atropine berhasil. Bradikardia teratasi. Monitor pasien.",
-                    scenarioLog: log(`Atropine 1mg IV diberikan (Total: ${newAtropineCount}mg). Respons baik.`),
-                    gameStatus: "rosc",
-                }
-            }
-            return {
-                ...state,
-                medsGiven: { ...state.medsGiven, atropine: newAtropineCount },
-                vitals: { ...state.vitals, hr: "45" },
-                feedback: "Atropine 1mg diberikan, respons minimal. Pertimbangkan dosis ulang atau pacing.",
-                scenarioLog: log(`Atropine 1mg IV diberikan (Total: ${newAtropineCount}mg).`),
-            }
-        }
-      }
-      return state;
-    }
-    
-    case "PACE": {
-        if (state.rhythm !== 'bradycardia') return { ...state, feedback: "Pacing tidak diindikasikan." };
-        if (state.medsGiven.atropine === 0) return { ...state, feedback: "Coba Atropine terlebih dahulu sesuai algoritma." };
-        return {
-            ...state,
-            rhythm: 'paced_rhythm',
-            vitals: { hr: "70", bp: "110/70", spo2: "97", resp: "16" },
-            gameStatus: 'rosc',
-            feedback: "Pacing berhasil menstabilkan pasien. Siapkan untuk pacing transvenous.",
-            scenarioLog: log("Transcutaneous Pacing (TCP) dimulai dan berhasil."),
-        }
     }
 
     default:
@@ -2162,8 +2293,12 @@ const simulatorReducer = (state: SimulatorState, action: SimulatorAction): Simul
 };
 
 const ClinicalScenarioSimulatorTab: React.FC = () => {
-  const [selectedScenario, setSelectedScenario] = useState<keyof typeof clinicalScenarios>('vf_arrest');
-  const [state, dispatch] = useReducer(simulatorReducer, clinicalScenarios[selectedScenario].initialState);
+  const [selectedScenario, setSelectedScenario] =
+    useState<keyof typeof clinicalScenarios>("vf_arrest");
+  const [state, dispatch] = useReducer(
+    simulatorReducer,
+    clinicalScenarios[selectedScenario].initialState
+  );
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -2178,15 +2313,17 @@ const ClinicalScenarioSimulatorTab: React.FC = () => {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
   }, [state.scenarioLog]);
-  
+
   const handleScenarioChange = (scenarioKey: string) => {
-      const key = scenarioKey as keyof typeof clinicalScenarios;
-      setSelectedScenario(key);
-      dispatch({ type: 'RESET', scenario: key });
-  }
+    const key = scenarioKey as keyof typeof clinicalScenarios;
+    setSelectedScenario(key);
+    dispatch({ type: "RESET", scenario: key });
+  };
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const mins = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
     const secs = (seconds % 60).toString().padStart(2, "0");
     return `${mins}:${secs}`;
   };
@@ -2205,17 +2342,24 @@ const ClinicalScenarioSimulatorTab: React.FC = () => {
             <Terminal /> Simulator Skenario Klinis
           </CardTitle>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4">
-             <Select onValueChange={handleScenarioChange} defaultValue={selectedScenario}>
-                <SelectTrigger className="w-full md:w-[280px]">
-                    <SelectValue placeholder="Pilih Skenario" />
-                </SelectTrigger>
-                <SelectContent>
-                    {Object.entries(clinicalScenarios).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>{value.name}</SelectItem>
-                    ))}
-                </SelectContent>
+            <Select
+              onValueChange={handleScenarioChange}
+              defaultValue={selectedScenario}
+            >
+              <SelectTrigger className="w-full md:w-[280px]">
+                <SelectValue placeholder="Pilih Skenario" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(clinicalScenarios).map(([key, value]) => (
+                  <SelectItem key={key} value={key}>
+                    {value.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
-            <CardDescription className="flex-1">{currentScenarioInfo.description}</CardDescription>
+            <CardDescription className="flex-1">
+              {currentScenarioInfo.description}
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -2223,19 +2367,49 @@ const ClinicalScenarioSimulatorTab: React.FC = () => {
           <div className="lg:col-span-2 space-y-4">
             <div className="bg-black rounded-lg p-4">
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-green-400 mb-2 text-center">
-                <div className="flex flex-col"><span className="text-sm font-bold">HR</span><span className="text-2xl font-mono">{state.vitals.hr}</span></div>
-                <div className="flex flex-col"><span className="text-sm font-bold">BP</span><span className="text-2xl font-mono">{state.vitals.bp}</span></div>
-                <div className="flex flex-col"><span className="text-sm font-bold">SpO2</span><span className="text-2xl font-mono">{state.vitals.spo2}</span></div>
-                <div className="flex flex-col"><span className="text-sm font-bold">RR</span><span className="text-2xl font-mono">{state.vitals.resp}</span></div>
-                <div className="flex flex-col"><span className="text-sm font-bold">Time</span><span className="text-2xl font-mono">{formatTime(state.time)}</span></div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">HR</span>
+                  <span className="text-2xl font-mono">{state.vitals.hr}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">BP</span>
+                  <span className="text-2xl font-mono">{state.vitals.bp}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">SpO2</span>
+                  <span className="text-2xl font-mono">
+                    {state.vitals.spo2}
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">RR</span>
+                  <span className="text-2xl font-mono">
+                    {state.vitals.resp}
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold">Time</span>
+                  <span className="text-2xl font-mono">
+                    {formatTime(state.time)}
+                  </span>
+                </div>
               </div>
               <div className="w-full h-48 flex items-center justify-center">
                 <EKGCanvas rhythm={state.rhythm} width={500} height={150} />
               </div>
             </div>
-            <Alert className={cn( state.gameStatus === "rosc" && "bg-green-100 dark:bg-green-900", state.cprActive && "bg-blue-100 dark:bg-blue-900" )}>
+            <Alert
+              className={cn(
+                state.gameStatus === "rosc" && "bg-green-100 dark:bg-green-900",
+                state.cprActive && "bg-blue-100 dark:bg-blue-900"
+              )}
+            >
               <Activity className="h-4 w-4" />
-              <AlertTitle>{state.cprActive ? `Siklus CPR Berlangsung (${state.cprCycleTime}s)` : "Status & Umpan Balik"}</AlertTitle>
+              <AlertTitle>
+                {state.cprActive
+                  ? `Siklus CPR Berlangsung (${state.cprCycleTime}s)`
+                  : "Status & Umpan Balik"}
+              </AlertTitle>
               <AlertDescription>{state.feedback}</AlertDescription>
             </Alert>
           </div>
@@ -2243,45 +2417,103 @@ const ClinicalScenarioSimulatorTab: React.FC = () => {
           {/* Kolom Kanan: Kontrol & Log */}
           <div className="space-y-4">
             <Accordion type="single" collapsible>
-                <AccordionItem value="how-to">
-                    <AccordionTrigger><Info className="mr-2 h-4 w-4"/>Tata Cara</AccordionTrigger>
-                    <AccordionContent className="text-sm p-2">
-                        1. Pilih skenario di atas.<br/>
-                        2. Analisis ritme dan tanda vital pasien.<br/>
-                        3. Lakukan intervensi (CPR, Defib, Obat) sesuai algoritma ACLS.<br/>
-                        4. Perhatikan umpan balik dan log untuk memandu keputusan Anda.<br/>
-                        5. Klik 'Reset Skenario' untuk memulai ulang kapan saja.
-                    </AccordionContent>
-                </AccordionItem>
+              <AccordionItem value="how-to">
+                <AccordionTrigger>
+                  <Info className="mr-2 h-4 w-4" />
+                  Tata Cara
+                </AccordionTrigger>
+                <AccordionContent className="text-sm p-2">
+                  1. Pilih skenario di atas.
+                  <br />
+                  2. Analisis ritme dan tanda vital pasien.
+                  <br />
+                  3. Lakukan intervensi (CPR, Defib, Obat) sesuai algoritma
+                  ACLS.
+                  <br />
+                  4. Perhatikan umpan balik dan log untuk memandu keputusan
+                  Anda.
+                  <br />
+                  5. Klik 'Reset Skenario' untuk memulai ulang kapan saja.
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
-            <div ref={logRef} className="h-48 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg text-sm font-mono overflow-y-auto border">
-              {state.scenarioLog.map((log, i) => (<p key={i} className="text-xs">{log}</p>))}
+            <div
+              ref={logRef}
+              className="h-48 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg text-sm font-mono overflow-y-auto border"
+            >
+              {state.scenarioLog.map((log, i) => (
+                <p key={i} className="text-xs">
+                  {log}
+                </p>
+              ))}
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Button onClick={() => dispatch({ type: "TOGGLE_CPR" })} className={cn("h-16", state.cprActive && "bg-blue-600 hover:bg-blue-700")} disabled={state.gameStatus !== "running"}>
+              <Button
+                onClick={() => dispatch({ type: "TOGGLE_CPR" })}
+                className={cn(
+                  "h-16",
+                  state.cprActive && "bg-blue-600 hover:bg-blue-700"
+                )}
+                disabled={state.gameStatus !== "running"}
+              >
                 {state.cprActive ? "Hentikan CPR" : "Mulai CPR"}
               </Button>
-              <Button onClick={() => dispatch({ type: "DEFIBRILLATE" })} className="h-16 bg-yellow-500 hover:bg-yellow-600 text-black" disabled={state.cprActive || state.gameStatus !== "running"}>
+              <Button
+                onClick={() => dispatch({ type: "DEFIBRILLATE" })}
+                className="h-16 bg-yellow-500 hover:bg-yellow-600 text-black"
+                disabled={state.cprActive || state.gameStatus !== "running"}
+              >
                 <Zap className="mr-2" /> Defibrilasi
               </Button>
-              <Button onClick={() => dispatch({ type: "GIVE_DRUG", drug: "epinephrine" })} className="h-16" disabled={state.gameStatus !== "running"}>
+              <Button
+                onClick={() =>
+                  dispatch({ type: "GIVE_DRUG", drug: "epinephrine" })
+                }
+                className="h-16"
+                disabled={state.gameStatus !== "running"}
+              >
                 <Pill className="mr-2" /> Epinephrine
               </Button>
-              <Button onClick={() => dispatch({ type: "GIVE_DRUG", drug: "amiodarone" })} className="h-16" disabled={state.gameStatus !== "running"}>
+              <Button
+                onClick={() =>
+                  dispatch({ type: "GIVE_DRUG", drug: "amiodarone" })
+                }
+                className="h-16"
+                disabled={state.gameStatus !== "running"}
+              >
                 <Pill className="mr-2" /> Amiodarone
               </Button>
-               <Button onClick={() => dispatch({ type: "GIVE_DRUG", drug: "atropine" })} className="h-16" disabled={state.gameStatus !== "running"}>
+              <Button
+                onClick={() =>
+                  dispatch({ type: "GIVE_DRUG", drug: "atropine" })
+                }
+                className="h-16"
+                disabled={state.gameStatus !== "running"}
+              >
                 <Pill className="mr-2" /> Atropine
               </Button>
-               <Button onClick={() => dispatch({ type: "PACE" })} className="h-16" disabled={state.gameStatus !== "running"}>
+              <Button
+                onClick={() => dispatch({ type: "PACE" })}
+                className="h-16"
+                disabled={state.gameStatus !== "running"}
+              >
                 <Activity className="mr-2" /> Pacing
               </Button>
             </div>
-            <Button onClick={() => dispatch({ type: "RESET", scenario: selectedScenario })} className="w-full">
+            <Button
+              onClick={() =>
+                dispatch({ type: "RESET", scenario: selectedScenario })
+              }
+              className="w-full"
+            >
               <RotateCcw className="mr-2" /> Reset Skenario
             </Button>
             {state.gameStatus === "rosc" && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center font-bold text-green-500 p-2 rounded-lg bg-green-100 dark:bg-green-900 border border-green-500">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center font-bold text-green-500 p-2 rounded-lg bg-green-100 dark:bg-green-900 border border-green-500"
+              >
                 Selamat! Pasien berhasil diselamatkan.
               </motion.div>
             )}
@@ -2291,8 +2523,6 @@ const ClinicalScenarioSimulatorTab: React.FC = () => {
     </motion.div>
   );
 };
-
-
 
 const ACLSMasteryHub: React.FC = () => {
   const [hasMounted, setHasMounted] = useState(false);
