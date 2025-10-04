@@ -337,6 +337,150 @@ const dummyProducts: Product[] = [
     interactions: ["Hindari dengan calcium channel blocker"],
     storage: "Jauhkan dari cahaya.",
   },
+  {
+    id: "prod_014",
+    name: "Multaq 400mg (Dronedarone)",
+    category: "Obat Aritmia",
+    price: 275000,
+    stock: 35,
+    imageUrl: "/images/aritmia6.png",
+    description:
+      "Obat antiaritmia modern untuk mengobati fibrilasi atrial dan membantu mempertahankan irama sinus normal. Cocok untuk pasien dengan riwayat aritmia paroksismal.",
+    tags: ["Resep Dokter", "BPOM", "Baru"],
+    dosage: "400mg dua kali sehari dengan makanan",
+    sideEffects: ["Diare", "Mual", "Kelelahan", "Pusing"],
+    brand: "Sanofi",
+    rating: 4.6,
+    reviews: 78,
+    form: "Tablet",
+    patientConcerns: ["Aritmia"],
+    isFeatured: true,
+    popularity: 75,
+    releaseDate: new Date("2023-08-15"),
+    interactions: [
+      "Hindari dengan antiaritmia lain",
+      "Interaksi dengan grapefruit",
+    ],
+    storage: "Simpan di suhu ruang (20-25°C)",
+    testimonials: [
+      {
+        user: "Rudi",
+        comment: "Sangat efektif mengontrol fibrilasi atrial saya.",
+        rating: 4.8,
+      },
+    ],
+  },
+  {
+    id: "prod_015",
+    name: "Rythmol SR 225mg (Propafenone)",
+    category: "Obat Aritmia",
+    price: 195000,
+    stock: 42,
+    imageUrl: "/images/aritmia7.png",
+    description:
+      "Obat antiaritmia kelas 1C dengan pelepasan berkelanjutan untuk pengobatan aritmia ventrikel dan supraventrikel. Ideal untuk penggunaan jangka panjang.",
+    tags: ["Resep Dokter", "BPOM"],
+    dosage: "225-425mg dua kali sehari",
+    sideEffects: ["Pusing", "Gangguan perut", "Rasa lelah"],
+    brand: "GSK",
+    rating: 4.5,
+    reviews: 92,
+    form: "Tablet",
+    patientConcerns: ["Aritmia"],
+    isFeatured: false,
+    popularity: 82,
+    releaseDate: new Date("2023-05-20"),
+    interactions: [
+      "Hindari dengan beta blocker",
+      "Perhatikan dengan antikoagulan",
+    ],
+    storage: "Simpan di tempat sejuk dan kering",
+  },
+  {
+    id: "prod_016",
+    name: "Tambocor 100mg (Flecainide)",
+    category: "Obat Aritmia",
+    price: 245000,
+    stock: 28,
+    imageUrl: "/images/aritmia8.png",
+    description:
+      "Antiaritmia kuat untuk mengatasi aritmia ventrikel dan supraventrikel yang serius. Efektif untuk pasien dengan aritmia refrakter.",
+    tags: ["Resep Dokter", "BPOM", "Best Seller"],
+    dosage: "50-200mg dua kali sehari",
+    sideEffects: ["Gangguan penglihatan", "Sakit kepala", "Pusing"],
+    brand: "Pfizer",
+    rating: 4.7,
+    reviews: 115,
+    form: "Tablet",
+    patientConcerns: ["Aritmia", "Gagal Jantung"],
+    isFeatured: true,
+    popularity: 88,
+    releaseDate: new Date("2023-03-10"),
+    interactions: [
+      "Hindari dengan antiaritmia kelas I",
+      "Hati-hati dengan beta blocker",
+    ],
+    storage: "Simpan di bawah 25°C",
+  },
+  {
+    id: "prod_017",
+    name: "Tikosyn 125mcg (Dofetilide)",
+    category: "Obat Aritmia",
+    price: 320000,
+    stock: 20,
+    imageUrl: "/images/aritmia9.png",
+    description:
+      "Antiaritmia kelas III untuk pengobatan fibrilasi atrial kronis dan flutter atrial. Memerlukan monitoring ketat di awal pengobatan.",
+    tags: ["Resep Dokter", "BPOM", "Baru"],
+    dosage: "125-500mcg dua kali sehari",
+    sideEffects: ["Sakit kepala", "Pusing", "Mual"],
+    brand: "Pfizer",
+    rating: 4.8,
+    reviews: 65,
+    form: "Kapsul",
+    patientConcerns: ["Aritmia"],
+    isFeatured: false,
+    popularity: 70,
+    releaseDate: new Date("2024-01-05"),
+    interactions: [
+      "Monitoring QT interval",
+      "Sesuaikan dosis dengan fungsi ginjal",
+    ],
+    storage: "Simpan di tempat sejuk dan kering",
+    testimonials: [
+      {
+        user: "Diana",
+        comment: "Sangat efektif untuk fibrilasi atrial saya yang sudah lama.",
+        rating: 5,
+      },
+    ],
+  },
+  {
+    id: "prod_018",
+    name: "Betapace AF 80mg (Sotalol AF)",
+    category: "Obat Aritmia",
+    price: 185000,
+    stock: 45,
+    imageUrl: "/images/aritmia10.png",
+    description:
+      "Kombinasi beta-blocker dan antiaritmia untuk mengobati fibrilasi atrial dan flutter. Formulasi khusus untuk gangguan irama atrial.",
+    tags: ["Resep Dokter", "BPOM"],
+    dosage: "80-160mg dua kali sehari",
+    sideEffects: ["Kelelahan", "Pusing", "Bradikardia"],
+    brand: "Bayer",
+    rating: 4.6,
+    reviews: 88,
+    form: "Tablet",
+    patientConcerns: ["Aritmia", "Hipertensi"],
+    isFeatured: true,
+    popularity: 85,
+    releaseDate: new Date("2023-11-15"),
+    interactions: [
+      "Hindari dengan obat yang memperpanjang QT",
+      "Monitoring elektrolit",
+    ],
+    storage: "Simpan di suhu ruang",
+  },
   // Lanjutkan dengan produk lain untuk mencapai 30+
   {
     id: "prod_003",
@@ -1525,6 +1669,21 @@ const ApotekDigitalSection = () => {
         {/* Modal AI Rekomendasi yang Lebih Canggih dengan Chat Integrasi */}
         <Dialog open={isAiModalOpen} onOpenChange={setIsAiModalOpen}>
           <AnimatePresence>
+            {" "}
+            feat(apotek): add more aritmia medicines to product catalog - Added
+            5 new aritmia medicines: - Multaq (Dronedarone) - Rythmol SR
+            (Propafenone) - Tambocor (Flecainide) - Tikosyn (Dofetilide) -
+            Betapace AF (Sotalol AF) - Each medicine includes complete details:
+            - Clinical descriptions - Dosage instructions - Side effects -
+            Storage requirements - Patient testimonials - Expanded product
+            variety for aritmia treatment options feat(apotek): add more aritmia
+            medicines to product catalog - Added 5 new aritmia medicines: -
+            Multaq (Dronedarone) - Rythmol SR (Propafenone) - Tambocor
+            (Flecainide) - Tikosyn (Dofetilide) - Betapace AF (Sotalol AF) -
+            Each medicine includes complete details: - Clinical descriptions -
+            Dosage instructions - Side effects - Storage requirements - Patient
+            testimonials - Expanded product variety for aritmia treatment
+            options
             {isAiModalOpen && (
               <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-2xl">
                 <motion.div
