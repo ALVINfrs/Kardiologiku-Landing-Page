@@ -1,6 +1,6 @@
 // Nama file: src/components/landing/InteractiveHealthPlanner.tsx
 
-import React, { useReducer, useEffect, useState } from "react";
+import React, { useReducer, useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Target,
@@ -13,6 +13,11 @@ import {
   ShieldCheck,
   Flame,
   BookOpen,
+  Activity,
+  Heart,
+  Stethoscope,
+  Brain,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Card,
@@ -73,12 +78,49 @@ type TimelineEvent = {
   isMilestone?: boolean;
 };
 
+type HealthVital = {
+  id: string;
+  date: string;
+  heartRate: number;
+  bloodPressureSystolic: number;
+  bloodPressureDiastolic: number;
+  weight: number;
+  notes?: string;
+};
+
+type Symptom = {
+  id: string;
+  date: string;
+  type: "Palpitasi" | "Sesak" | "Pusing" | "Lelah" | "Nyeri Dada";
+  severity: 1 | 2 | 3; // 1=Ringan, 2=Sedang, 3=Berat
+  duration: number;
+  triggers?: string[];
+  notes?: string;
+};
+
+type Quiz = {
+  id: string;
+  title: string;
+  questions: {
+    id: string;
+    text: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+  }[];
+};
+
 type HealthPlannerState = {
   xp: number;
   level: number;
   activeMissions: UserMission[];
   completedMissions: string[];
   timelineEvents: TimelineEvent[];
+  vitals: HealthVital[];
+  symptoms: Symptom[];
+  completedQuizzes: string[];
+  currentStreak: number;
+  achievements: string[];
 };
 
 type Action =
@@ -133,6 +175,30 @@ const availableMissions: Mission[] = [
       { id: "e3t3", description: "Gunakan Simulator EKG untuk memahami AFib." },
     ],
   },
+];
+
+const aritmiaQuizzes: Quiz[] = [
+  {
+    id: "q1",
+    title: "Dasar-Dasar Aritmia",
+    questions: [
+      {
+        id: "q1_1",
+        text: "Apa yang dimaksud dengan aritmia?",
+        options: [
+          "Detak jantung tidak teratur",
+          "Tekanan darah tinggi",
+          "Sakit pada dada",
+          "Sesak nafas",
+        ],
+        correctIndex: 0,
+        explanation:
+          "Aritmia adalah kondisi di mana detak jantung menjadi tidak teratur, terlalu cepat, atau terlalu lambat.",
+      },
+      // Add more questions...
+    ],
+  },
+  // Add more quizzes...
 ];
 
 const LOCAL_STORAGE_KEY = "interactiveHealthPlannerState_v3";
@@ -223,6 +289,37 @@ const plannerReducer = (
   }
 };
 
+// Add utility function for health tips
+const generatePersonalizedTips = (
+  vital: HealthVital | undefined,
+  recentSymptoms: Symptom[]
+): string[] => {
+  const tips: string[] = [];
+
+  if (vital) {
+    if (vital.heartRate > 100) {
+      tips.push(
+        "Detak jantung Anda sedikit tinggi. Coba teknik relaksasi dan kurangi kafein."
+      );
+    }
+    if (vital.bloodPressureSystolic > 140) {
+      tips.push(
+        "Tekanan darah Anda tinggi. Pastikan konsumsi garam dalam batas wajar."
+      );
+    }
+  }
+
+  const hasFrequentPalpitations =
+    recentSymptoms.filter((s) => s.type === "Palpitasi").length > 2;
+  if (hasFrequentPalpitations) {
+    tips.push(
+      "Anda sering mengalami palpitasi. Catat pemicu dan konsultasikan dengan dokter."
+    );
+  }
+
+  return tips.length > 0 ? tips : ["Terus pantau kesehatan Anda secara rutin."];
+};
+
 const getInitialState = (): HealthPlannerState => ({
   xp: 0,
   level: 1,
@@ -237,6 +334,11 @@ const getInitialState = (): HealthPlannerState => ({
       icon: Flag,
     },
   ],
+  vitals: [],
+  symptoms: [],
+  completedQuizzes: [],
+  currentStreak: 0,
+  achievements: [],
 });
 
 // --- 2. SUB-KOMPONEN UI ---
@@ -358,6 +460,225 @@ const Dashboard = ({
   );
 };
 
+const HealthTips = ({
+  vitals,
+  symptoms,
+}: {
+  vitals: HealthVital[];
+  symptoms: Symptom[];
+}) => {
+  const tips = useMemo(() => {
+    const latestVital = vitals[0];
+    const recentSymptoms = symptoms.slice(0, 5);
+    return generatePersonalizedTips(latestVital, recentSymptoms);
+  }, [vitals, symptoms]);
+
+  return (
+    <Card className="shadow-lg">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Stethoscope className="h-6 w-6 text-blue-500" />
+          Tips Kesehatan Personal
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {tips.map((tip, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
+            >
+              <AlertTriangle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+              <p className="text-sm">{tip}</p>
+            </motion.div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const SymptomTracker = ({
+  symptoms,
+  onAddSymptom,
+}: {
+  symptoms: Symptom[];
+  onAddSymptom: (symptom: Omit<Symptom, "id">) => void;
+}) => {
+  const [selectedSymptom, setSelectedSymptom] =
+    useState<Symptom["type"]>("Palpitasi");
+  const [severity, setSeverity] = useState<Symptom["severity"]>(1);
+
+  return (
+    <Card className="shadow-lg">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Activity className="h-6 w-6 text-red-500" />
+          Monitor Gejala
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {/* Recent Symptoms */}
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Gejala Terakhir:</h4>
+            {symptoms.slice(0, 3).map((symptom) => (
+              <div key={symptom.id} className="text-sm text-gray-500">
+                {new Date(symptom.date).toLocaleDateString()}: {symptom.type}{" "}
+                (Level {symptom.severity})
+              </div>
+            ))}
+          </div>
+
+          {/* Symptom Input */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Jenis Gejala</label>
+                <select
+                  className="w-full mt-1 rounded-md"
+                  value={selectedSymptom}
+                  onChange={(e) =>
+                    setSelectedSymptom(e.target.value as Symptom["type"])
+                  }
+                >
+                  <option value="Palpitasi">Palpitasi</option>
+                  <option value="Sesak">Sesak</option>
+                  <option value="Pusing">Pusing</option>
+                  <option value="Lelah">Lelah</option>
+                  <option value="Nyeri Dada">Nyeri Dada</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Tingkat Keparahan</label>
+                <select
+                  className="w-full mt-1 rounded-md"
+                  value={severity}
+                  onChange={(e) =>
+                    setSeverity(Number(e.target.value) as Symptom["severity"])
+                  }
+                >
+                  <option value={1}>Ringan</option>
+                  <option value={2}>Sedang</option>
+                  <option value={3}>Berat</option>
+                </select>
+              </div>
+            </div>
+            <Button
+              onClick={() =>
+                onAddSymptom({
+                  date: new Date().toISOString(),
+                  type: selectedSymptom,
+                  severity,
+                  duration: 0,
+                })
+              }
+              className="w-full"
+            >
+              Catat Gejala
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const VitalSigns = ({ vitals }: { vitals: HealthVital[] }) => {
+  const latestVital = vitals[0];
+
+  return (
+    <Card className="shadow-lg">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Heart className="h-6 w-6 text-red-500" />
+          Tanda Vital
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p className="text-sm text-gray-500">Detak Jantung</p>
+            <p className="text-2xl font-bold">
+              {latestVital?.heartRate || "--"}
+            </p>
+            <p className="text-xs text-gray-400">bpm</p>
+          </div>
+          {/* Add more vital signs */}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const AritmiaQuiz = ({
+  quiz,
+  onComplete,
+}: {
+  quiz: Quiz;
+  onComplete: (score: number) => void;
+}) => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<number[]>([]);
+
+  const handleAnswer = (optionIndex: number) => {
+    const newAnswers = [...answers, optionIndex];
+    setAnswers(newAnswers);
+
+    if (newAnswers.length === quiz.questions.length) {
+      // Calculate score
+      const score = newAnswers.reduce((acc, ans, idx) => {
+        return acc + (ans === quiz.questions[idx].correctIndex ? 1 : 0);
+      }, 0);
+      onComplete(Math.round((score / quiz.questions.length) * 100));
+    } else {
+      setCurrentQuestion((current) => current + 1);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="w-full">
+          <Brain className="mr-2 h-4 w-4" />
+          Mulai Quiz: {quiz.title}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl">
+        {currentQuestion < quiz.questions.length ? (
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold">
+              {quiz.questions[currentQuestion].text}
+            </h3>
+            <div className="space-y-2">
+              {quiz.questions[currentQuestion].options.map((option, idx) => (
+                <Button
+                  key={idx}
+                  variant="outline"
+                  className="w-full text-left justify-start"
+                  onClick={() => handleAnswer(idx)}
+                >
+                  {option}
+                </Button>
+              ))}
+            </div>
+            <Progress value={(currentQuestion / quiz.questions.length) * 100} />
+          </div>
+        ) : (
+          <div className="text-center py-4">
+            <h3 className="text-lg font-bold">Quiz Selesai!</h3>
+            <p className="text-gray-500">
+              Terima kasih telah menyelesaikan quiz.
+            </p>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const MissionControl = ({
   state,
   dispatch,
@@ -373,9 +694,47 @@ const MissionControl = ({
       !activeMissions.some((am) => am.missionId === m.id)
   );
 
+  const handleSymptomAdd = (symptom: Omit<Symptom, "id">) => {
+    // TODO: Add action handler for symptoms
+    console.log("New symptom:", symptom);
+  };
+
   return (
-    <div className="mb-8">
-      <h3 className="text-2xl font-bold mb-4">Kontrol Misi</h3>
+    <div className="space-y-8">
+      {/* Health Monitoring Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <VitalSigns vitals={state.vitals} />
+        <SymptomTracker
+          symptoms={state.symptoms}
+          onAddSymptom={handleSymptomAdd}
+        />
+      </div>
+
+      {/* Education Section */}
+      <Card className="shadow-lg mb-8">
+        <CardHeader>
+          <CardTitle>Edukasi Aritmia</CardTitle>
+          <CardDescription>
+            Pelajari lebih lanjut tentang kondisi aritmia melalui kuis
+            interaktif
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {aritmiaQuizzes.map((quiz) => (
+            <AritmiaQuiz
+              key={quiz.id}
+              quiz={quiz}
+              onComplete={(score) => {
+                console.log(`Quiz completed with score: ${score}`);
+                // TODO: Add action handler for quiz completion
+              }}
+            />
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Active Missions */}
+      <h3 className="text-2xl font-bold mb-4">Misi Aktif</h3>
       <AnimatePresence>
         {activeMissions.length > 0 && (
           <motion.div layout className="space-y-4 mb-4">
@@ -468,6 +827,7 @@ const MissionControl = ({
         )}
       </AnimatePresence>
 
+      {/* Mission Selection Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
         <DialogTrigger asChild>
           <Button className="w-full">
@@ -619,7 +979,7 @@ const InteractiveHealthPlanner: React.FC = () => {
 
   return (
     <section id="health-planner" className="py-20 bg-gray-100 dark:bg-gray-950">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <TrendingUp className="h-12 w-12 mx-auto text-red-500 mb-4" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-gray-900 dark:text-white">
@@ -632,10 +992,16 @@ const InteractiveHealthPlanner: React.FC = () => {
         </div>
 
         <Dashboard state={state} onReset={handleReset} />
-        <MissionControl state={state} dispatch={dispatch} />
-        <div className="mt-12">
-          <Timeline events={state.timelineEvents} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <MissionControl state={state} dispatch={dispatch} />
+          </div>
+          <div className="space-y-6">
+            <HealthTips vitals={state.vitals} symptoms={state.symptoms} />
+            {/* Add more sidebar components */}
+          </div>
         </div>
+        <Timeline events={state.timelineEvents} />
       </div>
     </section>
   );
